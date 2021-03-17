@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "424840366302",
+    "project_id": "my-notary-app-82025",
+    "storage_bucket": "my-notary-app-82025.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:424840366302:android:93bac75a4ba53903199a4f",
+        "android_client_info": {
+          "package_name": "com.example.myknott"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "424840366302-s7757e1t0ck8r4n6d5spnkl7mg0704m0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.myknott",
+            "certificate_hash": "07f4c1b130dbb3104af2d0cfe4f60bf435e4fcfc"
+          }
+        },
+        {
+          "client_id": "424840366302-dvsl8upli2fmjcgcnkcu9ohcti3r87qc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeNJT4rKtCJlpS9HUkfnV5GxDnXP3XF_M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "424840366302-dvsl8upli2fmjcgcnkcu9ohcti3r87qc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
