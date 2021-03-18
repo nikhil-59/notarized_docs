@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -171,8 +172,9 @@ class _MapScreenState extends State<MapScreen>
                                           child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(50),
-                                            child: Image.network(
-                                              widget.orderInfo['order']
+                                            child: CachedNetworkImage(
+                                              imageUrl: widget
+                                                      .orderInfo['order']
                                                   ['customer']['userImageURL'],
                                               width: 50,
                                               height: 50,

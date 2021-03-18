@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:myknott/Views/Services/Services.dart';
 
@@ -42,8 +43,9 @@ class _ConfirmCardsState extends State<ConfirmCards> {
               leading: CircleAvatar(
                 backgroundColor: Colors.grey,
                 maxRadius: 20,
-                child: Image.network(
-                    'https://cdn0.iconfinder.com/data/icons/avatar-78/128/12-512.png'),
+                child: CachedNetworkImage(
+                    imageUrl:
+                        'https://cdn0.iconfinder.com/data/icons/avatar-78/128/12-512.png'),
               ),
               title: Text(
                 widget.name,

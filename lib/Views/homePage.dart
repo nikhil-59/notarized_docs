@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:myknott/Views/CalenderScreen.dart';
 import 'package:myknott/Views/ProgessScreen.dart';
+import 'package:myknott/Views/UserProfile.dart';
 import 'package:myknott/Views/Widgets/card.dart';
 import 'package:myknott/Views/Widgets/confirmCard.dart';
 import 'package:myknott/Views/secondScreen.dart';
@@ -47,8 +49,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     dio.options.headers['auth_token'] = jwt;
     var body = {
       "notaryId": userInfo['notary']['_id'],
-      "today12am": "2021-03-17 00:00:00 GMT+0530"
-      // "${DateFormat("yyyy-MM-dd").format(DateTime.now())} 00:00:00 GMT+0530",
+      "today12am":
+          "${DateFormat("yyyy-MM-dd").format(DateTime.now())} 00:00:00 GMT+0530",
+      // "today12am": "2021-03-17 00:00:00 GMT+0530"
     };
     var response = await dio.post(
         "https://my-notary-app.herokuapp.com/notary/getDashboard",
@@ -291,13 +294,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
                       ),
                     )
-                  : Container(
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.blue.shade800),
-                          strokeWidth: 3,
-                        ),
+                  : Center(
+                      child: Text(
+                        "Please Wait ...",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
             ),
@@ -305,8 +306,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ProgressScreen(
             notaryId: userInfo.isNotEmpty ? userInfo['notary']['_id'] : "",
           ),
-          Container(),
-          Container(),
+          CalenderScreen(
+            notaryId: userInfo.isNotEmpty ? userInfo['notary']['_id'] : "",
+          ),
+          UserProfile(
+            notaryId: userInfo.isNotEmpty ? userInfo['notary']['_id'] : "",
+          )
         ],
       ),
     );

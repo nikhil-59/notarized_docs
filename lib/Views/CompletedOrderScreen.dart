@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:myknott/Views/Services/Services.dart';
@@ -49,9 +50,11 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                       tileColor: Colors.white,
                       leading: ClipRRect(
                         borderRadius: BorderRadius.circular(50),
-                        child: Image.network(
-                          orders['orders'][index]["customer"]['userImageURL'],
+                        child: CachedNetworkImage(
+                          imageUrl: orders['orders'][index]["customer"]
+                              ['userImageURL'],
                           height: 40,
+                          width: 40,
                         ),
                       ),
                       // visualDensity: VisualDensity.comfortable,

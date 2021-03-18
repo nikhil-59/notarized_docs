@@ -92,4 +92,30 @@ class NotaryServices {
         data: {"notaryId": notaryId, "PageNumber": "0"});
     return response.data;
   }
+
+  getAppointments(DateTime dateTime, String notaryId) async {
+    String jwt = await storage.read(key: 'jwt');
+    dio.options.headers['auth_token'] = jwt;
+    var response = await dio
+        .post("https://my-notary-app.herokuapp.com/notary/getDashboard", data: {
+      "notaryId": notaryId,
+      "today12am": dateTime.year.toString() +
+          "-" +
+          dateTime.month.toString() +
+          "-" +
+          dateTime.day.toString() +
+          " 00:00:00 GMT-0730"
+    });
+    return response.data;
+  }
+
+  getUserProfileInfo(String notaryId) async {
+    String jwt = await storage.read(key: 'jwt');
+    dio.options.headers['auth_token'] = jwt;
+    var response = await dio.post(
+      "https://my-notary-app.herokuapp.com/notary/getProfile",
+      data: {"notaryId": notaryId, "PageNumber": "0"},
+    );
+    return response.data;
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -1222,8 +1223,8 @@ class _SecondScreenState extends State<SecondScreen>
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(50),
-                                          child: Image.network(
-                                            map['order']['customer']
+                                          child: CachedNetworkImage(
+                                            imageUrl: map['order']['customer']
                                                 ['userImageURL'],
                                             width: 50,
                                             height: 50,

@@ -46,13 +46,13 @@ class _ProgressScreenState extends State<ProgressScreen>
             tabs: [
               Tab(
                 child: Text(
-                  "Completed",
+                  "In Progress",
                   style: TextStyle(fontSize: 16),
                 ),
               ),
               Tab(
                 child: Text(
-                  "In Progress",
+                  "Completed",
                   style: TextStyle(fontSize: 16),
                 ),
               ),
