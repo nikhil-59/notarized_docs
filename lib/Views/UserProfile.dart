@@ -46,11 +46,17 @@ class _UserProfileState extends State<UserProfile>
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(50),
-                              child: CachedNetworkImage(
-                                imageUrl: userInfo['notary']['userImageURL'],
-                                height: 80,
-                                width: 80,
-                              ),
+                              child: userInfo['notary']['userImageURL'] != null
+                                  ? CachedNetworkImage(
+                                      imageUrl: userInfo['notary']
+                                          ['userImageURL'],
+                                      height: 80,
+                                      width: 80,
+                                    )
+                                  : Container(
+                                      height: 80,
+                                      width: 80,
+                                    ),
                             ),
                             SizedBox(
                               height: 10,
@@ -60,12 +66,12 @@ class _UserProfileState extends State<UserProfile>
                                   " " +
                                   userInfo['notary']["lastName"],
                               style: TextStyle(
-                                  fontSize: 30, fontWeight: FontWeight.bold),
+                                  fontSize: 25, fontWeight: FontWeight.bold),
                             ),
                             Text(
                               "A Short Description of ${userInfo['notary']["firstName"]}",
                               style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 17,
                                   color: Colors.black.withOpacity(0.8)),
                             ),
                           ],
@@ -83,6 +89,8 @@ class _UserProfileState extends State<UserProfile>
                             ),
                             TextFormField(
                               enabled: false,
+                              decoration: InputDecoration(
+                                  disabledBorder: InputBorder.none),
                               style: TextStyle(
                                   fontSize: 17, fontWeight: FontWeight.bold),
                               initialValue: userInfo['notary']['firstName'],
@@ -96,6 +104,8 @@ class _UserProfileState extends State<UserProfile>
                             ),
                             TextFormField(
                               enabled: false,
+                              decoration: InputDecoration(
+                                  disabledBorder: InputBorder.none),
                               style: TextStyle(
                                   fontSize: 17, fontWeight: FontWeight.bold),
                               initialValue: userInfo['notary']['lastName'],
@@ -109,6 +119,8 @@ class _UserProfileState extends State<UserProfile>
                             ),
                             TextFormField(
                               enabled: false,
+                              decoration: InputDecoration(
+                                  disabledBorder: InputBorder.none),
                               style: TextStyle(
                                   fontSize: 17, fontWeight: FontWeight.bold),
                               initialValue: userInfo['notary']
@@ -125,6 +137,8 @@ class _UserProfileState extends State<UserProfile>
                             ),
                             TextFormField(
                               enabled: false,
+                              decoration: InputDecoration(
+                                  disabledBorder: InputBorder.none),
                               style: TextStyle(
                                   fontSize: 17, fontWeight: FontWeight.bold),
                               initialValue: userInfo['notary']['email'],
@@ -175,9 +189,23 @@ class _UserProfileState extends State<UserProfile>
               ),
             )
           : Center(
-              child: Text(
-                "Please Wait ...",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 17,
+                    width: 17,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    "Please Wait ...",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ),
     );

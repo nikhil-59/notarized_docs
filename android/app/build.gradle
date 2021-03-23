@@ -38,6 +38,7 @@ android {
         applicationId "com.example.myknott"
         minSdkVersion 18
         targetSdkVersion 30
+        multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -59,6 +60,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation "com.google.firebase:firebase-auth"
     implementation "com.google.firebase:firebase-core"
+    implementation 'com.google.firebase:firebase-messaging'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 

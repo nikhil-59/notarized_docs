@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:myknott/Views/ChatScreen.dart';
+import 'package:myknott/Views/DocumentScreen.dart';
 import 'package:myknott/Views/MapScreen.dart';
 import 'package:myknott/Views/Services/Services.dart';
 import 'package:timelines/timelines.dart';
@@ -29,7 +31,7 @@ class _SecondScreenState extends State<SecondScreen>
   bool documentsDownloaded = false;
   bool signerContacted = false;
 
-  final Map map = Map();
+  final Map orders = Map();
   final storage = FlutterSecureStorage();
   TabController tabController;
   List list = [];
@@ -39,6 +41,9 @@ class _SecondScreenState extends State<SecondScreen>
   void initState() {
     tabController = TabController(length: 4, vsync: this);
     getData();
+    print("notary Id ${widget.notaryId}");
+    print("order Id ${widget.orderId}");
+
     super.initState();
   }
 
@@ -50,8 +55,8 @@ class _SecondScreenState extends State<SecondScreen>
     var response = await dio.post(
         "https://my-notary-app.herokuapp.com/notary/getOrderDetails/",
         data: body);
-    map.clear();
-    map.addAll(response.data);
+    orders.clear();
+    orders.addAll(response.data);
     setState(() {});
   }
 
@@ -63,7 +68,8 @@ class _SecondScreenState extends State<SecondScreen>
       appBar: AppBar(
         title: Text(
           "Order Details",
-          style: TextStyle(color: Colors.black, fontSize: 18),
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.w700, fontSize: 19),
         ),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData().copyWith(color: Colors.black),
@@ -82,25 +88,25 @@ class _SecondScreenState extends State<SecondScreen>
               Tab(
                 child: Text(
                   "Details",
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                 ),
               ),
               Tab(
                 child: Text(
                   "Chat",
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                 ),
               ),
               Tab(
                 child: Text(
                   "Documents",
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                 ),
               ),
               Tab(
                 child: Text(
                   "Signing Location",
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                 ),
               ),
             ],
@@ -111,8 +117,28 @@ class _SecondScreenState extends State<SecondScreen>
         controller: tabController,
         physics: NeverScrollableScrollPhysics(),
         children: [
-          (map.isEmpty)
-              ? Container()
+          (orders.isEmpty)
+              ? Center(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 17,
+                        width: 17,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        "Please Wait ...",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                )
               : SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
                   child: Padding(
@@ -268,7 +294,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                                   false;
                                                               setState(() {});
                                                             },
-                                                            enabled: map['order']
+                                                            enabled: orders['order']
                                                                         [
                                                                         'confirmedAt'] ==
                                                                     null
@@ -333,7 +359,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                                   false;
                                                               setState(() {});
                                                             },
-                                                            enabled: map['order']
+                                                            enabled: orders['order']
                                                                         [
                                                                         'docsDownloadedAt'] ==
                                                                     null
@@ -399,7 +425,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                                   false;
                                                               setState(() {});
                                                             },
-                                                            enabled: map['order']
+                                                            enabled: orders['order']
                                                                         [
                                                                         'notaryArrivedAt'] ==
                                                                     null
@@ -494,7 +520,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                                       : Colors
                                                                           .transparent),
                                                             ),
-                                                            enabled: map['order']
+                                                            enabled: orders['order']
                                                                         [
                                                                         'signingCompletedAt'] ==
                                                                     null
@@ -561,7 +587,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                                       : Colors
                                                                           .transparent),
                                                             ),
-                                                            enabled: map['order']
+                                                            enabled: orders['order']
                                                                         [
                                                                         'deliveredAt'] ==
                                                                     null
@@ -779,7 +805,7 @@ class _SecondScreenState extends State<SecondScreen>
                                               SizedBox(
                                                 width: 30,
                                               ),
-                                              map['order']['confirmedAt'] !=
+                                              orders['order']['confirmedAt'] !=
                                                       null
                                                   ? DotIndicator(
                                                       color:
@@ -796,7 +822,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                 width: 100.0,
                                               ),
 
-                                              map['order'][
+                                              orders['order'][
                                                           'docsDownloadedAt'] !=
                                                       null
                                                   ? DotIndicator(
@@ -815,7 +841,8 @@ class _SecondScreenState extends State<SecondScreen>
                                                 width: 100.0,
                                               ),
 
-                                              map['order']['notaryArrivedAt'] ==
+                                              orders['order']
+                                                          ['notaryArrivedAt'] ==
                                                       null
                                                   ? OutlinedDotIndicator(
                                                       color:
@@ -833,7 +860,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                 width: 100.0,
                                               ),
 
-                                              map['order'][
+                                              orders['order'][
                                                           'signingCompletedAt'] ==
                                                       null
                                                   ? OutlinedDotIndicator(
@@ -851,7 +878,7 @@ class _SecondScreenState extends State<SecondScreen>
                                               ),
 
                                               //
-                                              map['order']['deliveredAt'] ==
+                                              orders['order']['deliveredAt'] ==
                                                       null
                                                   ? OutlinedDotIndicator(
                                                       color:
@@ -949,7 +976,7 @@ class _SecondScreenState extends State<SecondScreen>
                                     ),
                                     Text(
                                       "#" +
-                                          map["order"]["appointment"]
+                                          orders["order"]["appointment"]
                                                   ["escrowNumber"]
                                               .toString(),
                                       style: TextStyle(
@@ -972,7 +999,7 @@ class _SecondScreenState extends State<SecondScreen>
                                       height: 2,
                                     ),
                                     Text(
-                                      "\$ ${map["order"]["amount"]}",
+                                      "\$ ${orders["order"]["amount"]}",
                                       style: TextStyle(
                                           fontSize: 17,
                                           fontWeight: FontWeight.w500),
@@ -991,7 +1018,7 @@ class _SecondScreenState extends State<SecondScreen>
                             child: Card(
                               elevation: 0,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5),
+                                borderRadius: BorderRadius.circular(7),
                               ),
                               child: Row(
                                 mainAxisAlignment:
@@ -1040,7 +1067,7 @@ class _SecondScreenState extends State<SecondScreen>
                                           ),
                                           SizedBox(
                                             child: Text(
-                                              map['order']['appointment']
+                                              orders['order']['appointment']
                                                       ['propertyAddress'] +
                                                   "    ",
                                               textAlign: TextAlign.start,
@@ -1057,8 +1084,8 @@ class _SecondScreenState extends State<SecondScreen>
                                             "Time: " +
                                                 DateFormat("h:mm a").format(
                                                   DateTime.parse(
-                                                    map["order"]["appointment"]
-                                                        ["time"],
+                                                    orders["order"]
+                                                        ["appointment"]["time"],
                                                   ),
                                                 ),
                                             style: TextStyle(
@@ -1083,7 +1110,7 @@ class _SecondScreenState extends State<SecondScreen>
                           Card(
                             elevation: 0,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(7),
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -1125,7 +1152,7 @@ class _SecondScreenState extends State<SecondScreen>
                                         width: 15,
                                       ),
                                       Text(
-                                        ": ${map['order']['orderClosingType'].toString().replaceRange(0, 1, map['order']['orderClosingType'][0].toString().toUpperCase())}",
+                                        ": ${orders['order']['orderClosingType'].toString().replaceRange(0, 1, orders['order']['orderClosingType'][0].toString().toUpperCase())}",
                                         style: TextStyle(
                                           color: Colors.black,
                                           // fontWeight: FontWeight.w400,
@@ -1150,7 +1177,7 @@ class _SecondScreenState extends State<SecondScreen>
                                         width: 15,
                                       ),
                                       Text(
-                                        ": ${map['order']['appointment']['escrowNumber']}",
+                                        ": ${orders['order']['appointment']['escrowNumber']}",
                                         style: TextStyle(
                                           color: Colors.black,
                                           // fontWeight: FontWeight.w400,
@@ -1175,7 +1202,7 @@ class _SecondScreenState extends State<SecondScreen>
                                         width: 15,
                                       ),
                                       Text(
-                                        ": ${map['order']['orderInvoiceType'].toString().replaceRange(0, 1, map['order']['orderInvoiceType'][0].toString().toUpperCase())} (\$ ${map['order']['amount']})",
+                                        ": ${orders['order']['orderInvoiceType'].toString().replaceRange(0, 1, orders['order']['orderInvoiceType'][0].toString().toUpperCase())} (\$ ${orders['order']['amount']})",
                                         style: TextStyle(
                                           color: Colors.black,
                                           // fontWeight: FontWeight.w400,
@@ -1188,7 +1215,7 @@ class _SecondScreenState extends State<SecondScreen>
                                     height: 20,
                                   ),
                                   Text(
-                                    map['order']['appointment']
+                                    orders['order']['appointment']
                                         ['propertyAddress'],
                                     style: TextStyle(
                                         color: Colors.black.withOpacity(0.8),
@@ -1223,13 +1250,21 @@ class _SecondScreenState extends State<SecondScreen>
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(50),
-                                          child: CachedNetworkImage(
-                                            imageUrl: map['order']['customer']
-                                                ['userImageURL'],
-                                            width: 50,
-                                            height: 50,
-                                            fit: BoxFit.fill,
-                                          ),
+                                          child: orders['order']['customer']
+                                                      ['userImageURL'] !=
+                                                  null
+                                              ? CachedNetworkImage(
+                                                  imageUrl: orders['order']
+                                                          ['customer']
+                                                      ['userImageURL'],
+                                                  width: 50,
+                                                  height: 50,
+                                                  fit: BoxFit.fill,
+                                                )
+                                              : Container(
+                                                  width: 50,
+                                                  height: 50,
+                                                ),
                                         ),
                                       ),
                                       SizedBox(
@@ -1260,7 +1295,7 @@ class _SecondScreenState extends State<SecondScreen>
                                         width: 15,
                                       ),
                                       Text(
-                                        ": ${map['order']['appointment']['signerFullName']}",
+                                        ": ${orders['order']['appointment']['signerFullName']}",
                                         style: TextStyle(
                                           color: Colors.black,
                                           // fontWeight: FontWeight.w400,
@@ -1285,7 +1320,7 @@ class _SecondScreenState extends State<SecondScreen>
                                         width: 15,
                                       ),
                                       Text(
-                                        ": ${map['order']['appointment']['signerPhoneNumber']}",
+                                        ": ${orders['order']['appointment']['signerPhoneNumber']}",
                                         style: TextStyle(
                                           color: Colors.black,
                                           // fontWeight: FontWeight.w400,
@@ -1312,7 +1347,7 @@ class _SecondScreenState extends State<SecondScreen>
                                     height: 10,
                                   ),
                                   Text(
-                                    "${map['order']['appointment']['signerAddress']}",
+                                    "${orders['order']['appointment']['signerAddress']}",
                                     style: TextStyle(
                                         color: Colors.black.withOpacity(0.8),
                                         fontSize: 17),
@@ -1369,7 +1404,7 @@ class _SecondScreenState extends State<SecondScreen>
                                         width: 15,
                                       ),
                                       Text(
-                                        ": ${map['order']['customer']['companyName']}",
+                                        ": ${orders['order']['customer']['companyName']}",
                                         style: TextStyle(
                                           color: Colors.black,
                                           // fontWeight: FontWeight.w400,
@@ -1394,7 +1429,7 @@ class _SecondScreenState extends State<SecondScreen>
                                         width: 15,
                                       ),
                                       Text(
-                                        ": ${map['order']['customer']['firstName'] + " " + map['order']['customer']['lastName'] ?? ""}",
+                                        ": ${orders['order']['customer']['firstName'] + " " + orders['order']['customer']['lastName'] ?? ""}",
                                         style: TextStyle(
                                           color: Colors.black,
                                           // fontWeight: FontWeight.w400,
@@ -1419,7 +1454,7 @@ class _SecondScreenState extends State<SecondScreen>
                                         width: 15,
                                       ),
                                       Text(
-                                        ": ${map['order']['customer']['phoneNumber']}",
+                                        ": ${orders['order']['customer']['phoneNumber']}",
                                         style: TextStyle(
                                           color: Colors.black,
                                           // fontWeight: FontWeight.w400,
@@ -1444,7 +1479,7 @@ class _SecondScreenState extends State<SecondScreen>
                                         width: 15,
                                       ),
                                       Text(
-                                        ": ${map['order']['customer']['email']}",
+                                        ": ${orders['order']['customer']['email']}",
                                         style: TextStyle(
                                           color: Colors.black,
                                           // fontWeight: FontWeight.w400,
@@ -1462,10 +1497,15 @@ class _SecondScreenState extends State<SecondScreen>
                     ),
                   ),
                 ),
-          Container(),
-          Container(),
+          ChatScreen(
+            notaryId: widget.notaryId,
+          ),
+          orders.isNotEmpty
+              ? DocumentScreen(
+                  documents: orders['order']['uploadedDocuments'] ?? [])
+              : Container(),
           MapScreen(
-            orderInfo: map,
+            orderInfo: orders,
           ),
         ],
       ),

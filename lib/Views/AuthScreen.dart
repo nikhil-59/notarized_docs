@@ -101,7 +101,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           color: Colors.grey.shade200,
                           onPressed: () {},
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(10.0),
                             child: Icon(
                               FontAwesomeIcons.google,
                               color: Colors.grey,
@@ -271,33 +271,97 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                   ),
                   onPressed: () async {
-                    setState(() {
-                      isloading = true;
-                    });
-                    Map result = await authService.signWithEmail(
-                        emailController.text, passwordController.text);
-                    if (result["status"] == 1 && result["isloggedSuccessful"]) {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => HomePage(),
+                    if (emailController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(7)),
+                          content: Text(
+                            "Enter Email Id",
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
                         ),
                       );
-                    } else if ((result["status"] == 0 ||
-                            result["status"] == 2) &&
-                        result["isloggedSuccessful"]) {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => WaitingScreen(),
+                      return;
+                    } else if (passwordController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(7)),
+                          content: Text(
+                            "Enter Password",
+                            style: TextStyle(fontSize: 16),
+                          ),
                         ),
                       );
+                      return;
+                    } else if (!RegExp(
+                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                        .hasMatch(emailController.text.trim())) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(7)),
+                          content: Text(
+                            "Enter Valid Email Address",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      );
+                      return;
                     } else {
                       setState(() {
-                        isloading = false;
+                        isloading = true;
                       });
-                      print("something went wrong");
+                      Map result = await authService.signWithEmail(
+                          emailController.text,
+                          passwordController.text,
+                          context);
+                      if (result["status"] == 1 &&
+                          result["isloggedSuccessful"]) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) => HomePage(),
+                          ),
+                        );
+                      } else if ((result["status"] == 0 ||
+                              result["status"] == 2) &&
+                          result["isloggedSuccessful"]) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) => WaitingScreen(),
+                          ),
+                        );
+                      } else {
+                        setState(() {
+                          isloading = false;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(7)),
+                            content: Text(
+                              "Something went wrong...",
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        );
+                        print("something went wrong");
+                        return;
+                      }
+                      emailController.clear();
+                      passwordController.clear();
                     }
-                    emailController.clear();
-                    passwordController.clear();
                   },
                 ),
                 SizedBox(

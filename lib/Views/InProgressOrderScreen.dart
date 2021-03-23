@@ -59,19 +59,27 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                       ),
                       leading: ClipRRect(
                         borderRadius: BorderRadius.circular(50),
-                        child: CachedNetworkImage(
-                          imageUrl: orders['orders'][index]["customer"]
-                              ['userImageURL'],
-                          height: 40,
-                          width: 40,
-                        ),
+                        child: orders['orders'][index]["customer"]
+                                    ['userImageURL'] !=
+                                null
+                            ? CachedNetworkImage(
+                                imageUrl: orders['orders'][index]["customer"]
+                                    ['userImageURL'],
+                                height: 40,
+                                width: 40,
+                              )
+                            : Container(
+                                height: 40,
+                                width: 40,
+                              ),
                       ),
                       // orders['orders'][index]["customer"]['userImageURL']),
                       title: Text(
                         orders['orders'][index]["customer"]['firstName'] +
                             " " +
                             orders['orders'][index]["customer"]['lastName'],
-                        style: TextStyle(fontSize: 16.5),
+                        style: TextStyle(
+                            fontSize: 16.5, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
                         "Order Placed at ${DateFormat('MMM, d, y hh:mm a').format(DateTime.parse(orders['orders'][index]['createdAt']))} ",

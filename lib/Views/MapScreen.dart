@@ -172,14 +172,22 @@ class _MapScreenState extends State<MapScreen>
                                           child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(50),
-                                            child: CachedNetworkImage(
-                                              imageUrl: widget
-                                                      .orderInfo['order']
-                                                  ['customer']['userImageURL'],
-                                              width: 50,
-                                              height: 50,
-                                              fit: BoxFit.fill,
-                                            ),
+                                            child: widget.orderInfo['order']
+                                                            ['customer']
+                                                        ['userImageURL'] !=
+                                                    null
+                                                ? CachedNetworkImage(
+                                                    imageUrl: widget.orderInfo[
+                                                            'order']['customer']
+                                                        ['userImageURL'],
+                                                    width: 50,
+                                                    height: 50,
+                                                    fit: BoxFit.fill,
+                                                  )
+                                                : Container(
+                                                    width: 50,
+                                                    height: 50,
+                                                  ),
                                           ),
                                         ),
                                         SizedBox(

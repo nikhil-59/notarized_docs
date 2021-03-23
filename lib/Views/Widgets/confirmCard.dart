@@ -49,11 +49,11 @@ class _ConfirmCardsState extends State<ConfirmCards> {
               ),
               title: Text(
                 widget.name,
-                style: TextStyle(fontSize: 15.5, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 15.5, fontWeight: FontWeight.bold),
               ),
               trailing: Text(
                 "\$ ${widget.price}",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               // visualDensity: VisualDensity.compact,
               // minVerticalPadding: 10,
@@ -93,7 +93,9 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                 child: Text(
                   "Decline",
                   style: TextStyle(
-                      color: Colors.black.withOpacity(0.7), fontSize: 15.5),
+                      color: Colors.black.withOpacity(0.5),
+                      fontSize: 15.5,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
               MaterialButton(
@@ -108,7 +110,10 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                 color: Colors.blue.shade900,
                 child: Text(
                   "Accept",
-                  style: TextStyle(color: Colors.white, fontSize: 15.5),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15.5,
+                      fontWeight: FontWeight.bold),
                 ),
               )
             ],

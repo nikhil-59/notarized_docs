@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:myknott/Views/AuthScreen.dart';
@@ -9,17 +10,51 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   final storage = FlutterSecureStorage();
   final Dio dio = Dio();
-  Future<Map> signWithEmail(String email, String password) async {
+
+  Future<Map> signWithEmail(
+      String email, String password, BuildContext context) async {
     try {
       UserCredential userCredential =
           await firebaseAuth.signInWithEmailAndPassword(
-              email: email.trim(), password: password.trim());
+        email: email.trim(),
+        password: password.trim(),
+      );
       return await getUserInfo(
           userCredential.user.uid, userCredential.user.email);
     } catch (e) {
       print(e);
+      if (e.toString().contains("password")) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.black,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+            content: Text(
+              "Invalid Password",
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        );
+      }
+      if (e.toString().contains("identifier")) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.black,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+            content: Text(
+              "The user doesn't exist..",
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        );
+      }
+      // print(e);
       return {"status": 10, "isloggedSuccessful": false};
     }
   }
@@ -29,9 +64,14 @@ class AuthService {
     String jwt = await storage.read(key: "jwt");
     dio.options.headers['auth_token'] = jwt;
     try {
-      var response = await dio.post(
-          'https://my-notary-app.herokuapp.com/notary/login/',
-          data: {"uid": uid, "email": email});
+      var response = await dio
+          .post('https://my-notary-app.herokuapp.com/notary/login/', data: {
+        "uid": uid,
+        "email": email,
+        "loginThroughMobile": "hgckgvVKUGDVUVlhbvishfbvkihfbkusf",
+        "pushToken": await firebaseMessaging.getToken(),
+        "pushTokenDeviceType": "android"
+      });
       if (response.data['status'] == 1) {
         String userInfo = jsonEncode(response.data);
         await prefs.setString("userInfo", userInfo);
@@ -70,5 +110,24 @@ class AuthService {
         }
       },
     );
+  }
+
+  updateToken(token) async {
+    print("updated token $token");
+    String jwt = await storage.read(key: "jwt");
+    dio.options.headers['auth_token'] = jwt;
+    try {
+      var response = await dio
+          .post('https://my-notary-app.herokuapp.com/notary/login/', data: {
+        "uid": FirebaseAuth.instance.currentUser.uid,
+        "email": FirebaseAuth.instance.currentUser.email,
+        "loginThroughMobile": "hgckgvVKUGDVUVlhbvishfbvkihfbkusf",
+        "pushToken": token,
+        "pushTokenDeviceType": "android"
+      });
+      print(response);
+    } catch (e) {
+      print(e);
+    }
   }
 }

@@ -50,12 +50,19 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                       tileColor: Colors.white,
                       leading: ClipRRect(
                         borderRadius: BorderRadius.circular(50),
-                        child: CachedNetworkImage(
-                          imageUrl: orders['orders'][index]["customer"]
-                              ['userImageURL'],
-                          height: 40,
-                          width: 40,
-                        ),
+                        child: orders['orders'][index]["customer"]
+                                    ['userImageURL'] !=
+                                null
+                            ? CachedNetworkImage(
+                                imageUrl: orders['orders'][index]["customer"]
+                                    ['userImageURL'],
+                                height: 40,
+                                width: 40,
+                              )
+                            : Container(
+                                height: 40,
+                                width: 40,
+                              ),
                       ),
                       // visualDensity: VisualDensity.comfortable,
                       onTap: () => Navigator.of(context).push(
@@ -72,7 +79,8 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                         orders['orders'][index]["customer"]['firstName'] +
                             " " +
                             orders['orders'][index]["customer"]['lastName'],
-                        style: TextStyle(fontSize: 16.5),
+                        style: TextStyle(
+                            fontSize: 16.5, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

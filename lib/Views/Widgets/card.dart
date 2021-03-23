@@ -15,7 +15,7 @@ class Cards extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
-      elevation: 1,
+      elevation: 0.4,
       child: Container(
         width: MediaQuery.of(context).size.width - 100,
         child: Column(

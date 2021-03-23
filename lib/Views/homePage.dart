@@ -1,16 +1,19 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:myknott/Views/CalenderScreen.dart';
 import 'package:myknott/Views/ProgessScreen.dart';
+import 'package:myknott/Views/Services/auth.dart';
 import 'package:myknott/Views/UserProfile.dart';
 import 'package:myknott/Views/Widgets/card.dart';
 import 'package:myknott/Views/Widgets/confirmCard.dart';
 import 'package:myknott/Views/secondScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:myknott/Views/Amount.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -26,9 +29,33 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   List pendingList = [];
   Map userInfo = {};
   bool isloading = false;
+
+  handleNotificationClick(RemoteMessage message) async {
+    if (message.data['type'] == 0 || message.data['type'] == "0") {
+      String orderId = message.data['orderId'];
+      String notaryId = message.data['notaryId'];
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => SecondScreen(
+            isPending: false,
+            notaryId: notaryId,
+            orderId: orderId,
+          ),
+        ),
+      );
+    } else {
+      print("type 1 action is triggered");
+    }
+  }
+
   @override
   initState() {
-    tabController = TabController(length: 4, vsync: this);
+    FirebaseMessaging.onMessageOpenedApp.any((element) {
+      print("okky");
+      handleNotificationClick(element);
+      return false;
+    });
+    tabController = TabController(length: 5, vsync: this);
     getUserInfo();
     getAppointment();
     getPending();
@@ -36,6 +63,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   getUserInfo() async {
+    FirebaseMessaging.instance.onTokenRefresh
+        .any((element) => AuthService().updateToken(element));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String encodedUserinfo = prefs.getString("userInfo");
     userInfo = await jsonDecode(encodedUserinfo);
@@ -96,7 +125,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    print(DateFormat("yyyy-MM-dd").format(DateTime.now()));
+    String greeting() {
+      var hour = DateTime.now().hour;
+      if (hour < 12) {
+        return 'Morning';
+      }
+      if (hour < 17) {
+        return 'Afternoon';
+      }
+      return 'Evening';
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: Material(
@@ -115,6 +154,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
             Tab(
               icon: Icon(Icons.bookmark_sharp, size: 28),
+            ),
+            Tab(
+              icon: Icon(Icons.monetization_on, size: 28),
             ),
             Tab(
               icon: Icon(
@@ -147,7 +189,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Container(
-                          height: MediaQuery.of(context).size.height,
+                          height: MediaQuery.of(context).size.height - 70,
                           width: MediaQuery.of(context).size.width,
                           child: ListView(
                             shrinkWrap: true,
@@ -157,8 +199,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             children: [
                               SizedBox(height: 10),
                               Text(
-                                "Good Morning.",
-                                style: TextStyle(fontSize: 16.5),
+                                "Good " + greeting(),
+                                style: TextStyle(fontSize: 17),
                               ),
                               SizedBox(
                                 height: 12,
@@ -167,7 +209,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 userInfo['notary']['firstName'] +
                                     " " +
                                     userInfo['notary']['lastName'],
-                                style: TextStyle(fontSize: 16.5),
+                                style: TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.w700),
                               ),
                               SizedBox(
                                 height: 10,
@@ -241,8 +284,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   ? Text(
                                       "Pending Requests",
                                       style: TextStyle(
-                                          fontSize: 16.5,
-                                          fontWeight: FontWeight.w500),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
                                     )
                                   : Container(),
                               SizedBox(
@@ -294,16 +337,39 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
                       ),
                     )
+                  // : Center(
+                  //     child: SpinKitWave(
+                  //       color: Colors.grey,
+                  //       size: 40,
+                  //     ),
+                  //   )
                   : Center(
-                      child: Text(
-                        "Please Wait ...",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: 17,
+                            width: 17,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            "Please Wait ...",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
                     ),
             ),
           ),
           ProgressScreen(
+            notaryId: userInfo.isNotEmpty ? userInfo['notary']['_id'] : "",
+          ),
+          AmountScreen(
             notaryId: userInfo.isNotEmpty ? userInfo['notary']['_id'] : "",
           ),
           CalenderScreen(
