@@ -82,7 +82,7 @@ class _ConfirmCardsState extends State<ConfirmCards> {
             children: [
               MaterialButton(
                 onPressed: () async {
-                  NotaryServices()
+                  await NotaryServices()
                       .declineNotary(widget.notaryId, widget.orderId);
                   await widget.refresh();
                 },
@@ -100,7 +100,7 @@ class _ConfirmCardsState extends State<ConfirmCards> {
               ),
               MaterialButton(
                 onPressed: () async {
-                  NotaryServices()
+                  await NotaryServices()
                       .acceptNotary(widget.notaryId, widget.orderId);
                   await widget.refresh();
                 },

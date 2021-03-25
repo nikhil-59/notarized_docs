@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:myknott/Views/Services/auth.dart';
 import 'package:myknott/Views/secondScreen.dart';
@@ -12,23 +13,6 @@ import 'package:myknott/Views/secondScreen.dart';
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  FirebaseMessaging.onMessageOpenedApp.any((element) {
-    print("okky");
-    if (element.data['type'] == 0 || element.data['type'] == "0") {
-      String orderId = message.data['orderId'];
-      String notaryId = message.data['notaryId'];
-      navigatorKey.currentState.push(
-        MaterialPageRoute(
-          builder: (context) => SecondScreen(
-            isPending: false,
-            notaryId: notaryId,
-            orderId: orderId,
-          ),
-        ),
-      );
-    }
-    return false;
-  });
   // AwesomeNotifications().initialize(null, [
   //   NotificationChannel(
   //       channelKey: 'notaryMessage',
@@ -99,9 +83,22 @@ class MyApp extends StatelessWidget {
       title: 'Notary App',
       theme: ThemeData(
           accentColor: Colors.black,
-          primarySwatch: Colors.blue,
+          primarySwatch: MaterialColor(0xFF1565C0, {
+            0: Color(0xFF1565C0),
+            50: Color(0xFF1565C0),
+            100: Color(0xFF1565C0),
+            200: Color(0xFF1565C0),
+            300: Color(0xFF1565C0),
+            400: Color(0xFF1565C0),
+            500: Color(0xFF1565C0),
+            600: Color(0xFF1565C0),
+            700: Color(0xFF1565C0),
+            800: Color(0xFF1565C0),
+            900: Color(0xFF1565C0),
+          }),
           fontFamily: "Whitney"),
       home: AuthService().handleAuth(),
+      builder: EasyLoading.init(),
       // home: WaitingScreen(),
     );
   }

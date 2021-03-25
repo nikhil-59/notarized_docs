@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="default_notification_channel_id" translatable="false">Action notifications</string>
+    <string name="app_name">Notary App</string>
+    <string name="facebook_app_id">167835581831852</string>
+    <string name="fb_login_protocol_scheme">fb167835581831852</string>
 </resources>

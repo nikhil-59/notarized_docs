@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:myknott/Views/Services/auth.dart';
 import 'package:myknott/Views/WaitingScreen.dart';
@@ -24,6 +25,13 @@ class _AuthScreenState extends State<AuthScreen> {
           statusBarColor: Colors.white,
           statusBarIconBrightness: Brightness.dark),
     );
+    EasyLoading.instance
+      ..indicatorColor = Colors.white
+      ..fontSize = 18
+      ..dismissOnTap = false
+      ..indicatorType = EasyLoadingIndicatorType.chasingDots
+      ..backgroundColor = Colors.black;
+
     super.initState();
   }
 
@@ -85,7 +93,76 @@ class _AuthScreenState extends State<AuthScreen> {
                           borderRadius: BorderRadius.circular(7),
                         ),
                         color: Colors.grey.shade200,
-                        onPressed: () {},
+                        onPressed: () async {
+                          // EasyLoading.instance.
+                          try {
+                            EasyLoading.show(
+                                status: 'Please wait...', dismissOnTap: false);
+                            Map result =
+                                await authService.signInWithFacebook(context);
+                            print(result);
+                            if (result["status"] == 1 &&
+                                result["isloggedSuccessful"] &&
+                                result["isregister"]) {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) => HomePage(),
+                                ),
+                              );
+                            } else if (result["status"] == 1 &&
+                                result["isloggedSuccessful"] &&
+                                result["isregister"] == false) {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      WaitingScreen(isRegister: false),
+                                ),
+                              );
+                            } else if ((result["status"] == 0 ||
+                                    result["status"] == 2) &&
+                                result["isloggedSuccessful"]) {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) => WaitingScreen(
+                                    isRegister: true,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              EasyLoading.dismiss();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(7)),
+                                  content: Text(
+                                    "Something went wrong...",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            EasyLoading.dismiss();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                backgroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(7)),
+                                content: Text(
+                                  "Something went wrong...",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        },
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Icon(
@@ -99,7 +176,77 @@ class _AuthScreenState extends State<AuthScreen> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(7)),
                           color: Colors.grey.shade200,
-                          onPressed: () {},
+                          onPressed: () async {
+                            // EasyLoading.instance.
+                            try {
+                              EasyLoading.show(
+                                  status: 'Please wait...',
+                                  dismissOnTap: false);
+                              Map result =
+                                  await authService.signInWithGmail(context);
+                              print(result);
+                              if (result["status"] == 1 &&
+                                  result["isloggedSuccessful"] &&
+                                  result["isregister"]) {
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (_) => HomePage(),
+                                  ),
+                                );
+                              } else if (result["status"] == 1 &&
+                                  result["isloggedSuccessful"] &&
+                                  result["isregister"] == false) {
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        WaitingScreen(isRegister: false),
+                                  ),
+                                );
+                              } else if ((result["status"] == 0 ||
+                                      result["status"] == 2) &&
+                                  result["isloggedSuccessful"]) {
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (_) => WaitingScreen(
+                                      isRegister: true,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                EasyLoading.dismiss();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    behavior: SnackBarBehavior.floating,
+                                    backgroundColor: Colors.black,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(7)),
+                                    content: Text(
+                                      "Something went wrong...",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              EasyLoading.dismiss();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(7)),
+                                  content: Text(
+                                    "Something went wrong...",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Icon(
@@ -335,7 +482,9 @@ class _AuthScreenState extends State<AuthScreen> {
                           result["isloggedSuccessful"]) {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (_) => WaitingScreen(),
+                            builder: (_) => WaitingScreen(
+                              isRegister: true,
+                            ),
                           ),
                         );
                       } else {

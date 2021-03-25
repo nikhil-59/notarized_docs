@@ -14,8 +14,13 @@ class SecondScreen extends StatefulWidget {
   final String orderId;
   final String notaryId;
   final bool isPending;
-
-  const SecondScreen({Key key, this.orderId, this.notaryId, this.isPending})
+  final bool messageTrigger;
+  const SecondScreen(
+      {Key key,
+      this.orderId,
+      this.notaryId,
+      this.isPending,
+      this.messageTrigger = false})
       : super(key: key);
   @override
   _SecondScreenState createState() => _SecondScreenState();
@@ -27,6 +32,7 @@ class _SecondScreenState extends State<SecondScreen>
   bool isloading = false;
   bool arrivedtoAppointment = false;
   bool sigingComplete = false;
+  bool isPending;
   bool documentDelivered = false;
   bool documentsDownloaded = false;
   bool signerContacted = false;
@@ -39,11 +45,11 @@ class _SecondScreenState extends State<SecondScreen>
 
   @override
   void initState() {
-    tabController = TabController(length: 4, vsync: this);
+    tabController = TabController(
+        length: 4, vsync: this, initialIndex: widget.messageTrigger ? 1 : 0);
     getData();
     print("notary Id ${widget.notaryId}");
     print("order Id ${widget.orderId}");
-
     super.initState();
   }
 
@@ -62,6 +68,7 @@ class _SecondScreenState extends State<SecondScreen>
 
   @override
   Widget build(BuildContext context) {
+    bool ispending = isPending ?? widget.isPending;
     print(widget.orderId);
     return Scaffold(
       // backgroundColor: Colors.white,
@@ -148,6 +155,59 @@ class _SecondScreenState extends State<SecondScreen>
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          SizedBox(
+                            height: 5,
+                          ),
+                          ispending
+                              ? Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    MaterialButton(
+                                      onPressed: () async {
+                                        await NotaryServices().declineNotary(
+                                            widget.notaryId, widget.orderId);
+                                        Navigator.of(context).pop();
+                                      },
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      color: Colors.yellow,
+                                      child: Text(
+                                        "Decline",
+                                        style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.5),
+                                            fontSize: 15.5,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    MaterialButton(
+                                      onPressed: () async {
+                                        await NotaryServices().acceptNotary(
+                                            widget.notaryId, widget.orderId);
+                                        setState(() {
+                                          isPending = false;
+                                        });
+                                      },
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      color: Colors.blue.shade900,
+                                      child: Text(
+                                        "Accept",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15.5,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                )
+                              : Container(),
+                          SizedBox(
+                            height: 5,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -166,7 +226,7 @@ class _SecondScreenState extends State<SecondScreen>
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                                 onPressed: () {
-                                  if (!widget.isPending) {
+                                  if (!ispending) {
                                     return showModalBottomSheet(
                                         backgroundColor: Colors.white,
                                         isScrollControlled: true,
@@ -1497,9 +1557,12 @@ class _SecondScreenState extends State<SecondScreen>
                     ),
                   ),
                 ),
-          ChatScreen(
-            notaryId: widget.notaryId,
-          ),
+          orders.isNotEmpty
+              ? ChatScreen(
+                  notaryId: widget.notaryId,
+                  chatRoom: orders['order']['chatroom'],
+                )
+              : Container(),
           orders.isNotEmpty
               ? DocumentScreen(
                   documents: orders['order']['uploadedDocuments'] ?? [])

@@ -2,15 +2,19 @@ import 'package:emoji_picker_flutter/category_icons.dart';
 import 'package:emoji_picker_flutter/config.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:bubble/bubble.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
+// import 'package:lazy_loading_list/lazy_loading_list.dart';
 import 'package:myknott/Views/Services/Services.dart';
 
 class ChatScreen extends StatefulWidget {
   final String notaryId;
-
-  const ChatScreen({Key key, this.notaryId}) : super(key: key);
+  final String chatRoom;
+  const ChatScreen({Key key, this.notaryId, @required this.chatRoom})
+      : super(key: key);
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
@@ -22,11 +26,21 @@ class _ChatScreenState extends State<ChatScreen>
   List messageList = [];
   bool isloading = true;
   bool openEmoji = false;
-  // bool hasData = true;
+  // int i = 0;
+  bool hasData = false;
+
   int pageNumber = 0;
-  getMessages() async {
-    var messages =
-        await notaryServices.getAllMessages(widget.notaryId, pageNumber);
+  getMessages(String chatroom) async {
+    var messages = await notaryServices.getAllMessages(
+        widget.notaryId, pageNumber, chatroom);
+    print(
+      "Page Count " + messages['pageNumber'].toString(),
+    );
+    if (messages['chatMessageCount'] == messageList.length) {
+      setState(() {
+        hasData = true;
+      });
+    }
     for (var message in messages['chatMessages']) {
       messageList.add(message);
     }
@@ -38,15 +52,81 @@ class _ChatScreenState extends State<ChatScreen>
       ),
     );
     print(messageList.length);
+    pageNumber = pageNumber + 1;
     setState(() {
       isloading = false;
-      // pageNumber++;
+      // pageNumber += 1;
     });
+  }
+
+  loadmoreMessage() async {
+    print(pageNumber);
+    var messages = await notaryServices.getAllMessages(
+        widget.notaryId, pageNumber, widget.chatRoom);
+    print("Page Count " + messages['pageNumber'].toString());
+    if (messages['chatMessageCount'] == messageList.length) {
+      setState(() {
+        hasData = true;
+      });
+    }
+    for (var message in messages['chatMessages']) {
+      messageList.add(message);
+    }
+    messageList.sort(
+      (a, b) => DateTime.parse(b['sentAt']).compareTo(
+        DateTime.parse(
+          a['sentAt'],
+        ),
+      ),
+    );
+    setState(() {
+      pageNumber = pageNumber + 1;
+    });
+
+    print(messageList.length);
+  }
+
+  saveMessageToMessageList(message) {
+    messageList.insert(0, {
+      "sentAt": "2021-03-24T14:38:00.074Z",
+      "seenByNotary": false,
+      "seenByCustomer": false,
+      "_id": "605b4ec86f1bf80015330011",
+      "message": message,
+      "sentBy": {
+        "_id": "60280100a063a42fb456c252",
+        "firstName": "Hemant",
+        "lastName": "Saini",
+        "phoneNumber": "6350312240",
+        "phoneCountryCode": "+1",
+        "email": "newuser@gmail.com",
+        "userImageURL":
+            "https://mynotarybucket1.s3.us-east-2.amazonaws.com/31.jpeg"
+      },
+      "sentByModel": "Notary",
+      "chatroom": "603768d8c54c430015c9bdbc",
+      "__v": 0
+    });
+    setState(() {});
+  }
+
+  handleNotificationClick(RemoteMessage message) async {
+    // For handling new message notification
+    if (message.data['type'] == 0 || message.data['type'] == "0") {
+      getMessages(message.data['chatroom']);
+    } else {
+      print("type 1 action is triggered");
+    }
   }
 
   @override
   void initState() {
-    getMessages();
+    FirebaseMessaging.onMessage.any((element) {
+      print("new message");
+      handleNotificationClick(element);
+      return false;
+    });
+    getMessages(widget.chatRoom);
     super.initState();
   }
 
@@ -59,6 +139,7 @@ class _ChatScreenState extends State<ChatScreen>
         children: [
           Container(
             // height: 50,
+            color: Color(0xFFF2F2F2),
             width: MediaQuery.of(context).size.width,
             child: Row(
               children: [
@@ -107,11 +188,15 @@ class _ChatScreenState extends State<ChatScreen>
                     onTap: () async {
                       if (messageController.text.isNotEmpty) {
                         final String message = messageController.text;
+                        saveMessageToMessageList(message);
                         messageController.clear();
                         await NotaryServices().sendMessage(
-                            message: message, notaryId: widget.notaryId);
-                        messageList.clear();
-                        await getMessages();
+                          message: message,
+                          notaryId: widget.notaryId,
+                          chatRoom: widget.chatRoom,
+                        );
+                        setState(() {});
+                        // await getMessages();
                       }
                     },
                     child: CircleAvatar(
@@ -163,19 +248,23 @@ class _ChatScreenState extends State<ChatScreen>
         ],
       ),
       body: !isloading
-          ? ListView.builder(
-              reverse: true,
-              itemCount: messageList.length,
-              physics: BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                return messageList[index]['sentBy']['_id'] == widget.notaryId
-                    ? Container(
-                        child: rightChild(messageList, index),
-                      )
-                    : Container(
-                        child: leftChild(messageList, index),
-                      );
-              },
+          ? LazyLoadScrollView(
+              isLoading: hasData,
+              onEndOfPage: loadmoreMessage,
+              child: ListView.builder(
+                reverse: true,
+                itemCount: messageList.length,
+                physics: BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return messageList[index]['sentBy']['_id'] == widget.notaryId
+                      ? Container(
+                          child: rightChild(messageList, index),
+                        )
+                      : Container(
+                          child: leftChild(messageList, index),
+                        );
+                },
+              ),
             )
           : Center(
               child: Row(
@@ -206,7 +295,7 @@ class _ChatScreenState extends State<ChatScreen>
 
 Widget leftChild(messageList, index) {
   return Padding(
-    padding: const EdgeInsets.only(left: 2.0, top: 8.0),
+    padding: const EdgeInsets.only(left: 2.0, top: 6.0, bottom: 2.0),
     child: Column(
       children: [
         Container(
@@ -258,7 +347,7 @@ Widget leftChild(messageList, index) {
 
 Widget rightChild(messageList, index) {
   return Padding(
-    padding: const EdgeInsets.only(right: 5.0, top: 10.0, bottom: 2),
+    padding: const EdgeInsets.only(right: 5.0, top: 6.0, bottom: 8),
     child: Column(
       mainAxisSize: MainAxisSize.max,
       // crossAxisAlignment: CrossAxisAlignment.end,

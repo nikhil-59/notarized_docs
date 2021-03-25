@@ -31,20 +31,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool isloading = false;
 
   handleNotificationClick(RemoteMessage message) async {
-    if (message.data['type'] == 0 || message.data['type'] == "0") {
+    // used to handle new order notification
+    if (message.data['type'] == 2 || message.data['type'] == "2") {
       String orderId = message.data['orderId'];
       String notaryId = message.data['notaryId'];
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => SecondScreen(
+            isPending: true,
+            notaryId: notaryId,
+            orderId: orderId,
+          ),
+        ),
+      );
+    } else if (message.data['type'] == 0 || message.data['type'] == "0") {
+      print("type 0 action is triggered");
+      String orderId = message.data['orderId'];
+      String notaryId = message.data['notaryId'];
+
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => SecondScreen(
             isPending: false,
             notaryId: notaryId,
             orderId: orderId,
+            messageTrigger: true,
           ),
         ),
       );
-    } else {
-      print("type 1 action is triggered");
     }
   }
 
@@ -78,8 +92,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     dio.options.headers['auth_token'] = jwt;
     var body = {
       "notaryId": userInfo['notary']['_id'],
-      "today12am":
-          "${DateFormat("yyyy-MM-dd").format(DateTime.now())} 00:00:00 GMT+0530",
+      "today12am": DateTime.now().year.toString() +
+          "-" +
+          DateTime.now().month.toString() +
+          "-" +
+          DateTime.now().day.toString() +
+          " 00:00:00 GMT+0530"
+
+      // "${DateFormat("yyyy-MM-dd").format(DateTime.now())} 00:00:00 GMT+0530",
       // "today12am": "2021-03-17 00:00:00 GMT+0530"
     };
     var response = await dio.post(
@@ -125,6 +145,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    print(
+      "${DateFormat("yyyy-MM-dd").format(DateTime.now())} 00:00:00 GMT+0530",
+    );
     String greeting() {
       var hour = DateTime.now().hour;
       if (hour < 12) {
@@ -312,15 +335,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 children: [
                                   for (var item in pendingList)
                                     GestureDetector(
-                                      onTap: () => Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (_) => SecondScreen(
-                                            notaryId: userInfo['notary']['_id'],
-                                            orderId: item["id"],
-                                            isPending: true,
+                                      onTap: () async {
+                                        await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (_) => SecondScreen(
+                                              notaryId: userInfo['notary']
+                                                  ['_id'],
+                                              orderId: item["id"],
+                                              isPending: true,
+                                            ),
                                           ),
-                                        ),
-                                      ),
+                                        );
+                                        await getPending();
+                                      },
                                       child: ConfirmCards(
                                         address: item["address"],
                                         name: item["name"],

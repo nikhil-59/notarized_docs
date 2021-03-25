@@ -3,7 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:myknott/Views/AuthScreen.dart';
 import 'package:myknott/Views/homePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,9 +25,10 @@ class AuthService {
         email: email.trim(),
         password: password.trim(),
       );
-      return await getUserInfo(
-          userCredential.user.uid, userCredential.user.email);
+      return await getUserInfo(userCredential.user.uid,
+          userCredential.user.email, userCredential.user.providerData.first);
     } catch (e) {
+      EasyLoading.dismiss();
       print(e);
       if (e.toString().contains("password")) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -59,7 +63,10 @@ class AuthService {
     }
   }
 
-  Future<Map> getUserInfo(String uid, String email) async {
+  Future<Map> getUserInfo(String uid, String email, UserInfo user) async {
+    print("uid $uid");
+    print("email $email");
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String jwt = await storage.read(key: "jwt");
     dio.options.headers['auth_token'] = jwt;
@@ -68,20 +75,36 @@ class AuthService {
           .post('https://my-notary-app.herokuapp.com/notary/login/', data: {
         "uid": uid,
         "email": email,
+        "emailVerified": false,
+        "photoURL": user.photoURL ?? "",
+        "displayName": user.displayName,
+        "phoneNumber": user.phoneNumber ?? "",
         "loginThroughMobile": "hgckgvVKUGDVUVlhbvishfbvkihfbkusf",
         "pushToken": await firebaseMessaging.getToken(),
         "pushTokenDeviceType": "android"
       });
-      if (response.data['status'] == 1) {
+      EasyLoading.dismiss();
+      if (response.data['status'] == 1 &&
+          response.data['notary']['isApproved'] &&
+          response.data["registered"] == 3) {
         String userInfo = jsonEncode(response.data);
         await prefs.setString("userInfo", userInfo);
         await prefs.setBool("isloggedIn", true);
-        return {"status": 1, "isloggedSuccessful": true};
-      } else
-        return {"status": response.data['status'], "isloggedSuccessful": true};
+        return {"status": 1, "isloggedSuccessful": true, "isregister": true};
+      } else if (response.data['status'] == 1 &&
+          response.data['registered'] < 3)
+        return {
+          "status": response.data['status'],
+          "isloggedSuccessful": true,
+          "isregister": false
+        };
+      else {
+        print("hello");
+        return {"status": 10, "isloggedSuccessful": false, "isregister": false};
+      }
     } catch (e) {
       print(e);
-      return {"status": 10, "isloggedSuccessful": false};
+      return {"status": 10, "isloggedSuccessful": false, "isregister": false};
     }
   }
 
@@ -128,6 +151,104 @@ class AuthService {
       print(response);
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<Map> signInWithGmail(context) async {
+    print("function trigged");
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    try {
+      print(googleUser.email);
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      return await getUserInfo(userCredential.user.uid,
+          userCredential.user.email, userCredential.user.providerData.first);
+    } catch (e) {
+      if (e.toString() ==
+          "[firebase_auth/account-exists-with-different-credential] An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.black,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+            content: Text(
+              "User already Register with different sign-in credentials",
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        );
+        return {"status": 10, "isloggedSuccessful": false};
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.black,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+            content: Text(
+              "Some went wrong..",
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        );
+        return {"status": 10, "isloggedSuccessful": false};
+      }
+    }
+  }
+
+  Future<Map> signInWithFacebook(context) async {
+    print("function trigged");
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+      final FacebookAuthCredential facebookAuthCredential =
+          FacebookAuthProvider.credential(result.accessToken.token);
+      print(facebookAuthCredential.token);
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithCredential(facebookAuthCredential);
+      print(userCredential.user.providerData.asMap());
+      return await getUserInfo(
+          userCredential.user.uid,
+          userCredential.user.providerData.first.email,
+          userCredential.user.providerData.first);
+    } catch (e) {
+      print(e.toString());
+      if (e.toString() ==
+          "[firebase_auth/account-exists-with-different-credential] An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.black,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+            content: Text(
+              "User already Register with different sign-in credentials",
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        );
+        return {"status": 10, "isloggedSuccessful": false};
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.black,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+            content: Text(
+              "Some went wrong..",
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        );
+        return {"status": 10, "isloggedSuccessful": false};
+      }
     }
   }
 }

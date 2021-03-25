@@ -106,7 +106,7 @@ class NotaryServices {
           dateTime.month.toString() +
           "-" +
           dateTime.day.toString() +
-          " 00:00:00 GMT-0730"
+          " 00:00:00 GMT+0530"
     });
     return response.data;
   }
@@ -131,28 +131,29 @@ class NotaryServices {
     return response.data;
   }
 
-  getAllMessages(String notaryId, int pageNumber) async {
+  getAllMessages(String notaryId, int pageNumber, String chatRoom) async {
+    print("pageNumber $pageNumber");
     String jwt = await storage.read(key: 'jwt');
     dio.options.headers['auth_token'] = jwt;
     var response = await dio.post(
       "https://my-notary-app.herokuapp.com/notary/listMessages",
       data: {
         "notaryId": notaryId,
-        "PageNumber": pageNumber.toString(),
-        "chatroomId": "603768d8c54c430015c9bdbc"
+        "chatroomId": chatRoom,
+        "pageNumber": pageNumber,
       },
     );
     return response.data;
   }
 
-  sendMessage({String message, String notaryId}) async {
+  sendMessage({String message, String notaryId, String chatRoom}) async {
     String jwt = await storage.read(key: 'jwt');
     dio.options.headers['auth_token'] = jwt;
     await dio.post(
       "https://my-notary-app.herokuapp.com/notary/sendMessage/",
       data: {
         "notaryId": notaryId,
-        "chatroomId": "603768d8c54c430015c9bdbc",
+        "chatroomId": chatRoom,
         "chatMessage": "$message"
       },
     );

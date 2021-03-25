@@ -1,7 +1,17 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:myknott/Views/homePage.dart';
 
-class WaitingScreen extends StatelessWidget {
+class WaitingScreen extends StatefulWidget {
+  final bool isRegister;
+
+  const WaitingScreen({Key key, @required this.isRegister}) : super(key: key);
+  @override
+  _WaitingScreenState createState() => _WaitingScreenState();
+}
+
+class _WaitingScreenState extends State<WaitingScreen> {
   adjustStatusBar() {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -11,8 +21,51 @@ class WaitingScreen extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        if (widget.isRegister == false) {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text(
+                  "You are not Register",
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                ),
+                content: Text(
+                  "Please register your profile in Notary App Website",
+                  style: TextStyle(fontSize: 16.5),
+                ),
+              );
+            },
+          );
+        } else {
+          adjustStatusBar();
+        }
+      },
+    );
+    // used to handle new verification notification
+
+    FirebaseMessaging.onMessageOpenedApp.any(
+      (element) {
+        if (element.data['type'] == 1 || element.data['type'] == '1') {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+        }
+        return false;
+      },
+    );
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    adjustStatusBar();
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
