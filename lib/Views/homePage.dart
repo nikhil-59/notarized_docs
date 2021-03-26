@@ -170,11 +170,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           "address": i['appointment']["propertyAddress"],
           "name": i['appointment']["signerFullName"],
           "phone": i['appointment']["signerPhoneNumber"],
-          "orderId": i["orderId"]
+          "orderId": i["orderId"],
+          "logo": i['customer']['userImageURL']
         });
-        // setState(() {});
+        setState(() {});
       }
     } catch (e) {
+      print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
@@ -216,6 +218,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         acceptLoader.add(false);
       }
     } catch (e) {
+      print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
@@ -392,8 +395,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                         ),
                                                       ),
                                                       imageUrl:
-                                                          userInfo['notary']
-                                                              ['userImageURL'],
+                                                          appointmentList[index]
+                                                              ["logo"],
                                                     ),
                                                   );
                                                 },

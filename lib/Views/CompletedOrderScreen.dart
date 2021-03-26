@@ -90,14 +90,14 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                             height: 2,
                           ),
                           Text(
-                            "Order Placed at ${DateFormat('MMM, d, y hh:mm a').format(DateTime.parse(orders['orders'][index]['createdAt']))} ",
+                            "Order Placed at ${DateFormat('MM/dd/yyyy hh:mm a').format(DateTime.parse(orders['orders'][index]['createdAt']))} ",
                             style: TextStyle(fontSize: 16),
                           ),
                           SizedBox(
                             height: 4,
                           ),
                           Text(
-                            "Delivered at ${DateFormat('MMM, d, y hh:mm a').format(DateTime.parse(orders['orders'][index]['deliveredAt']))} ",
+                            "Delivered at ${DateFormat('MM/dd/yyyy hh:mm a').format(DateTime.parse(orders['orders'][index]['deliveredAt']))} ",
                             style: TextStyle(fontSize: 16),
                           ),
                         ],

@@ -121,13 +121,15 @@ class NotaryServices {
     return response.data;
   }
 
-  getEarnings(String notaryId) async {
+  getEarnings(String notaryId, int pageNumber) async {
+    print("current page Number $pageNumber");
     String jwt = await storage.read(key: 'jwt');
     dio.options.headers['auth_token'] = jwt;
     var response = await dio.post(
       "https://my-notary-app.herokuapp.com/notary/getEarnings",
-      data: {"notaryId": notaryId, "PageNumber": "0"},
+      data: {"notaryId": notaryId, "pageNumber": pageNumber},
     );
+    print("pageNumber ${response.data['pageNumber']}");
     return response.data;
   }
 

@@ -861,7 +861,7 @@ class _SecondScreenState extends State<SecondScreen>
                           ),
                           Container(
                             // color: Colors.black,
-                            height: 80,
+                            height: 120,
                             child: Center(
                               child: ListView(
                                 shrinkWrap: true,
@@ -974,53 +974,197 @@ class _SecondScreenState extends State<SecondScreen>
                                           height: 10,
                                         ),
                                         Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Container(
-                                              width: 90,
-                                              child: Text(
-                                                "Signer Contacted",
-                                                textAlign: TextAlign.center,
-                                                style:
-                                                    TextStyle(fontSize: 14.5),
-                                              ),
+                                            Column(
+                                              children: [
+                                                Container(
+                                                  width: 90,
+                                                  child: Text(
+                                                    "Signer Contacted",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontSize: 14.5),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                orders['order']
+                                                            ['confirmedAt'] !=
+                                                        null
+                                                    ? Container(
+                                                        width: 90,
+                                                        child: Text(
+                                                          DateFormat(
+                                                            "MM/dd/yyyy hh:mm a",
+                                                          ).format(
+                                                            DateTime.parse(
+                                                              orders['order'][
+                                                                  'confirmedAt'],
+                                                            ),
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontSize: 14.5),
+                                                        ),
+                                                      )
+                                                    : Container(),
+                                              ],
                                             ),
                                             //
-                                            Container(
-                                              width: 120,
-                                              child: Text(
-                                                "Documents Downloaded",
-                                                textAlign: TextAlign.center,
-                                                style:
-                                                    TextStyle(fontSize: 14.5),
-                                              ),
+                                            Column(
+                                              children: [
+                                                Container(
+                                                  width: 120,
+                                                  child: Text(
+                                                    "Documents Downloaded",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontSize: 14.5),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                orders['order'][
+                                                            'docsDownloadedAt'] !=
+                                                        null
+                                                    ? Container(
+                                                        width: 90,
+                                                        child: Text(
+                                                          DateFormat(
+                                                            "MM/dd/yyyy hh:mm a",
+                                                          ).format(
+                                                            DateTime.parse(
+                                                              orders['order'][
+                                                                  'docsDownloadedAt'],
+                                                            ),
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontSize: 14.5),
+                                                        ),
+                                                      )
+                                                    : Container(),
+                                              ],
                                             ),
                                             //
-                                            Container(
-                                              width: 120,
-                                              child: Text(
-                                                "Arrived to Appointment",
-                                                textAlign: TextAlign.center,
-                                                style:
-                                                    TextStyle(fontSize: 14.5),
-                                              ),
+                                            Column(
+                                              children: [
+                                                Container(
+                                                  width: 120,
+                                                  child: Text(
+                                                    "Arrived to Appointment",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontSize: 14.5),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                orders['order'][
+                                                            'notaryArrivedAt'] !=
+                                                        null
+                                                    ? Container(
+                                                        width: 90,
+                                                        child: Text(
+                                                          DateFormat(
+                                                            "MM/dd/yyyy hh:mm a",
+                                                          ).format(
+                                                            DateTime.parse(
+                                                              orders['order'][
+                                                                  'notaryArrivedAt'],
+                                                            ),
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontSize: 14.5),
+                                                        ),
+                                                      )
+                                                    : Container(),
+                                              ],
                                             ),
-                                            Container(
-                                              width: 100,
-                                              child: Text(
-                                                "Signing Completed",
-                                                textAlign: TextAlign.center,
-                                                style:
-                                                    TextStyle(fontSize: 14.5),
-                                              ),
+                                            Column(
+                                              children: [
+                                                Container(
+                                                  width: 100,
+                                                  child: Text(
+                                                    "Signing Completed",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontSize: 14.5),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                orders['order'][
+                                                            'signingCompletedAt'] !=
+                                                        null
+                                                    ? Container(
+                                                        width: 90,
+                                                        child: Text(
+                                                          DateFormat(
+                                                            "MM/dd/yyyy hh:mm a",
+                                                          ).format(
+                                                            DateTime.parse(
+                                                              orders['order'][
+                                                                  'signingCompletedAt'],
+                                                            ),
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontSize: 14.5),
+                                                        ),
+                                                      )
+                                                    : Container(),
+                                              ],
                                             ),
-                                            Container(
-                                              width: 120,
-                                              child: Text(
-                                                "Documents Delivered",
-                                                textAlign: TextAlign.center,
-                                                style:
-                                                    TextStyle(fontSize: 14.5),
-                                              ),
+                                            Column(
+                                              children: [
+                                                Container(
+                                                  width: 120,
+                                                  child: Text(
+                                                    "Documents Delivered",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontSize: 14.5),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                orders['order']
+                                                            ['deliveredAt'] !=
+                                                        null
+                                                    ? Container(
+                                                        width: 90,
+                                                        child: Text(
+                                                          DateFormat(
+                                                            "MM/dd/yyyy hh:mm a",
+                                                          ).format(
+                                                            DateTime.parse(
+                                                              orders['order'][
+                                                                  'deliveredAt'],
+                                                            ),
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontSize: 14.5),
+                                                        ),
+                                                      )
+                                                    : Container(),
+                                              ],
                                             ),
                                           ],
                                         )
@@ -1102,27 +1246,36 @@ class _SecondScreenState extends State<SecondScreen>
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.location_pin,
-                                        color: Colors.red.shade700,
-                                        size: 50,
-                                      ),
-                                      SizedBox(
-                                        width: 100,
-                                        child: Text(
-                                          "Signing Location",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            color:
-                                                Colors.black.withOpacity(0.6),
+                                  GestureDetector(
+                                    // onTap: () => tabController.animateTo(
+                                    // 3,
+                                    // duration: Duration(milliseconds: 500),
+                                    // ),
+                                    child: Container(
+                                      // color: Colors.yellow,
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.location_pin,
+                                            color: Colors.red.shade700,
+                                            size: 50,
                                           ),
-                                        ),
-                                      )
-                                    ],
+                                          SizedBox(
+                                            width: 100,
+                                            child: Text(
+                                              "Signing Location",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.black
+                                                    .withOpacity(0.6),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                   Flexible(
                                     child: Padding(
@@ -1153,6 +1306,22 @@ class _SecondScreenState extends State<SecondScreen>
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   color: Colors.grey.shade700),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            "Date: " +
+                                                DateFormat("MM/dd/yyyy").format(
+                                                  DateTime.parse(
+                                                    orders["order"]
+                                                        ["appointment"]["time"],
+                                                  ),
+                                                ),
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              // color: Colors.grey.shade700),
                                             ),
                                           ),
                                           SizedBox(
@@ -1292,12 +1461,33 @@ class _SecondScreenState extends State<SecondScreen>
                                   SizedBox(
                                     height: 20,
                                   ),
-                                  Text(
-                                    orders['order']['appointment']
-                                        ['propertyAddress'],
-                                    style: TextStyle(
-                                        color: Colors.black.withOpacity(0.8),
-                                        fontSize: 17),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Address",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.8),
+                                          fontSize: 17,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          orders['order']['appointment']
+                                              ['propertyAddress'],
+                                          // textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color:
+                                                  Colors.black.withOpacity(0.8),
+                                              fontSize: 17),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
