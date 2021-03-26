@@ -27,7 +27,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
     EasyLoading.instance
       ..indicatorColor = Colors.white
-      ..fontSize = 18
+      ..fontSize = 17
       ..dismissOnTap = false
       ..indicatorType = EasyLoadingIndicatorType.chasingDots
       ..backgroundColor = Colors.black;
@@ -97,29 +97,31 @@ class _AuthScreenState extends State<AuthScreen> {
                           // EasyLoading.instance.
                           try {
                             EasyLoading.show(
-                                status: 'Please wait...', dismissOnTap: false);
+                                status: 'Please wait...',
+                                dismissOnTap: false,
+                                maskType: EasyLoadingMaskType.clear);
                             Map result =
                                 await authService.signInWithFacebook(context);
                             print(result);
                             if (result["status"] == 1 &&
                                 result["isloggedSuccessful"] &&
-                                result["isregister"]) {
+                                result['isapproved'] &&
+                                result['isregister']) {
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                   builder: (_) => HomePage(),
                                 ),
                               );
-                            } else if (result["status"] == 1 &&
-                                result["isloggedSuccessful"] &&
-                                result["isregister"] == false) {
+                            } else if (!result['isregister'] &&
+                                result["isloggedSuccessful"]) {
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
-                                  builder: (_) =>
-                                      WaitingScreen(isRegister: false),
+                                  builder: (_) => WaitingScreen(
+                                    isRegister: false,
+                                  ),
                                 ),
                               );
-                            } else if ((result["status"] == 0 ||
-                                    result["status"] == 2) &&
+                            } else if (!result['isapproved'] &&
                                 result["isloggedSuccessful"]) {
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
@@ -130,6 +132,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               );
                             } else {
                               EasyLoading.dismiss();
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   behavior: SnackBarBehavior.floating,
@@ -144,6 +147,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                   ),
                                 ),
                               );
+                              print("something went wrong");
+                              return;
                             }
                           } catch (e) {
                             EasyLoading.dismiss();
@@ -181,29 +186,30 @@ class _AuthScreenState extends State<AuthScreen> {
                             try {
                               EasyLoading.show(
                                   status: 'Please wait...',
-                                  dismissOnTap: false);
+                                  dismissOnTap: false,
+                                  maskType: EasyLoadingMaskType.clear);
                               Map result =
                                   await authService.signInWithGmail(context);
                               print(result);
                               if (result["status"] == 1 &&
                                   result["isloggedSuccessful"] &&
-                                  result["isregister"]) {
+                                  result['isapproved'] &&
+                                  result['isregister']) {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                     builder: (_) => HomePage(),
                                   ),
                                 );
-                              } else if (result["status"] == 1 &&
-                                  result["isloggedSuccessful"] &&
-                                  result["isregister"] == false) {
+                              } else if (!result['isregister'] &&
+                                  result["isloggedSuccessful"]) {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
-                                    builder: (_) =>
-                                        WaitingScreen(isRegister: false),
+                                    builder: (_) => WaitingScreen(
+                                      isRegister: false,
+                                    ),
                                   ),
                                 );
-                              } else if ((result["status"] == 0 ||
-                                      result["status"] == 2) &&
+                              } else if (!result['isapproved'] &&
                                   result["isloggedSuccessful"]) {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
@@ -228,6 +234,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                     ),
                                   ),
                                 );
+                                print("something went wrong");
+                                return;
                               }
                             } catch (e) {
                               EasyLoading.dismiss();
@@ -283,8 +291,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                       TextField(
                         cursorColor: Colors.black,
-                        cursorWidth: 3,
+                        // cursorWidth: 3,
                         controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
                         style: TextStyle(
                             fontSize: 16.5, fontWeight: FontWeight.w700),
                         decoration: InputDecoration(
@@ -329,9 +338,8 @@ class _AuthScreenState extends State<AuthScreen> {
                             fontSize: 16.5, fontWeight: FontWeight.w700),
                         obscureText: !showPassword,
                         controller: passwordController,
-                        cursorWidth: 3,
                         cursorColor: Colors.black,
-                        keyboardType: TextInputType.emailAddress,
+                        keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
                           fillColor: Colors.grey.shade50,
                           suffixIcon: Padding(
@@ -431,7 +439,6 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                         ),
                       );
-                      return;
                     } else if (passwordController.text.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -445,7 +452,6 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                         ),
                       );
-                      return;
                     } else if (!RegExp(
                             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                         .hasMatch(emailController.text.trim())) {
@@ -466,47 +472,63 @@ class _AuthScreenState extends State<AuthScreen> {
                       setState(() {
                         isloading = true;
                       });
-                      Map result = await authService.signWithEmail(
-                          emailController.text,
-                          passwordController.text,
-                          context);
-                      if (result["status"] == 1 &&
-                          result["isloggedSuccessful"]) {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (_) => HomePage(),
-                          ),
-                        );
-                      } else if ((result["status"] == 0 ||
-                              result["status"] == 2) &&
-                          result["isloggedSuccessful"]) {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (_) => WaitingScreen(
-                              isRegister: true,
+                      try {
+                        Map result = await authService.signWithEmail(
+                            emailController.text,
+                            passwordController.text,
+                            context);
+                        if (result["status"] == 1 &&
+                            result["isloggedSuccessful"] &&
+                            result['isapproved'] &&
+                            result['isregister']) {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (_) => HomePage(),
                             ),
-                          ),
-                        );
-                      } else {
+                          );
+                        } else if (!result['isregister'] &&
+                            result["isloggedSuccessful"]) {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (_) => WaitingScreen(
+                                isRegister: false,
+                              ),
+                            ),
+                          );
+                        } else if (!result['isapproved'] &&
+                            result["isloggedSuccessful"]) {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (_) => WaitingScreen(
+                                isRegister: true,
+                              ),
+                            ),
+                          );
+                        } else {
+                          setState(() {
+                            isloading = false;
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(7)),
+                              content: Text(
+                                "Something went wrong...",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          );
+                          print("something went wrong");
+                          return;
+                        }
+                      } catch (e) {
                         setState(() {
                           isloading = false;
                         });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(7)),
-                            content: Text(
-                              "Something went wrong...",
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        );
-                        print("something went wrong");
-                        return;
                       }
                       emailController.clear();
                       passwordController.clear();

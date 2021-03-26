@@ -94,7 +94,7 @@ class _ChatScreenState extends State<ChatScreen>
       "_id": "605b4ec86f1bf80015330011",
       "message": message,
       "sentBy": {
-        "_id": "60280100a063a42fb456c252",
+        "_id": widget.notaryId,
         "firstName": "Hemant",
         "lastName": "Saini",
         "phoneNumber": "6350312240",
@@ -222,7 +222,7 @@ class _ChatScreenState extends State<ChatScreen>
                         initCategory: Category.RECENT,
                         bgColor: Color(0xFFF2F2F2),
                         // bgColor: Colors.white,
-                        indicatorColor: Colors.black,
+                        indicatorColor: Colors.blue.shade800,
                         iconColor: Colors.grey,
                         iconColorSelected: Colors.blue.shade800,
                         progressIndicatorColor: Colors.transparent,

@@ -36,7 +36,7 @@ class _SecondScreenState extends State<SecondScreen>
   bool documentDelivered = false;
   bool documentsDownloaded = false;
   bool signerContacted = false;
-
+  bool istrigger = false;
   final Map orders = Map();
   final storage = FlutterSecureStorage();
   TabController tabController;
@@ -54,16 +54,32 @@ class _SecondScreenState extends State<SecondScreen>
   }
 
   getData() async {
-    setState(() {});
-    String jwt = await storage.read(key: 'jwt');
-    dio.options.headers['auth_token'] = jwt;
-    var body = {"notaryId": widget.notaryId, "orderId": widget.orderId};
-    var response = await dio.post(
-        "https://my-notary-app.herokuapp.com/notary/getOrderDetails/",
-        data: body);
-    orders.clear();
-    orders.addAll(response.data);
-    setState(() {});
+    try {
+      setState(() {});
+      String jwt = await storage.read(key: 'jwt');
+      dio.options.headers['auth_token'] = jwt;
+      var body = {"notaryId": widget.notaryId, "orderId": widget.orderId};
+      var response = await dio.post(
+          "https://my-notary-app.herokuapp.com/notary/getOrderDetails/",
+          data: body);
+      orders.clear();
+      orders.addAll(response.data);
+      setState(() {});
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.black,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+          content: Text(
+            "Something went wrong...",
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -165,9 +181,11 @@ class _SecondScreenState extends State<SecondScreen>
                                   children: [
                                     MaterialButton(
                                       onPressed: () async {
+                                        setState(() {
+                                          ispending = false;
+                                        });
                                         await NotaryServices().declineNotary(
                                             widget.notaryId, widget.orderId);
-                                        Navigator.of(context).pop();
                                       },
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5),
@@ -184,11 +202,11 @@ class _SecondScreenState extends State<SecondScreen>
                                     ),
                                     MaterialButton(
                                       onPressed: () async {
-                                        await NotaryServices().acceptNotary(
-                                            widget.notaryId, widget.orderId);
                                         setState(() {
                                           isPending = false;
                                         });
+                                        await NotaryServices().acceptNotary(
+                                            widget.notaryId, widget.orderId);
                                       },
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5),

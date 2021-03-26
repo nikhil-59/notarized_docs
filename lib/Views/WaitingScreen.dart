@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:myknott/Views/homePage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WaitingScreen extends StatefulWidget {
   final bool isRegister;
@@ -20,46 +21,52 @@ class _WaitingScreenState extends State<WaitingScreen> {
     );
   }
 
+  handleNotification(message) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (message.data['type'] == 1 || message.data['type'] == '1') {
+      if (message.data['action'] == 'approved') {
+        await prefs.setBool("isloggedIn", true);
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ),
+        );
+      }
+    }
+    if (message.data['action'] == 'revoked') {
+      await prefs.clear();
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => WaitingScreen(isRegister: true),
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) {
-        if (widget.isRegister == false) {
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text(
-                  "You are not Register",
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                ),
-                content: Text(
-                  "Please register your profile in Notary App Website",
-                  style: TextStyle(fontSize: 16.5),
-                ),
-              );
-            },
-          );
-        } else {
-          adjustStatusBar();
-        }
-      },
-    );
+    adjustStatusBar();
     // used to handle new verification notification
-
-    FirebaseMessaging.onMessageOpenedApp.any(
-      (element) {
-        if (element.data['type'] == 1 || element.data['type'] == '1') {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => HomePage(),
-            ),
-          );
-        }
-        return false;
-      },
-    );
+    FirebaseMessaging.onMessage.any((element) {
+      handleNotification(element);
+      return false;
+    });
+    FirebaseMessaging.onMessageOpenedApp.any((element) {
+      handleNotification(element);
+      return false;
+    });
+    // FirebaseMessaging.onMessageOpenedApp.any(
+    //   (element) {
+    //     if (element.data['type'] == 1 || element.data['type'] == '1') {
+    //       Navigator.of(context).pushReplacement(
+    //         MaterialPageRoute(
+    //           builder: (context) => HomePage(),
+    //         ),
+    //       );
+    //     }
+    //     return false;
+    //   },
+    // );
 
     super.initState();
   }
@@ -133,7 +140,9 @@ class _WaitingScreenState extends State<WaitingScreen> {
                     height: 15,
                   ),
                   Text(
-                    "Pending Approval",
+                    widget.isRegister
+                        ? "Pending Approval"
+                        : "Pending Registation",
                     style: TextStyle(
                         fontSize: 16.5,
                         color: Colors.black,
@@ -143,7 +152,9 @@ class _WaitingScreenState extends State<WaitingScreen> {
                     height: 13,
                   ),
                   Text(
-                    "We will notify you once your account is live.",
+                    widget.isRegister
+                        ? "We will notify you once your account is live."
+                        : "Please register your profile in Notary App website",
                     style: TextStyle(
                       fontSize: 15,
                       color: Colors.black,

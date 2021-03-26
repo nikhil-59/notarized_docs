@@ -9,11 +9,14 @@ import 'package:myknott/Views/CalenderScreen.dart';
 import 'package:myknott/Views/ProgessScreen.dart';
 import 'package:myknott/Views/Services/auth.dart';
 import 'package:myknott/Views/UserProfile.dart';
+import 'package:myknott/Views/WaitingScreen.dart';
 import 'package:myknott/Views/Widgets/card.dart';
 import 'package:myknott/Views/Widgets/confirmCard.dart';
 import 'package:myknott/Views/secondScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:myknott/Views/Amount.dart';
+
+import 'AuthScreen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -28,10 +31,50 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   List appointmentList = [];
   List pendingList = [];
   Map userInfo = {};
+  List<bool> acceptLoader = [];
+  List<bool> declineLoader = [];
   bool isloading = false;
+
+  handleForegroundNotification(RemoteMessage message) async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    if (message.data['type'] == 2 || message.data['type'] == "2") {
+      {
+        print("new order");
+        pendingList.clear();
+        String jwt = await storage.read(key: 'jwt');
+        dio.options.headers['auth_token'] = jwt;
+        Map data = {"notaryId": userInfo['notary']['_id'], "pageNumber": "0"};
+        var response = await dio.post(
+            "https://my-notary-app.herokuapp.com/notary/getInvites/",
+            data: data);
+        for (var item in response.data["orders"]) {
+          pendingList.add(
+            {
+              "id": item["_id"],
+              "amount": item["amount"],
+              "name": item["appointment"]["signerFullName"],
+              "address": item["appointment"]["propertyAddress"],
+              "logo": item["appointment"]["userImageURL"]
+            },
+          );
+        }
+      }
+      setState(() {});
+    } else if (message.data['type'] == 1 || message.data['type'] == "1") {
+      if (message.data['action'] == 'revoked') {
+        await preferences.clear();
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => AuthScreen(),
+          ),
+        );
+      }
+    }
+  }
 
   handleNotificationClick(RemoteMessage message) async {
     // used to handle new order notification
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
     if (message.data['type'] == 2 || message.data['type'] == "2") {
       String orderId = message.data['orderId'];
       String notaryId = message.data['notaryId'];
@@ -59,6 +102,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
       );
+    } else if (message.data['type'] == 1 || message.data['type'] == "1") {
+      if (message.data['action'] == 'revoked') {
+        await preferences.clear();
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => AuthScreen(),
+          ),
+        );
+      }
     }
   }
 
@@ -69,7 +121,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       handleNotificationClick(element);
       return false;
     });
-    tabController = TabController(length: 5, vsync: this);
+    FirebaseMessaging.onMessage.any((element) {
+      print("okky");
+      handleForegroundNotification(element);
+      return false;
+    });
+    tabController = TabController(length: 4, vsync: this);
     getUserInfo();
     getAppointment();
     getPending();
@@ -87,54 +144,90 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   getAppointment() async {
-    appointmentList.clear();
-    String jwt = await storage.read(key: 'jwt');
-    dio.options.headers['auth_token'] = jwt;
-    var body = {
-      "notaryId": userInfo['notary']['_id'],
-      "today12am": DateTime.now().year.toString() +
-          "-" +
-          DateTime.now().month.toString() +
-          "-" +
-          DateTime.now().day.toString() +
-          " 00:00:00 GMT+0530"
+    try {
+      appointmentList.clear();
+      String jwt = await storage.read(key: 'jwt');
+      dio.options.headers['auth_token'] = jwt;
+      var body = {
+        "notaryId": userInfo['notary']['_id'],
+        "today12am": DateTime.now().year.toString() +
+            "-" +
+            DateTime.now().month.toString() +
+            "-" +
+            DateTime.now().day.toString() +
+            " 00:00:00 GMT+0530"
 
-      // "${DateFormat("yyyy-MM-dd").format(DateTime.now())} 00:00:00 GMT+0530",
-      // "today12am": "2021-03-17 00:00:00 GMT+0530"
-    };
-    var response = await dio.post(
-        "https://my-notary-app.herokuapp.com/notary/getDashboard",
-        data: body);
-    for (var i in response.data['appointments']) {
-      appointmentList.add({
-        "id": i['appointment']['_id'],
-        "date": i['appointment']['time'],
-        "address": i['appointment']["propertyAddress"],
-        "name": i['appointment']["signerFullName"],
-        "phone": i['appointment']["signerPhoneNumber"],
-        "orderId": i["orderId"]
-      });
-      // setState(() {});
+        // "${DateFormat("yyyy-MM-dd").format(DateTime.now())} 00:00:00 GMT+0530",
+        // "today12am": "2021-03-17 00:00:00 GMT+0530"
+      };
+      var response = await dio.post(
+          "https://my-notary-app.herokuapp.com/notary/getDashboard",
+          data: body);
+      for (var i in response.data['appointments']) {
+        appointmentList.add({
+          "id": i['appointment']['_id'],
+          "date": i['appointment']['time'],
+          "address": i['appointment']["propertyAddress"],
+          "name": i['appointment']["signerFullName"],
+          "phone": i['appointment']["signerPhoneNumber"],
+          "orderId": i["orderId"]
+        });
+        // setState(() {});
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.black,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+          content: Text(
+            "Something went wrong...",
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        ),
+      );
     }
   }
 
   getPending() async {
-    pendingList.clear();
-    String jwt = await storage.read(key: 'jwt');
-    dio.options.headers['auth_token'] = jwt;
-    Map data = {"notaryId": userInfo['notary']['_id'], "pageNumber": "0"};
-    var response = await dio.post(
-        "https://my-notary-app.herokuapp.com/notary/getInvites/",
-        data: data);
-    for (var item in response.data["orders"]) {
-      pendingList.add(
-        {
-          "id": item["_id"],
-          "amount": item["amount"],
-          "name": item["appointment"]["signerFullName"],
-          "address": item["appointment"]["propertyAddress"],
-          "logo": item["appointment"]["userImageURL"]
-        },
+    try {
+      acceptLoader.clear();
+      declineLoader.clear();
+      pendingList.clear();
+      String jwt = await storage.read(key: 'jwt');
+      dio.options.headers['auth_token'] = jwt;
+      Map data = {"notaryId": userInfo['notary']['_id'], "pageNumber": "0"};
+      var response = await dio.post(
+          "https://my-notary-app.herokuapp.com/notary/getInvites/",
+          data: data);
+      for (var item in response.data["orders"]) {
+        pendingList.add(
+          {
+            "id": item["_id"],
+            "amount": item["amount"],
+            "name": item["appointment"]["signerFullName"],
+            "address": item["appointment"]["propertyAddress"],
+            "logo": item["appointment"]["userImageURL"]
+          },
+        );
+        declineLoader.add(false);
+        acceptLoader.add(false);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.black,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+          content: Text(
+            "Something went wrong...",
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        ),
       );
     }
     setState(() {
@@ -145,9 +238,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    print(
-      "${DateFormat("yyyy-MM-dd").format(DateTime.now())} 00:00:00 GMT+0530",
-    );
     String greeting() {
       var hour = DateTime.now().hour;
       if (hour < 12) {
@@ -180,12 +270,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
             Tab(
               icon: Icon(Icons.monetization_on, size: 28),
-            ),
-            Tab(
-              icon: Icon(
-                Icons.settings,
-                size: 28,
-              ),
             ),
             Tab(
                 icon: Icon(
@@ -249,116 +333,153 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  Text(
-                                    "View All",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => CalenderScreen(
+                                              notaryId: userInfo['notary']
+                                                  ['_id']),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      "View All",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
                                 ],
                               ),
                               SizedBox(
                                 height: 10,
                               ),
-                              AnimatedSize(
-                                duration: Duration(milliseconds: 500),
-                                curve: Curves.ease,
-                                vsync: this,
-                                child: Container(
-                                  height: appointmentList.isEmpty ? 0 : 150,
-                                  child: (appointmentList.isEmpty)
-                                      ? Container()
-                                      : ListView.builder(
-                                          itemBuilder: (context, index) {
-                                            return AnimatedOpacity(
-                                              duration:
-                                                  Duration(milliseconds: 4000),
-                                              opacity: appointmentList.isEmpty
-                                                  ? 0.0
-                                                  : 1.0,
-                                              child: Cards(
-                                                notaryId: userInfo['notary']
-                                                    ['_id'],
-                                                orderId: appointmentList[index]
-                                                    ['orderId'],
-                                                name: appointmentList[index]
-                                                    ['name'],
-                                                time:
-                                                    DateFormat("h:mm a").format(
-                                                  DateTime.parse(
-                                                    appointmentList[index]
-                                                        ['date'],
-                                                  ),
-                                                ),
+                              appointmentList.isNotEmpty
+                                  ? AnimatedSize(
+                                      duration: Duration(milliseconds: 500),
+                                      curve: Curves.ease,
+                                      vsync: this,
+                                      child: Container(
+                                        height:
+                                            appointmentList.isEmpty ? 0 : 150,
+                                        child: (appointmentList.isEmpty)
+                                            ? Container()
+                                            : ListView.builder(
+                                                itemBuilder: (context, index) {
+                                                  return AnimatedOpacity(
+                                                    duration: Duration(
+                                                        milliseconds: 4000),
+                                                    opacity:
+                                                        appointmentList.isEmpty
+                                                            ? 0.0
+                                                            : 1.0,
+                                                    child: Cards(
+                                                      notaryId:
+                                                          userInfo['notary']
+                                                              ['_id'],
+                                                      orderId:
+                                                          appointmentList[index]
+                                                              ['orderId'],
+                                                      name:
+                                                          appointmentList[index]
+                                                              ['name'],
+                                                      time: DateFormat("h:mm a")
+                                                          .format(
+                                                        DateTime.parse(
+                                                          appointmentList[index]
+                                                              ['date'],
+                                                        ),
+                                                      ),
+                                                      imageUrl:
+                                                          userInfo['notary']
+                                                              ['userImageURL'],
+                                                    ),
+                                                  );
+                                                },
+                                                shrinkWrap: true,
+                                                physics:
+                                                    BouncingScrollPhysics(),
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount:
+                                                    appointmentList.length,
                                               ),
-                                            );
-                                          },
-                                          shrinkWrap: true,
-                                          physics: BouncingScrollPhysics(),
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: appointmentList.length,
-                                        ),
-                                ),
-                              ),
+                                      ),
+                                    )
+                                  : Text(
+                                      "You don't have any appointments today.",
+                                      style: TextStyle(
+                                        fontSize: 15.8,
+                                      ),
+                                    ),
                               SizedBox(
                                 height: 20,
                               ),
-                              pendingList.isNotEmpty
-                                  ? Text(
-                                      "Pending Requests",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    )
-                                  : Container(),
+                              Text(
+                                "Pending Requests",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
                               SizedBox(
                                 width: 10,
                               ),
-                              pendingList.isNotEmpty
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: Text(
-                                        "Accept the order as soon it comes. Order are assigned on first accepted basis.",
-                                        style: TextStyle(
-                                            fontSize: 15.5,
-                                            color:
-                                                Colors.black.withOpacity(0.7)),
-                                      ),
-                                    )
-                                  : Container(),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  "Accept the order as soon it comes. Order are assigned on first accepted basis.",
+                                  style: TextStyle(
+                                      fontSize: 15.5,
+                                      color: Colors.black.withOpacity(0.7)),
+                                ),
+                              ),
                               SizedBox(
                                 height: 10,
                               ),
-                              ListView(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                children: [
-                                  for (var item in pendingList)
-                                    GestureDetector(
-                                      onTap: () async {
-                                        await Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (_) => SecondScreen(
+                              pendingList.isNotEmpty
+                                  ? ListView(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      children: [
+                                        for (var item in pendingList)
+                                          GestureDetector(
+                                            onTap: () async {
+                                              await Navigator.of(context)
+                                                  .push(
+                                                MaterialPageRoute(
+                                                  builder: (_) => SecondScreen(
+                                                    notaryId: userInfo['notary']
+                                                        ['_id'],
+                                                    orderId: item["id"],
+                                                    isPending: true,
+                                                  ),
+                                                ),
+                                              )
+                                                  .whenComplete(() async {
+                                                print("---------------------");
+                                                await getPending();
+                                              });
+                                            },
+                                            child: ConfirmCards(
+                                              address: item["address"],
+                                              name: item["name"],
+                                              price: item["amount"].toString(),
                                               notaryId: userInfo['notary']
                                                   ['_id'],
                                               orderId: item["id"],
-                                              isPending: true,
+                                              imageUrl: userInfo['notary']
+                                                  ['userImageURL'],
+                                              refresh: getPending,
                                             ),
                                           ),
-                                        );
-                                        await getPending();
-                                      },
-                                      child: ConfirmCards(
-                                        address: item["address"],
-                                        name: item["name"],
-                                        price: item["amount"].toString(),
-                                        notaryId: userInfo['notary']['_id'],
-                                        orderId: item["id"],
-                                        refresh: getPending,
+                                      ],
+                                    )
+                                  : Text(
+                                      "You don't have any pending requests.",
+                                      style: TextStyle(
+                                        fontSize: 15.8,
                                       ),
                                     ),
-                                ],
-                              )
                             ],
                           ),
                         ),
@@ -397,9 +518,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             notaryId: userInfo.isNotEmpty ? userInfo['notary']['_id'] : "",
           ),
           AmountScreen(
-            notaryId: userInfo.isNotEmpty ? userInfo['notary']['_id'] : "",
-          ),
-          CalenderScreen(
             notaryId: userInfo.isNotEmpty ? userInfo['notary']['_id'] : "",
           ),
           UserProfile(

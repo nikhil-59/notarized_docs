@@ -44,176 +44,181 @@ class _CalenderScreenState extends State<CalenderScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Container(
-          child: Column(
-            children: [
-              Container(
-                // height: MediaQuery.of(context).size.height / 3,
-                child: TableCalendar(
-                  calendarStyle: CalendarStyle(
-                    // markersColor: Colors.blue.shade800,
-                    selectedColor: Colors.blue.shade800,
-                    highlightToday: false,
-                  ),
-                  headerStyle: HeaderStyle(
-                      titleTextStyle: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16.5),
-                      centerHeaderTitle: true,
-                      formatButtonVisible: false),
-                  calendarController: calendarController,
-                  onDaySelected: (day, events, holidays) {
-                    print(day);
-                    getAppointment(day);
-                  },
-                  // endDay: DateTime.now(),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.black),
+        title: Text(
+          "Order Details",
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.w700, fontSize: 19),
+        ),
+      ),
+      body: Container(
+        child: Column(
+          children: [
+            Container(
+              // height: MediaQuery.of(context).size.height / 3,
+              child: TableCalendar(
+                calendarStyle: CalendarStyle(
+                  // markersColor: Colors.blue.shade800,
+                  selectedColor: Colors.blue.shade800,
+                  highlightToday: false,
                 ),
+                headerStyle: HeaderStyle(
+                    titleTextStyle:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16.5),
+                    centerHeaderTitle: true,
+                    formatButtonVisible: false),
+                calendarController: calendarController,
+                onDaySelected: (day, events, holidays) {
+                  print(day);
+                  getAppointment(day);
+                },
+                // endDay: DateTime.now(),
               ),
-              Expanded(
-                child: !isloading
-                    ? ListView.builder(
-                        shrinkWrap: true,
-                        physics: BouncingScrollPhysics(),
-                        itemCount:
-                            data.isNotEmpty ? data['appointments'].length : 0,
-                        itemBuilder: (BuildContext context, int index) {
-                          return InkWell(
-                            hoverColor: Colors.transparent,
-                            focusColor: Colors.transparent,
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => SecondScreen(
-                                    notaryId: widget.notaryId,
-                                    isPending: false,
-                                    orderId: data['appointments'][index]
-                                        ['orderId'],
-                                  ),
+            ),
+            Expanded(
+              child: !isloading
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      physics: BouncingScrollPhysics(),
+                      itemCount:
+                          data.isNotEmpty ? data['appointments'].length : 0,
+                      itemBuilder: (BuildContext context, int index) {
+                        return InkWell(
+                          hoverColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => SecondScreen(
+                                  notaryId: widget.notaryId,
+                                  isPending: false,
+                                  orderId: data['appointments'][index]
+                                      ['orderId'],
                                 ),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(7),
-                                ),
-                                elevation: 0.2,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    ListTile(
-                                      leading: ClipRRect(
-                                        borderRadius: BorderRadius.circular(50),
-                                        child: data['notary']['userImageURL'] !=
-                                                null
-                                            ? CachedNetworkImage(
-                                                imageUrl: data['notary']
-                                                    ['userImageURL'],
-                                                height: 40,
-                                                width: 40,
-                                              )
-                                            : Container(
-                                                height: 40,
-                                                width: 40,
-                                              ),
-                                      ),
-                                      title: Text(
-                                        "Refinance of " +
-                                            data['appointments'][index]
-                                                    ['appointment']
-                                                ['signerFullName'],
-                                        style: TextStyle(
-                                            fontSize: 16.5,
-                                            fontWeight: FontWeight.w700),
-                                      ),
-                                      isThreeLine: true,
-                                      subtitle: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            data['appointments'][index]
-                                                    ['appointment']
-                                                ['propertyAddress'],
-                                            style: TextStyle(
-                                              fontSize: 16.5,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                            DateFormat('MMM-d-yyyy hh:mm a')
-                                                .format(DateTime.parse(
-                                                    data['appointments'][index]
-                                                            ['appointment']
-                                                        ['time'])),
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(7),
+                              ),
+                              elevation: 0.2,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  ListTile(
+                                    leading: ClipRRect(
+                                      borderRadius: BorderRadius.circular(50),
+                                      child:
+                                          data['notary']['userImageURL'] != null
+                                              ? CachedNetworkImage(
+                                                  imageUrl: data['notary']
+                                                      ['userImageURL'],
+                                                  height: 40,
+                                                  width: 40,
+                                                )
+                                              : Container(
+                                                  height: 40,
+                                                  width: 40,
+                                                ),
                                     ),
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
+                                    title: Text(
+                                      "Refinance of " +
+                                          data['appointments'][index]
+                                              ['appointment']['signerFullName'],
+                                      style: TextStyle(
+                                          fontSize: 16.5,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    isThreeLine: true,
+                                    subtitle: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.end,
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 15.0),
-                                          child: Text(
-                                            "Change Status",
-                                            style: TextStyle(
-                                                color: Colors.blue.shade900,
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.bold),
+                                        Text(
+                                          data['appointments'][index]
+                                                  ['appointment']
+                                              ['propertyAddress'],
+                                          style: TextStyle(
+                                            fontSize: 16.5,
                                           ),
                                         ),
                                         SizedBox(
-                                          height: 10,
-                                        )
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          DateFormat('MMM-d-yyyy hh:mm a')
+                                              .format(DateTime.parse(
+                                                  data['appointments'][index]
+                                                      ['appointment']['time'])),
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                          ),
+                                        ),
                                       ],
-                                    )
-                                  ],
-                                ),
+                                    ),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 15.0),
+                                        child: Text(
+                                          "Change Status",
+                                          style: TextStyle(
+                                              color: Colors.blue.shade900,
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      )
+                                    ],
+                                  )
+                                ],
                               ),
                             ),
-                          );
-                        },
-                      )
-                    : Center(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: 17,
-                              width: 17,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                              ),
+                          ),
+                        );
+                      },
+                    )
+                  : Center(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: 17,
+                            width: 17,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
                             ),
-                            SizedBox(width: 10),
-                            Text(
-                              "Please Wait ...",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            "Please Wait ...",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-              )
-            ],
-          ),
+                    ),
+            )
+          ],
         ),
       ),
     );

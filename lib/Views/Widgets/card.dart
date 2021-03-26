@@ -1,5 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:myknott/Views/MapScreen.dart';
 import 'package:myknott/Views/secondScreen.dart';
 
 class Cards extends StatelessWidget {
@@ -7,7 +7,14 @@ class Cards extends StatelessWidget {
   final String time;
   final String notaryId;
   final String orderId;
-  const Cards({Key key, this.name, this.time, this.notaryId, this.orderId})
+  final String imageUrl;
+  const Cards(
+      {Key key,
+      this.name,
+      this.time,
+      this.notaryId,
+      this.orderId,
+      @required this.imageUrl})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -32,9 +39,18 @@ class Cards extends StatelessWidget {
                 //   width: 3,
                 // ),
                 CircleAvatar(
-                  backgroundColor: Colors.grey,
-                  maxRadius: 20,
-                  child: Image.asset('assets/avatar.webp'),
+                  backgroundColor: Colors.transparent,
+                  maxRadius: 25,
+                  child: imageUrl != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: CachedNetworkImage(
+                            height: 50,
+                            width: 50,
+                            imageUrl: imageUrl,
+                          ),
+                        )
+                      : Container(),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,

@@ -90,21 +90,54 @@ class AuthService {
         String userInfo = jsonEncode(response.data);
         await prefs.setString("userInfo", userInfo);
         await prefs.setBool("isloggedIn", true);
-        return {"status": 1, "isloggedSuccessful": true, "isregister": true};
+        return {
+          "status": 1,
+          "isloggedSuccessful": true,
+          "isregister": true,
+          "isapproved": true
+        };
       } else if (response.data['status'] == 1 &&
-          response.data['registered'] < 3)
+          response.data['registered'] == 3 &&
+          response.data['notary']['isApproved'] == false) {
+        print(response.data);
+        // debugPrint()
+        String userInfo = jsonEncode(response.data);
+        await prefs.setString("userInfo", userInfo);
         return {
           "status": response.data['status'],
           "isloggedSuccessful": true,
-          "isregister": false
+          "isregister": true,
+          "isapproved": false,
         };
-      else {
+      } else if (response.data['status'] == 1 &&
+          response.data['registered'] < 3) {
+        print(response.data);
+        // debugPrint()
+        String userInfo = jsonEncode(response.data);
+        await prefs.setString("userInfo", userInfo);
+        return {
+          "status": response.data['status'],
+          "isloggedSuccessful": true,
+          "isregister": false,
+          "isapproved": false,
+        };
+      } else {
         print("hello");
-        return {"status": 10, "isloggedSuccessful": false, "isregister": false};
+        return {
+          "status": 10,
+          "isloggedSuccessful": false,
+          "isregister": false,
+          "isapproved": false,
+        };
       }
     } catch (e) {
       print(e);
-      return {"status": 10, "isloggedSuccessful": false, "isregister": false};
+      return {
+        "status": 10,
+        "isloggedSuccessful": false,
+        "isregister": false,
+        "isapproved": false,
+      };
     }
   }
 

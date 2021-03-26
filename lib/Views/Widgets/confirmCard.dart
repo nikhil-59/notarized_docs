@@ -9,6 +9,7 @@ class ConfirmCards extends StatefulWidget {
   final String name;
   final String price;
   final String address;
+  final String imageUrl;
   const ConfirmCards(
       {Key key,
       this.name,
@@ -16,7 +17,8 @@ class ConfirmCards extends StatefulWidget {
       this.address,
       this.notaryId,
       this.orderId,
-      this.refresh})
+      this.refresh,
+      @required this.imageUrl})
       : super(key: key);
 
   @override
@@ -27,6 +29,7 @@ class _ConfirmCardsState extends State<ConfirmCards> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 0.5,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
@@ -41,11 +44,18 @@ class _ConfirmCardsState extends State<ConfirmCards> {
             child: ListTile(
               isThreeLine: true,
               leading: CircleAvatar(
-                backgroundColor: Colors.grey,
-                maxRadius: 20,
-                child: CachedNetworkImage(
-                    imageUrl:
-                        'https://cdn0.iconfinder.com/data/icons/avatar-78/128/12-512.png'),
+                backgroundColor: Colors.transparent,
+                maxRadius: 25,
+                child: widget.imageUrl != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: CachedNetworkImage(
+                          height: 50,
+                          width: 50,
+                          imageUrl: widget.imageUrl,
+                        ),
+                      )
+                    : Container(),
               ),
               title: Text(
                 widget.name,

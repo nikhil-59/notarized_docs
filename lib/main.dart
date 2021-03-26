@@ -9,10 +9,17 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:myknott/Views/Services/auth.dart';
 import 'package:myknott/Views/secondScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  if (message.data['type'] == 1 || message.data['type'] == '1') {
+    if (message.data['action'] == 'revoked') {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.clear();
+    }
+  }
   // AwesomeNotifications().initialize(null, [
   //   NotificationChannel(
   //       channelKey: 'notaryMessage',
