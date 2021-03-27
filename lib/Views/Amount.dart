@@ -35,7 +35,6 @@ class _AmountScreenState extends State<AmountScreen>
     map = await NotaryServices().getEarnings(widget.notaryId, i);
     if (i == map['pageNumber']) {
       hasMore = true;
-      print("true");
     }
     print(map);
     i += 1;
@@ -71,11 +70,11 @@ class _AmountScreenState extends State<AmountScreen>
         ),
       ),
       body: !isloading
-          ? RefreshIndicator(
-              onRefresh: () => getData(),
-              child: LazyLoadScrollView(
-                onEndOfPage: getmoreData,
-                isLoading: hasMore,
+          ? LazyLoadScrollView(
+              onEndOfPage: getmoreData,
+              isLoading: hasMore,
+              child: RefreshIndicator(
+                onRefresh: () => getData(),
                 child: SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
                   child: SafeArea(
@@ -211,7 +210,7 @@ class _AmountScreenState extends State<AmountScreen>
                                             )
                                           : Container(),
                                       title: Text(
-                                        "Refinance of ${map['customers'][index]['firstName'] + " " + map['customers'][index]['lastName']}",
+                                        "Refinance of ${map['payouts'][index]['appointment']['signerFullName']}",
                                         style: TextStyle(
                                             fontSize: 16.5,
                                             fontWeight: FontWeight.w700),

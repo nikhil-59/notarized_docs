@@ -77,21 +77,23 @@ class NotaryServices {
     print(response.data);
   }
 
-  getInProgressOrders(String notaryId) async {
+  getInProgressOrders(String notaryId, int pageNumber) async {
+    print(pageNumber);
     String jwt = await storage.read(key: 'jwt');
     dio.options.headers['auth_token'] = jwt;
     var response = await dio.post(
         "https://my-notary-app.herokuapp.com/notary/getInProgressOrders",
-        data: {"notaryId": notaryId, "PageNumber": "0"});
+        data: {"notaryId": notaryId, "pageNumber": pageNumber});
     return response.data;
   }
 
-  getCompletedOrders(String notaryId) async {
+  getCompletedOrders(String notaryId, int pageNumber) async {
+    print(pageNumber);
     String jwt = await storage.read(key: 'jwt');
     dio.options.headers['auth_token'] = jwt;
     var response = await dio.post(
         "https://my-notary-app.herokuapp.com/notary/getCompletedOrders",
-        data: {"notaryId": notaryId, "PageNumber": "0"});
+        data: {"notaryId": notaryId, "pageNumber": pageNumber});
     return response.data;
   }
 
