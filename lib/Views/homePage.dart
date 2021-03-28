@@ -4,12 +4,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:myknott/Views/CalenderScreen.dart';
 import 'package:myknott/Views/ProgessScreen.dart';
 import 'package:myknott/Views/Services/auth.dart';
 import 'package:myknott/Views/UserProfile.dart';
-import 'package:myknott/Views/WaitingScreen.dart';
 import 'package:myknott/Views/Widgets/card.dart';
 import 'package:myknott/Views/Widgets/confirmCard.dart';
 import 'package:myknott/Views/secondScreen.dart';
@@ -410,10 +410,42 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               ),
                                       ),
                                     )
-                                  : Text(
-                                      "You don't have any appointments today.",
-                                      style: TextStyle(
-                                        fontSize: 15.8,
+                                  : Container(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            height: 30,
+                                          ),
+                                          SvgPicture.asset(
+                                            "assets/calendar.svg",
+                                            height: 100,
+                                            width: 100,
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 30.0),
+                                            child: Text(
+                                              "You don't have any appointments for today.",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 17,
+                                                  color: Colors.black
+                                                      .withOpacity(0.8),
+                                                  fontWeight: FontWeight.w700),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                        ],
                                       ),
                                     ),
                               SizedBox(
@@ -477,12 +509,58 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           ),
                                       ],
                                     )
-                                  : Text(
-                                      "You don't have any pending requests.",
-                                      style: TextStyle(
-                                        fontSize: 15.8,
+                                  : Container(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            height: 30,
+                                          ),
+                                          SvgPicture.asset(
+                                            "assets/checklist.svg",
+                                            height: 100,
+                                            width: 100,
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20.0),
+                                            child: Text(
+                                              "You don't have any pending requests",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 17,
+                                                  color: Colors.black
+                                                      .withOpacity(0.8),
+                                                  fontWeight: FontWeight.w700),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 40.0),
+                                            child: Text(
+                                              "Tip: Accept Appointments as soon you receive message",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 15.5,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
+                              SizedBox(
+                                height: 20,
+                              ),
                             ],
                           ),
                         ),

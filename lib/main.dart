@@ -1,14 +1,13 @@
 import 'dart:async';
-
-import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:myknott/Views/NoInternetScreen.dart';
 import 'package:myknott/Views/Services/auth.dart';
-import 'package:myknott/Views/secondScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
@@ -63,13 +62,24 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  await getToken();
-  FirebaseMessaging.instance.getToken().then((value) => print(value));
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  bool isInternet = true;
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult == ConnectivityResult.none) {
+    print("internet is off");
+
+    isInternet = false;
+  } else {
+    await Firebase.initializeApp();
+    await getToken();
+    FirebaseMessaging.instance.getToken().then((value) => print(value));
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  }
+
   // FirebaseMessaging.onMessageOpenedApp.asBroadcastStream(
   //     onListen: (message) => handleNotificationClick(message));
-  runApp(MyApp());
+  runApp(MyApp(
+    isInternet: isInternet,
+  ));
 }
 
 getToken() async {
@@ -82,6 +92,9 @@ getToken() async {
 }
 
 class MyApp extends StatelessWidget {
+  final bool isInternet;
+
+  const MyApp({Key key, @required this.isInternet}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -104,7 +117,7 @@ class MyApp extends StatelessWidget {
             900: Color(0xFF1565C0),
           }),
           fontFamily: "Whitney"),
-      home: AuthService().handleAuth(),
+      home: isInternet ? AuthService().handleAuth() : NoInternetScreen(),
       builder: EasyLoading.init(),
       // home: WaitingScreen(),
     );

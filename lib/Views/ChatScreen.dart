@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/category_icons.dart';
 import 'package:emoji_picker_flutter/config.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -309,11 +310,17 @@ Widget leftChild(messageList, index) {
                 radius: 25,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(25),
-                  child: Image.network(
-                    messageList[index]['sentBy']['userImageURL'],
-                    height: 40,
-                    width: 40,
-                  ),
+                  child: messageList[index]['sentBy']['userImageURL'] != null
+                      ? CachedNetworkImage(
+                          imageUrl: messageList[index]['sentBy']
+                              ['userImageURL'],
+                          height: 40,
+                          width: 40,
+                        )
+                      : Container(
+                          height: 40,
+                          width: 40,
+                        ),
                 ),
               ),
               SizedBox(

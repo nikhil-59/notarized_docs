@@ -87,7 +87,7 @@ class _SecondScreenState extends State<SecondScreen>
     bool ispending = isPending ?? widget.isPending;
     print(widget.orderId);
     return Scaffold(
-      // backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           "Order Details",
@@ -1601,6 +1601,8 @@ class _SecondScreenState extends State<SecondScreen>
                                     height: 20,
                                   ),
                                   Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "Address",
@@ -1609,16 +1611,22 @@ class _SecondScreenState extends State<SecondScreen>
                                                 Colors.black.withOpacity(0.8),
                                             fontSize: 17),
                                       ),
+                                      SizedBox(
+                                        width: 15,
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          "${orders['order']['appointment']['signerAddress']}",
+                                          style: TextStyle(
+                                              color:
+                                                  Colors.black.withOpacity(0.8),
+                                              fontSize: 17),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   SizedBox(
                                     height: 10,
-                                  ),
-                                  Text(
-                                    "${orders['order']['appointment']['signerAddress']}",
-                                    style: TextStyle(
-                                        color: Colors.black.withOpacity(0.8),
-                                        fontSize: 17),
                                   ),
                                 ],
                               ),
