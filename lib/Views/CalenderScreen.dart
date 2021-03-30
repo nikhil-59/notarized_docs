@@ -168,10 +168,11 @@ class _CalenderScreenState extends State<CalenderScreen>
                                               Text(
                                                 DateFormat('MMM-d-yyyy hh:mm a')
                                                     .format(DateTime.parse(
-                                                        data['appointments']
-                                                                    [index]
-                                                                ['appointment']
-                                                            ['time'])),
+                                                            data['appointments']
+                                                                        [index][
+                                                                    'appointment']
+                                                                ['time'])
+                                                        .toLocal()),
                                                 style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 16,
@@ -232,7 +233,7 @@ class _CalenderScreenState extends State<CalenderScreen>
                                         "You don't have any appointments for ${DateFormat('MM-dd-y').format(dateTime)}.",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                            fontSize: 17,
+                                            fontSize: 16,
                                             color:
                                                 Colors.black.withOpacity(0.8),
                                             fontWeight: FontWeight.w700),

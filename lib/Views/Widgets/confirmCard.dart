@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:future_button/future_button.dart';
 import 'package:myknott/Views/Services/Services.dart';
 
 class ConfirmCards extends StatefulWidget {
@@ -42,16 +43,16 @@ class _ConfirmCardsState extends State<ConfirmCards> {
           Padding(
             padding: const EdgeInsets.all(2.0),
             child: ListTile(
-              isThreeLine: true,
+              // isThreeLine: true,
               leading: CircleAvatar(
                 backgroundColor: Colors.transparent,
-                maxRadius: 25,
+                maxRadius: widget.imageUrl != null ? 20 : 0,
                 child: widget.imageUrl != null
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(50),
                         child: CachedNetworkImage(
-                          height: 50,
-                          width: 50,
+                          height: 40,
+                          width: 40,
                           imageUrl: widget.imageUrl,
                         ),
                       )
@@ -61,6 +62,7 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                 widget.name,
                 style: TextStyle(fontSize: 15.5, fontWeight: FontWeight.bold),
               ),
+              // dense: true,
               trailing: Text(
                 "\$ ${widget.price}",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -75,12 +77,12 @@ class _ConfirmCardsState extends State<ConfirmCards> {
           ),
           Container(
             width: MediaQuery.of(context).size.width - 120,
-            height: 0.8,
+            height: 0.5,
             child: Text(""),
             decoration: BoxDecoration(
               border: Border(
                 top: BorderSide(
-                    color: Colors.black.withOpacity(0.3), width: 0.8),
+                    color: Colors.black.withOpacity(0.3), width: 0.5),
               ),
             ),
           ),
@@ -90,7 +92,20 @@ class _ConfirmCardsState extends State<ConfirmCards> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              MaterialButton(
+              FutureFlatButton(
+                disabledColor: Colors.yellow,
+                progressIndicatorBuilder: (context) => SizedBox(
+                  height: 17,
+                  width: 17,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.black.withOpacity(0.5),
+                      ),
+                      strokeWidth: 2,
+                    ),
+                  ),
+                ),
                 onPressed: () async {
                   await NotaryServices()
                       .declineNotary(widget.notaryId, widget.orderId);
@@ -108,16 +123,42 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              MaterialButton(
+              FutureFlatButton(
+                disabledColor: Colors.blue.shade700,
+                progressIndicatorBuilder: (context) => SizedBox(
+                  height: 17,
+                  width: 17,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      strokeWidth: 2,
+                    ),
+                  ),
+                ),
                 onPressed: () async {
                   await NotaryServices()
                       .acceptNotary(widget.notaryId, widget.orderId);
                   await widget.refresh();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: Colors.blue.shade700,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(7),
+                      ),
+                      content: Text(
+                        "Order Accepted..",
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  );
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
-                color: Colors.blue.shade900,
+                color: Colors.blue.shade700,
                 child: Text(
                   "Accept",
                   style: TextStyle(

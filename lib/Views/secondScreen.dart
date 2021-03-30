@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:future_button/future_button.dart';
 import 'package:intl/intl.dart';
 import 'package:myknott/Views/ChatScreen.dart';
 import 'package:myknott/Views/DocumentScreen.dart';
@@ -104,7 +105,7 @@ class _SecondScreenState extends State<SecondScreen>
             unselectedLabelColor: Colors.black.withOpacity(0.7),
             controller: tabController,
             isScrollable: true,
-            indicatorColor: Colors.blue.shade900,
+            indicatorColor: Colors.blue.shade700,
             indicatorWeight: 2.5,
             indicatorSize: TabBarIndicatorSize.tab,
             tabs: [
@@ -179,13 +180,27 @@ class _SecondScreenState extends State<SecondScreen>
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    MaterialButton(
+                                    FutureFlatButton(
+                                      disabledColor: Colors.yellow,
+                                      // disabledTextColor: ,
+                                      progressIndicatorBuilder: (context) =>
+                                          SizedBox(
+                                        height: 17,
+                                        width: 17,
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                              Colors.black.withOpacity(0.5),
+                                            ),
+                                            strokeWidth: 2,
+                                          ),
+                                        ),
+                                      ),
                                       onPressed: () async {
-                                        setState(() {
-                                          ispending = false;
-                                        });
                                         await NotaryServices().declineNotary(
                                             widget.notaryId, widget.orderId);
+                                        Navigator.of(context).pop();
                                       },
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5),
@@ -200,18 +215,32 @@ class _SecondScreenState extends State<SecondScreen>
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ),
-                                    MaterialButton(
+                                    FutureFlatButton(
+                                      disabledColor: Colors.blue.shade700,
+                                      progressIndicatorBuilder: (context) =>
+                                          SizedBox(
+                                        height: 17,
+                                        width: 17,
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    Colors.white),
+                                            strokeWidth: 2,
+                                          ),
+                                        ),
+                                      ),
                                       onPressed: () async {
+                                        await NotaryServices().acceptNotary(
+                                            widget.notaryId, widget.orderId);
                                         setState(() {
                                           isPending = false;
                                         });
-                                        await NotaryServices().acceptNotary(
-                                            widget.notaryId, widget.orderId);
                                       },
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5),
                                       ),
-                                      color: Colors.blue.shade900,
+                                      color: Colors.blue.shade700,
                                       child: Text(
                                         "Accept",
                                         style: TextStyle(
@@ -238,7 +267,7 @@ class _SecondScreenState extends State<SecondScreen>
                                 ),
                               ),
                               MaterialButton(
-                                color: Colors.blue.shade900,
+                                color: Colors.blue.shade700,
                                 height: 45,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5),
@@ -1005,7 +1034,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                             DateTime.parse(
                                                               orders['order'][
                                                                   'confirmedAt'],
-                                                            ),
+                                                            ).toLocal(),
                                                           ),
                                                           textAlign:
                                                               TextAlign.center,
@@ -1043,7 +1072,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                             DateTime.parse(
                                                               orders['order'][
                                                                   'docsDownloadedAt'],
-                                                            ),
+                                                            ).toLocal(),
                                                           ),
                                                           textAlign:
                                                               TextAlign.center,
@@ -1081,7 +1110,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                             DateTime.parse(
                                                               orders['order'][
                                                                   'notaryArrivedAt'],
-                                                            ),
+                                                            ).toLocal(),
                                                           ),
                                                           textAlign:
                                                               TextAlign.center,
@@ -1118,7 +1147,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                             DateTime.parse(
                                                               orders['order'][
                                                                   'signingCompletedAt'],
-                                                            ),
+                                                            ).toLocal(),
                                                           ),
                                                           textAlign:
                                                               TextAlign.center,
@@ -1155,7 +1184,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                             DateTime.parse(
                                                               orders['order'][
                                                                   'deliveredAt'],
-                                                            ),
+                                                            ).toLocal(),
                                                           ),
                                                           textAlign:
                                                               TextAlign.center,
@@ -1299,8 +1328,8 @@ class _SecondScreenState extends State<SecondScreen>
                                           SizedBox(
                                             child: Text(
                                               orders['order']['appointment']
-                                                      ['propertyAddress'] +
-                                                  "    ",
+                                                      ['place'] ??
+                                                  "" + "    ",
                                               textAlign: TextAlign.start,
                                               // maxLines: ,
                                               style: TextStyle(
@@ -1317,7 +1346,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                   DateTime.parse(
                                                     orders["order"]
                                                         ["appointment"]["time"],
-                                                  ),
+                                                  ).toLocal(),
                                                 ),
                                             style: TextStyle(
                                               fontSize: 16,
@@ -1333,7 +1362,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                   DateTime.parse(
                                                     orders["order"]
                                                         ["appointment"]["time"],
-                                                  ),
+                                                  ).toLocal(),
                                                 ),
                                             style: TextStyle(
                                               fontSize: 16,

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/category_icons.dart';
 import 'package:emoji_picker_flutter/config.dart';
@@ -87,9 +89,32 @@ class _ChatScreenState extends State<ChatScreen>
     print(messageList.length);
   }
 
+  setNewMessageToList(message) {
+    var newData = json.decode(message['sentBy']);
+    print("new message type type 3");
+    messageList.insert(0, {
+      "sentAt": message['sendAt'],
+      "_id": message['_id'],
+      "message": message['message'],
+      "sentBy": {
+        "_id": newData['_id'] ?? "",
+        "firstName": newData['firstName'] ?? "",
+        "lastName": newData['lastName'] ?? "",
+        "phoneNumber": newData['phoneNumber'] ?? "",
+        "phoneCountryCode": "+1",
+        "email": newData['email'] ?? "",
+        "userImageURL": newData['userImageURL'] ?? ""
+      },
+      "sentByModel": "Notary",
+      "chatroom": "603768d8c54c430015c9bdbc",
+      "__v": 0
+    });
+    setState(() {});
+  }
+
   saveMessageToMessageList(message) {
     messageList.insert(0, {
-      "sentAt": "2021-03-24T14:38:00.074Z",
+      "sentAt": DateTime.now().toIso8601String(),
       "seenByNotary": false,
       "seenByCustomer": false,
       "_id": "605b4ec86f1bf80015330011",
@@ -113,10 +138,9 @@ class _ChatScreenState extends State<ChatScreen>
 
   handleNotificationClick(RemoteMessage message) async {
     // For handling new message notification
-    if (message.data['type'] == 0 || message.data['type'] == "0") {
-      getMessages(message.data['chatroom']);
-    } else {
-      print("type 1 action is triggered");
+    if (message.data['type'] == "3" || message.data['type'] == "0") {
+      print("new message");
+      setNewMessageToList(message.data);
     }
   }
 
@@ -133,160 +157,172 @@ class _ChatScreenState extends State<ChatScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            // height: 50,
-            color: Color(0xFFF2F2F2),
-            width: MediaQuery.of(context).size.width,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 8,
-                ),
-                GestureDetector(
-                  onTap: () => setState(() {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    openEmoji = !openEmoji;
-                  }),
-                  child: CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.red.shade700,
-                    child: Icon(
-                      Icons.emoji_emotions,
-                      color: Colors.white,
-                    ),
+    return WillPopScope(
+      onWillPop: () {
+        if (openEmoji) {
+          openEmoji = false;
+          setState(() {});
+          return Future<bool>.value(false);
+        }
+        return Future<bool>.value(true);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        bottomNavigationBar: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              // height: 50,
+              color: Color(0xFFF2F2F2),
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 8,
                   ),
-                ),
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Container(
-                      child: TextField(
-                        controller: messageController,
-                        onTap: () {
-                          setState(() {
-                            openEmoji = false;
-                          });
-                        },
-                        maxLines: 1,
-                        cursorColor: Colors.black,
-                        style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.bold),
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Enter Message..."),
+                  GestureDetector(
+                    onTap: () => setState(() {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      openEmoji = !openEmoji;
+                    }),
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.red.shade700,
+                      child: Icon(
+                        Icons.emoji_emotions,
+                        color: Colors.white,
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: () async {
-                      if (messageController.text.isNotEmpty) {
-                        final String message = messageController.text;
-                        saveMessageToMessageList(message);
-                        messageController.clear();
-                        await NotaryServices().sendMessage(
-                          message: message,
-                          notaryId: widget.notaryId,
-                          chatRoom: widget.chatRoom,
-                        );
-                        setState(() {});
-                        // await getMessages();
-                      }
-                    },
-                    child: CircleAvatar(
-                      radius: 23,
-                      backgroundColor: Colors.blue.shade800,
-                      child: Center(
-                        child: Icon(
-                          Icons.send_rounded,
-                          color: Colors.white,
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Container(
+                        child: TextField(
+                          controller: messageController,
+                          onTap: () {
+                            setState(() {
+                              openEmoji = false;
+                            });
+                          },
+                          maxLines: 1,
+                          cursorColor: Colors.black,
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.bold),
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "Enter Message..."),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          openEmoji
-              ? SizedBox(
-                  height: 300,
-                  child: EmojiPicker(
-                    config: Config(
-                        initCategory: Category.RECENT,
-                        bgColor: Color(0xFFF2F2F2),
-                        // bgColor: Colors.white,
-                        indicatorColor: Colors.blue.shade800,
-                        iconColor: Colors.grey,
-                        iconColorSelected: Colors.blue.shade800,
-                        progressIndicatorColor: Colors.transparent,
-                        showRecentsTab: true,
-                        recentsLimit: 28,
-                        emojiSizeMax: 28,
-                        categoryIcons: CategoryIcons(
-                            foodIcon: FontAwesomeIcons.appleAlt,
-                            travelIcon: Icons.location_pin),
-                        horizontalSpacing: 0,
-                        verticalSpacing: 0,
-                        noRecentsText: "No Recents",
-                        noRecentsStyle: const TextStyle(
-                            fontSize: 20, color: Colors.black26),
-                        buttonMode: ButtonMode.CUPERTINO),
-                    onEmojiSelected: (emoji, category) {
-                      messageController.text += category.emoji;
-                      print(emoji);
-                    },
-                  ),
-                )
-              : Container(),
-        ],
-      ),
-      body: !isloading
-          ? LazyLoadScrollView(
-              isLoading: hasData,
-              onEndOfPage: loadmoreMessage,
-              child: ListView.builder(
-                reverse: true,
-                itemCount: messageList.length,
-                physics: BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return messageList[index]['sentBy']['_id'] == widget.notaryId
-                      ? Container(
-                          child: rightChild(messageList, index),
-                        )
-                      : Container(
-                          child: leftChild(messageList, index),
-                        );
-                },
-              ),
-            )
-          : Center(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 17,
-                    width: 17,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () async {
+                        if (messageController.text.isNotEmpty) {
+                          final String message = messageController.text;
+                          saveMessageToMessageList(message);
+                          messageController.clear();
+                          await NotaryServices().sendMessage(
+                            message: message,
+                            notaryId: widget.notaryId,
+                            chatRoom: widget.chatRoom,
+                          );
+                          setState(() {});
+                          // await getMessages();
+                        }
+                      },
+                      child: CircleAvatar(
+                        radius: 23,
+                        backgroundColor: Colors.blue.shade800,
+                        child: Center(
+                          child: Icon(
+                            Icons.send_rounded,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    "Please Wait ...",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ),
+            openEmoji
+                ? SizedBox(
+                    height: 300,
+                    child: EmojiPicker(
+                      config: Config(
+                          initCategory: Category.RECENT,
+                          bgColor: Color(0xFFF2F2F2),
+                          // bgColor: Colors.white,
+                          indicatorColor: Colors.blue.shade800,
+                          iconColor: Colors.grey,
+                          iconColorSelected: Colors.blue.shade800,
+                          progressIndicatorColor: Colors.transparent,
+                          showRecentsTab: true,
+                          recentsLimit: 28,
+                          emojiSizeMax: 28,
+                          categoryIcons: CategoryIcons(
+                              foodIcon: FontAwesomeIcons.appleAlt,
+                              travelIcon: Icons.location_pin),
+                          horizontalSpacing: 0,
+                          verticalSpacing: 0,
+                          noRecentsText: "No Recents",
+                          noRecentsStyle: const TextStyle(
+                              fontSize: 20, color: Colors.black26),
+                          buttonMode: ButtonMode.CUPERTINO),
+                      onEmojiSelected: (emoji, category) {
+                        messageController.text += category.emoji;
+                        print(emoji);
+                      },
+                    ),
+                  )
+                : Container(),
+          ],
+        ),
+        body: !isloading
+            ? LazyLoadScrollView(
+                isLoading: hasData,
+                onEndOfPage: loadmoreMessage,
+                child: ListView.builder(
+                  reverse: true,
+                  itemCount: messageList.length,
+                  physics: BouncingScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return messageList[index]['sentBy']['_id'] ==
+                            widget.notaryId
+                        ? Container(
+                            child: rightChild(messageList, index),
+                          )
+                        : Container(
+                            child: leftChild(messageList, index),
+                          );
+                  },
+                ),
+              )
+            : Center(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 17,
+                      width: 17,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      "Please Wait ...",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+      ),
     );
   }
 
@@ -296,7 +332,7 @@ class _ChatScreenState extends State<ChatScreen>
 
 Widget leftChild(messageList, index) {
   return Padding(
-    padding: const EdgeInsets.only(left: 2.0, top: 6.0, bottom: 2.0),
+    padding: const EdgeInsets.only(left: 2.0, top: 6.0, bottom: 2.0, right: 40),
     child: Column(
       children: [
         Container(
@@ -314,13 +350,10 @@ Widget leftChild(messageList, index) {
                       ? CachedNetworkImage(
                           imageUrl: messageList[index]['sentBy']
                               ['userImageURL'],
-                          height: 40,
-                          width: 40,
+                          height: 25,
+                          width: 25,
                         )
-                      : Container(
-                          height: 40,
-                          width: 40,
-                        ),
+                      : Container(),
                 ),
               ),
               SizedBox(
@@ -337,7 +370,7 @@ Widget leftChild(messageList, index) {
                     child: Text(
                       messageList[index]['message'],
                       style: TextStyle(
-                        fontSize: 16.5,
+                        fontSize: 15.5,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -347,6 +380,7 @@ Widget leftChild(messageList, index) {
             ],
           ),
         ),
+        SizedBox(height: 5),
       ],
     ),
   );
@@ -356,14 +390,14 @@ Widget rightChild(messageList, index) {
   return Padding(
     padding: const EdgeInsets.only(right: 5.0, top: 6.0, bottom: 8),
     child: Column(
-      mainAxisSize: MainAxisSize.max,
+      // mainAxisSize: MainAxisSize.max,
       // crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Container(
           child: Row(
             children: [
               SizedBox(
-                width: 3,
+                width: 40,
               ),
               Flexible(
                 child: Bubble(
@@ -372,8 +406,9 @@ Widget rightChild(messageList, index) {
                   color: Colors.blue.shade800,
                   child: Text(
                     messageList[index]['message'],
+                    // textAlign: TextAlign.end,
                     style: TextStyle(
-                      fontSize: 16.5,
+                      fontSize: 15.5,
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
                     ),
@@ -383,6 +418,7 @@ Widget rightChild(messageList, index) {
             ],
           ),
         ),
+        SizedBox(height: 5),
       ],
     ),
   );

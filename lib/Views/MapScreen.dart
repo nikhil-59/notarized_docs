@@ -15,20 +15,41 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen>
     with AutomaticKeepAliveClientMixin<MapScreen> {
+  List<Marker> _markers = <Marker>[];
+
+  @override
+  void initState() {
+    _markers.add(
+      Marker(
+          markerId: MarkerId("hello"),
+          position: widget.orderInfo['order']['appointment']['latitude'] == null
+              ? LatLng(28.7041, 77.1025)
+              : LatLng(
+                  widget.orderInfo['order']['appointment']['latitude'],
+                  widget.orderInfo['order']['appointment']['longitude'],
+                )),
+    );
+    super.initState();
+  }
+
   @override
   bool get wantKeepAlive => true;
-  @override
-  List<Marker> _markers = <Marker>[
-    Marker(markerId: MarkerId("hello"), position: LatLng(28.7041, 77.1025))
-  ];
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           GoogleMap(
             markers: Set<Marker>.of(_markers),
-            initialCameraPosition:
-                CameraPosition(target: LatLng(28.7041, 77.1025), zoom: 12),
+            initialCameraPosition: CameraPosition(
+                target: widget.orderInfo['order']['appointment']['latitude'] ==
+                        null
+                    ? LatLng(28.7041, 77.1025)
+                    : LatLng(
+                        widget.orderInfo['order']['appointment']['latitude'],
+                        widget.orderInfo['order']['appointment']['longitude'],
+                      ),
+                zoom: 15),
           ),
           widget.orderInfo.isNotEmpty
               ? SlidingUpPanel(
@@ -106,10 +127,9 @@ class _MapScreenState extends State<MapScreen>
                                           SizedBox(
                                             child: Text(
                                               widget.orderInfo['order']
-                                                              ['appointment']
-                                                          ['propertyAddress'] +
-                                                      "    " ??
-                                                  "",
+                                                          ['appointment']
+                                                      ['place'] ??
+                                                  "" + "    ",
                                               textAlign: TextAlign.start,
                                               // maxLines: ,
                                               style: TextStyle(
@@ -128,7 +148,7 @@ class _MapScreenState extends State<MapScreen>
                                                                 ["appointment"]
                                                             ["time"] ??
                                                         "",
-                                                  ),
+                                                  ).toLocal(),
                                                 ),
                                             style: TextStyle(
                                               fontSize: 16,

@@ -18,12 +18,13 @@ class NotaryServices {
   }
 
   declineNotary(String notaryId, String orderId) async {
+    // print
     try {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderIdToDecline": orderId, "notaryId": notaryId};
       dio.options.headers['auth_token'] = jwt;
       var response = await dio.post(
-          "https://my-notary-app.herokuapp.com/notary/acceptOrder",
+          "https://my-notary-app.herokuapp.com/notary/declineOrder",
           data: body);
       print(response.data);
     } catch (e) {}

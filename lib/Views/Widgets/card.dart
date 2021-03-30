@@ -1,149 +1,143 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:myknott/Views/secondScreen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Cards extends StatelessWidget {
   final String name;
   final String time;
+  final String phone;
   final String notaryId;
   final String orderId;
   final String imageUrl;
+  final String place;
   const Cards(
       {Key key,
       this.name,
+      @required this.place,
       this.time,
       this.notaryId,
       this.orderId,
-      @required this.imageUrl})
+      @required this.imageUrl,
+      this.phone})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
-      ),
-      elevation: 0.4,
-      child: Container(
-        width: MediaQuery.of(context).size.width - 100,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 20,
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SecondScreen(
+              isPending: false,
+              notaryId: notaryId,
+              orderId: orderId,
+              messageTrigger: false,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                // SizedBox(
-                //   width: 3,
-                // ),
-                CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  maxRadius: 25,
-                  child: imageUrl != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: CachedNetworkImage(
-                            height: 50,
-                            width: 50,
-                            imageUrl: imageUrl,
+          ),
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        elevation: 0.6,
+        child: Container(
+          width: MediaQuery.of(context).size.width - 75,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: ListTile(
+                  isThreeLine: true,
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          await launch("tel:$phone");
+                        },
+                        child: CircleAvatar(
+                          radius: 17,
+                          backgroundColor: Colors.green.shade600,
+                          child: Icon(
+                            Icons.phone,
+                            size: 20,
+                            color: Colors.white,
                           ),
-                        )
-                      : Container(),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      name,
-                      style: TextStyle(
-                          fontSize: 16.5, fontWeight: FontWeight.w400),
-                    ),
-                    Text(
-                      time,
-                      style: TextStyle(
-                          fontSize: 16.5, fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
-                Icon(
-                  Icons.location_on_outlined,
-                  color: Colors.blue.shade900,
-                  size: 35,
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Container(
-              width: MediaQuery.of(context).size.width - 150,
-              height: 0.4,
-              child: Text(""),
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                      color: Colors.black.withOpacity(0.3), width: 0.4),
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Status",
-                      style: TextStyle(fontSize: 15.5),
-                    ),
-                    Text(
-                      "Arrived At appointment",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    )
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => SecondScreen(
-                          isPending: false,
-                          notaryId: notaryId,
-                          orderId: orderId,
                         ),
                       ),
-                    );
-                  },
-                  child: Column(
-                    children: [
-                      Text(
-                        "Update",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.blue.shade900,
-                            fontWeight: FontWeight.bold),
+                      SizedBox(
+                        width: 15,
                       ),
-                      Text(
-                        "Status",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.blue.shade900,
-                            fontWeight: FontWeight.bold),
+                      GestureDetector(
+                        onTap: () async {
+                          await launch('sms:$phone');
+                        },
+                        child: CircleAvatar(
+                          radius: 17,
+                          backgroundColor: Colors.blue.shade700,
+                          child: Icon(
+                            Icons.chat_bubble,
+                            size: 19.5,
+                            color: Colors.white,
+                          ),
+                        ),
                       )
                     ],
                   ),
-                )
-              ],
-            )
-          ],
+                  title: Text(
+                    name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        place ?? "",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 15.5, color: Colors.black),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        time ?? "",
+                        style: TextStyle(fontSize: 15.5, color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(5),
+                  bottomRight: Radius.circular(5),
+                ),
+                child: Container(
+                  color: Colors.blue.shade700,
+                  height: 45,
+                  child: Center(
+                      child: Text(
+                    "Update Status",
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white),
+                  )),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

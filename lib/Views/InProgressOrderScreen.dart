@@ -119,7 +119,7 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                                     fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
-                                "Order Placed at ${DateFormat('MM/dd/yyyy hh:mm a').format(DateTime.parse(orders['orders'][index]['createdAt']))} ",
+                                "Order Placed at ${DateFormat('MM/dd/yyyy hh:mm a').format(DateTime.parse(orders['orders'][index]['createdAt']).toLocal())} ",
                                 style: TextStyle(fontSize: 16),
                               ),
                             ),

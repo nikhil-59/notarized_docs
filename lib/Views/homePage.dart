@@ -38,26 +38,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   handleForegroundNotification(RemoteMessage message) async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     if (message.data['type'] == 2 || message.data['type'] == "2") {
-      {
-        print("new order");
-        pendingList.clear();
-        String jwt = await storage.read(key: 'jwt');
-        dio.options.headers['auth_token'] = jwt;
-        Map data = {"notaryId": userInfo['notary']['_id'], "pageNumber": "0"};
-        var response = await dio.post(
-            "https://my-notary-app.herokuapp.com/notary/getInvites/",
-            data: data);
-        for (var item in response.data["orders"]) {
-          pendingList.add(
-            {
-              "id": item["_id"],
-              "amount": item["amount"],
-              "name": item["appointment"]["signerFullName"],
-              "address": item["appointment"]["propertyAddress"],
-              "logo": item["appointment"]["userImageURL"]
-            },
-          );
-        }
+      print("new order");
+      pendingList.clear();
+      String jwt = await storage.read(key: 'jwt');
+      dio.options.headers['auth_token'] = jwt;
+      Map data = {"notaryId": userInfo['notary']['_id'], "pageNumber": "0"};
+      var response = await dio.post(
+          "https://my-notary-app.herokuapp.com/notary/getInvites/",
+          data: data);
+      for (var item in response.data["orders"]) {
+        pendingList.add(
+          {
+            "id": item["_id"],
+            "amount": item["amount"],
+            "name": item["appointment"]["signerFullName"],
+            "address": item["appointment"]["propertyAddress"],
+            "logo": item["customer"]["userImageURL"]
+          },
+        );
       }
       setState(() {});
     } else if (message.data['type'] == 1 || message.data['type'] == "1") {
@@ -171,7 +169,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           "name": i['appointment']["signerFullName"],
           "phone": i['appointment']["signerPhoneNumber"],
           "orderId": i["orderId"],
-          "logo": i['customer']['userImageURL']
+          "logo": i['customer']['userImageURL'],
+          "place": i['appointment']['place']
         });
         setState(() {});
       }
@@ -211,7 +210,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             "amount": item["amount"],
             "name": item["appointment"]["signerFullName"],
             "address": item["appointment"]["propertyAddress"],
-            "logo": item["appointment"]["userImageURL"]
+            "logo": item["customer"]["userImageURL"]
           },
         );
         declineLoader.add(false);
@@ -320,7 +319,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     " " +
                                     userInfo['notary']['lastName'],
                                 style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.w700),
+                                    fontSize: 16.5,
+                                    fontWeight: FontWeight.w700),
                               ),
                               SizedBox(
                                 height: 10,
@@ -378,6 +378,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                             ? 0.0
                                                             : 1.0,
                                                     child: Cards(
+                                                      // place: userInfo[],
                                                       notaryId:
                                                           userInfo['notary']
                                                               ['_id'],
@@ -387,13 +388,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       name:
                                                           appointmentList[index]
                                                               ['name'],
+                                                      place:
+                                                          appointmentList[index]
+                                                              ['place'],
                                                       time: DateFormat("h:mm a")
                                                           .format(
                                                         DateTime.parse(
                                                           appointmentList[index]
                                                               ['date'],
-                                                        ),
+                                                        ).toLocal(),
                                                       ),
+                                                      phone:
+                                                          appointmentList[index]
+                                                              ['phone'],
                                                       imageUrl:
                                                           appointmentList[index]
                                                               ["logo"],
@@ -436,7 +443,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               "You don't have any appointments for today.",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                  fontSize: 17,
+                                                  fontSize: 16,
                                                   color: Colors.black
                                                       .withOpacity(0.8),
                                                   fontWeight: FontWeight.w700),
@@ -535,7 +542,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               "You don't have any pending requests",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                  fontSize: 17,
+                                                  fontSize: 16,
                                                   color: Colors.black
                                                       .withOpacity(0.8),
                                                   fontWeight: FontWeight.w700),
@@ -566,12 +573,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
                       ),
                     )
-                  // : Center(
-                  //     child: SpinKitWave(
-                  //       color: Colors.grey,
-                  //       size: 40,
-                  //     ),
-                  //   )
                   : Center(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,

@@ -89,6 +89,10 @@ class _AuthScreenState extends State<AuthScreen> {
                     children: [
                       MaterialButton(
                         elevation: 0,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(7),
                         ),
@@ -178,6 +182,10 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                       MaterialButton(
                           elevation: 0,
+                          hoverColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(7)),
                           color: Colors.grey.shade200,
@@ -291,7 +299,6 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                       TextField(
                         cursorColor: Colors.black,
-                        // cursorWidth: 3,
                         controller: emailController,
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(

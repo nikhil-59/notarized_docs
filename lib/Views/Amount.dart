@@ -197,29 +197,23 @@ class _AmountScreenState extends State<AmountScreen>
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: ListTile(
-                                            leading: map['notary']
-                                                        ['userImageURL'] !=
-                                                    null
-                                                ? ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            50),
-                                                    child: map['customers']
-                                                                    [index][
-                                                                'userImageURL'] !=
-                                                            null
-                                                        ? CachedNetworkImage(
-                                                            imageUrl:
-                                                                "${map['customers'][index]['userImageURL']}",
-                                                            height: 45,
-                                                            width: 45,
-                                                          )
-                                                        : Container(
-                                                            height: 45,
-                                                            width: 45,
-                                                          ),
-                                                  )
-                                                : Container(),
+                                            leading: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                              child: map['customers'][index]
+                                                          ['userImageURL'] !=
+                                                      null
+                                                  ? CachedNetworkImage(
+                                                      imageUrl:
+                                                          "${map['customers'][index]['userImageURL']}",
+                                                      height: 45,
+                                                      width: 45,
+                                                    )
+                                                  : Container(
+                                                      height: 0,
+                                                      width: 0,
+                                                    ),
+                                            ),
                                             title: Text(
                                               "Refinance of ${map['payouts'][index]['appointment']['signerFullName']}",
                                               style: TextStyle(

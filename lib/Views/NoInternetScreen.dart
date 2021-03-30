@@ -76,17 +76,17 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
               // height: 120,
             ),
             SizedBox(
-              height: 12,
+              height: 15,
             ),
             Text(
               "No Internet Connection",
               style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: Colors.black.withOpacity(0.8)),
             ),
             SizedBox(
-              height: 5,
+              height: 10,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
@@ -94,7 +94,7 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
                 "Please check your internet connection and try again.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16.5,
                     // fontWeight: FontWeight.w700,
                     color: Colors.black.withOpacity(0.8)),
               ),
@@ -109,7 +109,7 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
                     child: CircularProgressIndicator(
                       valueColor:
                           AlwaysStoppedAnimation<Color>(Colors.red.shade800),
-                      strokeWidth: 2,
+                      strokeWidth: 2.5,
                     ),
                   )
                 : Container(
