@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MapScreen extends StatefulWidget {
   final Map orderInfo;
@@ -16,6 +17,16 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen>
     with AutomaticKeepAliveClientMixin<MapScreen> {
   List<Marker> _markers = <Marker>[];
+
+  Future<void> openMap(double latitude, double longitude) async {
+    String googleUrl =
+        'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    } else {
+      print('Could not open the map.');
+    }
+  }
 
   @override
   void initState() {
@@ -35,6 +46,7 @@ class _MapScreenState extends State<MapScreen>
   @override
   bool get wantKeepAlive => true;
 
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
@@ -60,7 +72,7 @@ class _MapScreenState extends State<MapScreen>
                     topRight: Radius.circular(15),
                   ),
                   parallaxEnabled: true,
-                  maxHeight: 350,
+                  maxHeight: 380,
                   backdropEnabled: true,
                   minHeight: 120,
                   panel: ClipRRect(
@@ -84,26 +96,35 @@ class _MapScreenState extends State<MapScreen>
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Column(
-                                    children: [
-                                      Icon(
-                                        Icons.location_pin,
-                                        color: Colors.red.shade700,
-                                        size: 50,
-                                      ),
-                                      SizedBox(
-                                        width: 200,
-                                        child: Text(
-                                          "View Direction",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.purple.shade800,
-                                          ),
+                                  GestureDetector(
+                                    onTap: () => openMap(
+                                        widget.orderInfo['order']['appointment']
+                                                ['latitude'] ??
+                                            28.7041,
+                                        widget.orderInfo['order']['appointment']
+                                                ['longitude'] ??
+                                            77.1025),
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.location_pin,
+                                          color: Colors.red.shade700,
+                                          size: 50,
                                         ),
-                                      )
-                                    ],
+                                        SizedBox(
+                                          width: 200,
+                                          child: Text(
+                                            "View Direction",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.purple.shade800,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                   Flexible(
                                     child: Padding(
@@ -129,9 +150,10 @@ class _MapScreenState extends State<MapScreen>
                                               widget.orderInfo['order']
                                                           ['appointment']
                                                       ['place'] ??
-                                                  "" + "    ",
+                                                  "",
                                               textAlign: TextAlign.start,
-                                              // maxLines: ,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   color: Colors.grey.shade700),
@@ -275,26 +297,37 @@ class _MapScreenState extends State<MapScreen>
                                     SizedBox(
                                       height: 20,
                                     ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "Address",
-                                          style: TextStyle(
-                                              color:
-                                                  Colors.black.withOpacity(0.8),
-                                              fontSize: 17),
-                                        ),
-                                      ],
-                                    ),
+                                    widget.orderInfo['order']['appointment']
+                                                ['signerAddress'] !=
+                                            null
+                                        ? Row(
+                                            children: [
+                                              Text(
+                                                "Address",
+                                                style: TextStyle(
+                                                    color: Colors.black
+                                                        .withOpacity(0.8),
+                                                    fontSize: 17),
+                                              ),
+                                            ],
+                                          )
+                                        : Container(),
                                     SizedBox(
                                       height: 10,
                                     ),
-                                    Text(
-                                      "${widget.orderInfo['order']['appointment']['signerAddress'] ?? ""}",
-                                      style: TextStyle(
-                                          color: Colors.black.withOpacity(0.8),
-                                          fontSize: 17),
-                                    ),
+                                    widget.orderInfo['order']['appointment']
+                                                ['signerAddress'] !=
+                                            null
+                                        ? Text(
+                                            "${widget.orderInfo['order']['appointment']['signerAddress'] ?? ""}",
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.8),
+                                                fontSize: 17),
+                                          )
+                                        : Container(),
                                   ],
                                 ),
                               ),

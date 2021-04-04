@@ -13,6 +13,30 @@ class ProgressScreen extends StatefulWidget {
 class _ProgressScreenState extends State<ProgressScreen>
     with TickerProviderStateMixin {
   TabController tabController;
+  String totalInProgress = "";
+  String totalComplete = "";
+
+  updatTotalInProgress(int order) {
+    if (order == 0) {
+      setState(() {
+        totalInProgress = "";
+      });
+    } else
+      setState(() {
+        totalInProgress = "($order)";
+      });
+  }
+
+  updatTotalComplete(int order) {
+    if (order == 0) {
+      setState(() {
+        totalComplete = "";
+      });
+    } else
+      setState(() {
+        totalComplete = "($order)";
+      });
+  }
 
   @override
   void initState() {
@@ -46,13 +70,13 @@ class _ProgressScreenState extends State<ProgressScreen>
             tabs: [
               Tab(
                 child: Text(
-                  "In Progress",
+                  "In Progress $totalInProgress",
                   style: TextStyle(fontSize: 16),
                 ),
               ),
               Tab(
                 child: Text(
-                  "Completed",
+                  "Completed $totalComplete",
                   style: TextStyle(fontSize: 16),
                 ),
               ),
@@ -66,9 +90,11 @@ class _ProgressScreenState extends State<ProgressScreen>
         children: [
           InProgressOrderScreen(
             notaryId: widget.notaryId,
+            updateTotal: updatTotalInProgress,
           ),
           CompletedOrderScreen(
             notaryId: widget.notaryId,
+            updateCompleted: updatTotalComplete,
           ),
         ],
       ),

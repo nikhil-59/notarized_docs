@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:myknott/Views/Services/auth.dart';
+import 'package:myknott/Config.dart/CustomColors.dart';
+import 'package:myknott/Services/auth.dart';
 import 'package:myknott/Views/WaitingScreen.dart';
 import 'package:myknott/Views/homePage.dart';
 
@@ -58,7 +59,16 @@ class _AuthScreenState extends State<AuthScreen> {
                 Column(
                   children: [
                     SizedBox(
-                      height: 50,
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Image.asset(
+                        "assets/logo.png",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
                     ),
                     Text(
                       "Login",
@@ -80,13 +90,16 @@ class _AuthScreenState extends State<AuthScreen> {
                   ],
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      SizedBox(
+                        width: 5,
+                      ),
                       MaterialButton(
                         elevation: 0,
                         hoverColor: Colors.transparent,
@@ -181,71 +194,52 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                       ),
                       MaterialButton(
-                          elevation: 0,
-                          hoverColor: Colors.transparent,
-                          focusColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(7)),
-                          color: Colors.grey.shade200,
-                          onPressed: () async {
-                            // EasyLoading.instance.
-                            try {
-                              EasyLoading.show(
-                                  status: 'Please wait...',
-                                  dismissOnTap: false,
-                                  maskType: EasyLoadingMaskType.clear);
-                              Map result =
-                                  await authService.signInWithGmail(context);
-                              print(result);
-                              if (result["status"] == 1 &&
-                                  result["isloggedSuccessful"] &&
-                                  result['isapproved'] &&
-                                  result['isregister']) {
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder: (_) => HomePage(),
+                        elevation: 0,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(7)),
+                        color: Colors.grey.shade200,
+                        onPressed: () async {
+                          // EasyLoading.instance.
+                          try {
+                            EasyLoading.show(
+                                status: 'Please wait...',
+                                dismissOnTap: false,
+                                maskType: EasyLoadingMaskType.clear);
+                            Map result =
+                                await authService.signInWithGmail(context);
+                            print(result);
+                            if (result["status"] == 1 &&
+                                result["isloggedSuccessful"] &&
+                                result['isapproved'] &&
+                                result['isregister']) {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) => HomePage(),
+                                ),
+                              );
+                            } else if (!result['isregister'] &&
+                                result["isloggedSuccessful"]) {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) => WaitingScreen(
+                                    isRegister: false,
                                   ),
-                                );
-                              } else if (!result['isregister'] &&
-                                  result["isloggedSuccessful"]) {
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder: (_) => WaitingScreen(
-                                      isRegister: false,
-                                    ),
+                                ),
+                              );
+                            } else if (!result['isapproved'] &&
+                                result["isloggedSuccessful"]) {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) => WaitingScreen(
+                                    isRegister: true,
                                   ),
-                                );
-                              } else if (!result['isapproved'] &&
-                                  result["isloggedSuccessful"]) {
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder: (_) => WaitingScreen(
-                                      isRegister: true,
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                EasyLoading.dismiss();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    behavior: SnackBarBehavior.floating,
-                                    backgroundColor: Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(7)),
-                                    content: Text(
-                                      "Something went wrong...",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                                print("something went wrong");
-                                return;
-                              }
-                            } catch (e) {
+                                ),
+                              );
+                            } else {
                               EasyLoading.dismiss();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -261,15 +255,38 @@ class _AuthScreenState extends State<AuthScreen> {
                                   ),
                                 ),
                               );
+                              print("something went wrong");
+                              return;
                             }
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Icon(
-                              FontAwesomeIcons.google,
-                              color: Colors.grey,
-                            ),
-                          )),
+                          } catch (e) {
+                            EasyLoading.dismiss();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                backgroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(7)),
+                                content: Text(
+                                  "Something went wrong...",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Icon(
+                            FontAwesomeIcons.google,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
                     ],
                   ),
                 ),
@@ -393,8 +410,9 @@ class _AuthScreenState extends State<AuthScreen> {
                     ],
                   ),
                 ),
+                SizedBox(height: 10),
                 MaterialButton(
-                  color: Colors.black,
+                  color: CustomColor().loginColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(10),

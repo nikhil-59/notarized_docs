@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/category_icons.dart';
 import 'package:emoji_picker_flutter/config.dart';
@@ -9,9 +8,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
-// import 'package:lazy_loading_list/lazy_loading_list.dart';
-import 'package:myknott/Views/Services/Services.dart';
+import 'package:myknott/Services/Services.dart';
 
 class ChatScreen extends StatefulWidget {
   final String notaryId;
@@ -31,14 +30,23 @@ class _ChatScreenState extends State<ChatScreen>
   bool openEmoji = false;
   // int i = 0;
   bool hasData = false;
-
+  String firstName = "";
+  String lastName = "";
+  String modal = "";
   int pageNumber = 0;
   getMessages(String chatroom) async {
     var messages = await notaryServices.getAllMessages(
         widget.notaryId, pageNumber, chatroom);
-    print(
-      "Page Count " + messages['pageNumber'].toString(),
-    );
+    for (var i in messages['chatMessages']) {
+      if (i['sentBy']['_id'] == widget.notaryId) {
+        setState(() {
+          firstName = i['sentBy']['firstName'];
+          lastName = i['sentBy']['lastName'];
+          modal = i['sentByModel'];
+        });
+        break;
+      }
+    }
     if (messages['chatMessageCount'] == messageList.length) {
       setState(() {
         hasData = true;
@@ -91,9 +99,10 @@ class _ChatScreenState extends State<ChatScreen>
 
   setNewMessageToList(message) {
     var newData = json.decode(message['sentBy']);
+    print(message);
     print("new message type type 3");
     messageList.insert(0, {
-      "sentAt": message['sendAt'],
+      "sentAt": message['sentAt'],
       "_id": message['_id'],
       "message": message['message'],
       "sentBy": {
@@ -105,8 +114,8 @@ class _ChatScreenState extends State<ChatScreen>
         "email": newData['email'] ?? "",
         "userImageURL": newData['userImageURL'] ?? ""
       },
-      "sentByModel": "Notary",
-      "chatroom": "603768d8c54c430015c9bdbc",
+      "sentByModel": message['sentByModel'],
+      "chatroom": newData['chatroom'],
       "__v": 0
     });
     setState(() {});
@@ -121,16 +130,16 @@ class _ChatScreenState extends State<ChatScreen>
       "message": message,
       "sentBy": {
         "_id": widget.notaryId,
-        "firstName": "Hemant",
-        "lastName": "Saini",
+        "firstName": firstName,
+        "lastName": lastName,
         "phoneNumber": "6350312240",
         "phoneCountryCode": "+1",
         "email": "newuser@gmail.com",
         "userImageURL":
             "https://mynotarybucket1.s3.us-east-2.amazonaws.com/31.jpeg"
       },
-      "sentByModel": "Notary",
-      "chatroom": "603768d8c54c430015c9bdbc",
+      "sentByModel": modal,
+      "chatroom": widget.chatRoom,
       "__v": 0
     });
     setState(() {});
@@ -140,12 +149,16 @@ class _ChatScreenState extends State<ChatScreen>
     // For handling new message notification
     if (message.data['type'] == "3" || message.data['type'] == "0") {
       print("new message");
-      setNewMessageToList(message.data);
+      if (message.data['chatroom'] == widget.chatRoom) {
+        setNewMessageToList(message.data);
+        print("new message");
+      }
     }
   }
 
   @override
   void initState() {
+    NotaryServices().getToken();
     FirebaseMessaging.onMessage.any((element) {
       print("new message");
       handleNotificationClick(element);
@@ -156,6 +169,7 @@ class _ChatScreenState extends State<ChatScreen>
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
@@ -357,7 +371,7 @@ Widget leftChild(messageList, index) {
                 ),
               ),
               SizedBox(
-                width: 7,
+                width: 3,
               ),
               Flexible(
                 child: Bubble(
@@ -367,12 +381,55 @@ Widget leftChild(messageList, index) {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 2.0, vertical: 3),
-                    child: Text(
-                      messageList[index]['message'],
-                      style: TextStyle(
-                        fontSize: 15.5,
-                        fontWeight: FontWeight.w700,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              messageList[index]['sentBy']['firstName'] ??
+                                  "" +
+                                      " " +
+                                      messageList[index]['sentBy']
+                                          ['lastName'] ??
+                                  "",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontSize: 15.5,
+                              ),
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              DateFormat('hh:mm a').format(
+                                  DateTime.parse(messageList[index]['sentAt'])
+                                      .toLocal()),
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          messageList[index]['sentByModel'] ?? "",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black.withOpacity(0.7),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          messageList[index]['message'] ?? "",
+                          style: TextStyle(
+                            fontSize: 15.5,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -403,15 +460,59 @@ Widget rightChild(messageList, index) {
                 child: Bubble(
                   alignment: Alignment.centerRight,
                   nip: BubbleNip.rightTop,
-                  color: Colors.blue.shade800,
-                  child: Text(
-                    messageList[index]['message'],
-                    // textAlign: TextAlign.end,
-                    style: TextStyle(
-                      fontSize: 15.5,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                    ),
+                  color: Colors.blue.shade700,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            messageList[index]['sentBy']['firstName'] +
+                                    " " +
+                                    messageList[index]['sentBy']['lastName'] ??
+                                "",
+                            textAlign: TextAlign.end,
+                            style: TextStyle(
+                              fontSize: 15.5,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            DateFormat('hh:mm a').format(
+                                DateTime.parse(messageList[index]['sentAt'])
+                                    .toLocal()),
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        messageList[index]['sentByModel'],
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white.withOpacity(0.8),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        messageList[index]['message'],
+                        style: TextStyle(
+                          fontSize: 15.5,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

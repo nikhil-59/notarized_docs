@@ -16,6 +16,7 @@ dependencies:
   font_awesome_flutter:
   dio: ^4.0.0-prev2
   firebase_auth: ^1.0.1
+  salomon_bottom_bar: ^3.0.0
   firebase_core: ^1.0.1
   timelines:
   timeline_tile:

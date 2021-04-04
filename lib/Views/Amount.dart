@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
+import 'package:myknott/Services/Services.dart';
 import 'package:myknott/VIews/secondScreen.dart';
-import 'package:myknott/Views/Services/Services.dart';
 
 class AmountScreen extends StatefulWidget {
   final String notaryId;
@@ -22,6 +22,7 @@ class _AmountScreenState extends State<AmountScreen>
   bool isloading = true;
   @override
   void initState() {
+    NotaryServices().getToken();
     getData();
     super.initState();
   }
@@ -59,6 +60,7 @@ class _AmountScreenState extends State<AmountScreen>
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -66,8 +68,9 @@ class _AmountScreenState extends State<AmountScreen>
         elevation: 0,
         backgroundColor: Colors.white,
         title: Text(
-          "My Notary Pay",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          "Notary Pay",
+          style: TextStyle(
+              fontWeight: FontWeight.bold, color: Colors.black, fontSize: 18),
         ),
       ),
       body: !isloading
@@ -221,12 +224,14 @@ class _AmountScreenState extends State<AmountScreen>
                                                   fontWeight: FontWeight.w700),
                                             ),
                                             subtitle: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.only(
+                                                  top: 8.0),
                                               child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "A short description of order with some short text",
+                                                    "Escrow Number ${map['payouts'][index]['appointment']['escrowNumber']}",
                                                     style: TextStyle(
                                                         fontSize: 16.5),
                                                   ),

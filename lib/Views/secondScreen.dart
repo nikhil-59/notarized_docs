@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:myknott/Views/ChatScreen.dart';
 import 'package:myknott/Views/DocumentScreen.dart';
 import 'package:myknott/Views/MapScreen.dart';
-import 'package:myknott/Views/Services/Services.dart';
+import 'package:myknott/Services/Services.dart';
 import 'package:timelines/timelines.dart';
 
 class SecondScreen extends StatefulWidget {
@@ -46,6 +46,7 @@ class _SecondScreenState extends State<SecondScreen>
 
   @override
   void initState() {
+    NotaryServices().getToken();
     tabController = TabController(
         length: 4, vsync: this, initialIndex: widget.messageTrigger ? 1 : 0);
     getData();
@@ -58,7 +59,7 @@ class _SecondScreenState extends State<SecondScreen>
     try {
       setState(() {});
       String jwt = await storage.read(key: 'jwt');
-      dio.options.headers['auth_token'] = jwt;
+      dio.options.headers['Authorization'] = jwt;
       var body = {"notaryId": widget.notaryId, "orderId": widget.orderId};
       var response = await dio.post(
           "https://my-notary-app.herokuapp.com/notary/getOrderDetails/",
@@ -262,13 +263,14 @@ class _SecondScreenState extends State<SecondScreen>
                                 "Order Status",
                                 style: TextStyle(
                                   color: Colors.blue.shade900,
-                                  fontSize: 16.5,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               MaterialButton(
+                                elevation: 0,
                                 color: Colors.blue.shade700,
-                                height: 45,
+                                height: 40,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5),
                                 ),
@@ -307,78 +309,29 @@ class _SecondScreenState extends State<SecondScreen>
                                                       physics:
                                                           NeverScrollableScrollPhysics(),
                                                       children: [
-                                                        Text(
-                                                          "Change Status",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
+                                                        Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Image.asset(
+                                                                "assets/progress.jpg"),
+                                                            Text(
+                                                              "Change Status",
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: TextStyle(
+                                                                  fontSize: 20,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                          ],
                                                         ),
                                                         SizedBox(
                                                           height: 10,
                                                         ),
-                                                        Text(
-                                                          "Current Status",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              fontSize: 16.5,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              color: Colors
-                                                                  .black
-                                                                  .withOpacity(
-                                                                      0.7)),
-                                                        ),
-                                                        SizedBox(height: 10),
-                                                        // Card(
-                                                        //   elevation: 0,
-                                                        //   child: Column(
-                                                        //     children: [
-                                                        //       SizedBox(
-                                                        //           height: 10),
-                                                        //       Text(
-                                                        //         "Signer(s) Contacted",
-                                                        //         textAlign:
-                                                        //             TextAlign
-                                                        //                 .center,
-                                                        //         style: TextStyle(
-                                                        //             fontSize:
-                                                        //                 18,
-                                                        //             fontWeight:
-                                                        //                 FontWeight
-                                                        //                     .w500),
-                                                        //       ),
-                                                        //       SizedBox(
-                                                        //           height: 10),
-                                                        //       Text(
-                                                        //         DateFormat(
-                                                        //           "yyyy-MM-dd hh:mm a",
-                                                        //         ).format(
-                                                        //           DateTime
-                                                        //               .parse(
-                                                        //             map['order']
-                                                        //                 [
-                                                        //                 'confirmedAt'],
-                                                        //           ),
-                                                        //         ),
-                                                        //         style: TextStyle(
-                                                        //             fontSize:
-                                                        //                 16),
-                                                        //         textAlign:
-                                                        //             TextAlign
-                                                        //                 .center,
-                                                        //       ),
-                                                        //       SizedBox(
-                                                        //           height: 10),
-                                                        //     ],
-                                                        //   ),
-                                                        // ),
-
                                                         SizedBox(
                                                           height: 10,
                                                         ),
@@ -762,6 +715,7 @@ class _SecondScreenState extends State<SecondScreen>
                                                               ),
                                                             ),
                                                             MaterialButton(
+                                                              elevation: 0,
                                                               shape:
                                                                   RoundedRectangleBorder(
                                                                 borderRadius:
@@ -878,7 +832,7 @@ class _SecondScreenState extends State<SecondScreen>
                                   "Change Status",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 16.5,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -1217,7 +1171,7 @@ class _SecondScreenState extends State<SecondScreen>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Order Id :",
+                                      "Escrow Number :",
                                       style: TextStyle(
                                           fontSize: 17,
                                           fontWeight: FontWeight.bold),
@@ -1264,119 +1218,120 @@ class _SecondScreenState extends State<SecondScreen>
                             height: 10,
                           ),
                           Container(
-                            // height: 120,
                             width: MediaQuery.of(context).size.width,
                             child: Card(
-                              elevation: 0,
+                              elevation: 4,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(7),
                               ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  GestureDetector(
-                                    // onTap: () => tabController.animateTo(
-                                    // 3,
-                                    // duration: Duration(milliseconds: 500),
-                                    // ),
-                                    child: Container(
-                                      // color: Colors.yellow,
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.location_pin,
-                                            color: Colors.red.shade700,
-                                            size: 50,
-                                          ),
-                                          SizedBox(
-                                            width: 100,
-                                            child: Text(
-                                              "Signing Location",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black
-                                                    .withOpacity(0.6),
-                                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GestureDetector(
+                                      child: Container(
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.location_pin,
+                                              color: Colors.red.shade700,
+                                              size: 50,
                                             ),
-                                          )
-                                        ],
+                                            SizedBox(
+                                              width: 100,
+                                              child: Text(
+                                                "Signing Location",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black
+                                                      .withOpacity(0.6),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Flexible(
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 8.0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                            "Address",
-                                            style: TextStyle(
-                                                fontSize: 17,
-                                                color: Colors.grey.shade700),
-                                          ),
-                                          SizedBox(
-                                            child: Text(
-                                              orders['order']['appointment']
-                                                      ['place'] ??
-                                                  "" + "    ",
-                                              textAlign: TextAlign.start,
-                                              // maxLines: ,
+                                    Flexible(
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Text(
+                                              "Address",
                                               style: TextStyle(
-                                                  fontSize: 16,
+                                                  fontSize: 17,
                                                   color: Colors.grey.shade700),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            "Date: " +
-                                                DateFormat("MM/dd/yyyy").format(
-                                                  DateTime.parse(
-                                                    orders["order"]
-                                                        ["appointment"]["time"],
-                                                  ).toLocal(),
-                                                ),
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              // color: Colors.grey.shade700),
+                                            SizedBox(
+                                              child: Text(
+                                                orders['order']['appointment']
+                                                        ['place'] ??
+                                                    "" + "    ",
+                                                textAlign: TextAlign.start,
+                                                // maxLines: ,
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color:
+                                                        Colors.grey.shade700),
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            "Time: " +
-                                                DateFormat("h:mm a").format(
-                                                  DateTime.parse(
-                                                    orders["order"]
-                                                        ["appointment"]["time"],
-                                                  ).toLocal(),
-                                                ),
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              // color: Colors.grey.shade700),
+                                            SizedBox(
+                                              height: 10,
                                             ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          )
-                                        ],
+                                            Text(
+                                              "Date: " +
+                                                  DateFormat("MM/dd/yyyy")
+                                                      .format(
+                                                    DateTime.parse(
+                                                      orders["order"]
+                                                              ["appointment"]
+                                                          ["time"],
+                                                    ).toLocal(),
+                                                  ),
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                // color: Colors.grey.shade700),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              "Time: " +
+                                                  DateFormat("h:mm a").format(
+                                                    DateTime.parse(
+                                                      orders["order"]
+                                                              ["appointment"]
+                                                          ["time"],
+                                                    ).toLocal(),
+                                                  ),
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                // color: Colors.grey.shade700),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -1384,12 +1339,12 @@ class _SecondScreenState extends State<SecondScreen>
                             height: 10,
                           ),
                           Card(
-                            elevation: 0,
+                            elevation: 4,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(7),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(10.0),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1399,9 +1354,12 @@ class _SecondScreenState extends State<SecondScreen>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      Icon(FontAwesomeIcons.newspaper),
+                                      Image.asset(
+                                        "assets/file.jpg",
+                                        height: 50,
+                                      ),
                                       SizedBox(
-                                        width: 10,
+                                        width: 5,
                                       ),
                                       Text(
                                         "Order Information",
@@ -1478,7 +1436,7 @@ class _SecondScreenState extends State<SecondScreen>
                                         width: 15,
                                       ),
                                       Text(
-                                        ": ${orders['order']['orderInvoiceType'].toString().replaceRange(0, 1, orders['order']['orderInvoiceType'][0].toString().toUpperCase())} (\$ ${orders['order']['amount']})",
+                                        ": ${orders['order']['orderInvoiceType'].toString().replaceRange(0, 1, orders['order']['orderInvoiceType'][0].toString().toUpperCase())}",
                                         style: TextStyle(
                                           color: Colors.black,
                                           // fontWeight: FontWeight.w400,
@@ -1491,12 +1449,95 @@ class _SecondScreenState extends State<SecondScreen>
                                     height: 20,
                                   ),
                                   Row(
+                                    children: [
+                                      Text(
+                                        "Earning Amount",
+                                        style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.8),
+                                            fontSize: 17),
+                                      ),
+                                      SizedBox(
+                                        width: 15,
+                                      ),
+                                      Text(
+                                        "\$ ${orders['order']['amount']}",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          // fontWeight: FontWeight.w400,
+                                          fontSize: 17.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Closing Type",
+                                        style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.8),
+                                            fontSize: 17),
+                                      ),
+                                      SizedBox(
+                                        width: 15,
+                                      ),
+                                      Text(
+                                        ": ${orders['order']['orderClosingType'].toString().replaceRange(0, 1, orders['order']['orderClosingType'][0].toString().toUpperCase())}",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          // fontWeight: FontWeight.w400,
+                                          fontSize: 17.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  orders['order']['appointment']
+                                              ['closingInstructions'] !=
+                                          null
+                                      ? SizedBox(
+                                          height: 20,
+                                        )
+                                      : Container(),
+                                  orders['order']['appointment']
+                                              ['closingInstructions'] !=
+                                          null
+                                      ? Row(
+                                          children: [
+                                            Text(
+                                              "Closing Instruction",
+                                              style: TextStyle(
+                                                  color: Colors.black
+                                                      .withOpacity(0.8),
+                                                  fontSize: 17),
+                                            ),
+                                            SizedBox(
+                                              width: 15,
+                                            ),
+                                            Text(
+                                              ": ${orders['order']['appointment']['closingInstructions']}",
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                // fontWeight: FontWeight.w400,
+                                                fontSize: 17.5,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Container(),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Address",
+                                        "Property Address : ",
                                         style: TextStyle(
                                           color: Colors.black.withOpacity(0.8),
                                           fontSize: 17,
@@ -1526,12 +1567,12 @@ class _SecondScreenState extends State<SecondScreen>
                             height: 10,
                           ),
                           Card(
-                            elevation: 0,
+                            elevation: 4,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(10.0),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1541,31 +1582,12 @@ class _SecondScreenState extends State<SecondScreen>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      CircleAvatar(
-                                        backgroundColor: Colors.white,
-                                        maxRadius: 22,
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                          child: orders['order']['customer']
-                                                      ['userImageURL'] !=
-                                                  null
-                                              ? CachedNetworkImage(
-                                                  imageUrl: orders['order']
-                                                          ['customer']
-                                                      ['userImageURL'],
-                                                  width: 50,
-                                                  height: 50,
-                                                  fit: BoxFit.fill,
-                                                )
-                                              : Container(
-                                                  width: 50,
-                                                  height: 50,
-                                                ),
-                                        ),
+                                      Image.asset(
+                                        "assets/avatar.jpg",
+                                        height: 50,
                                       ),
                                       SizedBox(
-                                        width: 10,
+                                        width: 5,
                                       ),
                                       Text(
                                         "Signer Details",
@@ -1607,7 +1629,7 @@ class _SecondScreenState extends State<SecondScreen>
                                   Row(
                                     children: [
                                       Text(
-                                        "Phone Number",
+                                        "Signer Phone Number",
                                         style: TextStyle(
                                             color:
                                                 Colors.black.withOpacity(0.8),
@@ -1630,11 +1652,9 @@ class _SecondScreenState extends State<SecondScreen>
                                     height: 20,
                                   ),
                                   Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Address",
+                                        "Signer Email",
                                         style: TextStyle(
                                             color:
                                                 Colors.black.withOpacity(0.8),
@@ -1643,17 +1663,48 @@ class _SecondScreenState extends State<SecondScreen>
                                       SizedBox(
                                         width: 15,
                                       ),
-                                      Flexible(
-                                        child: Text(
-                                          "${orders['order']['appointment']['signerAddress']}",
-                                          style: TextStyle(
-                                              color:
-                                                  Colors.black.withOpacity(0.8),
-                                              fontSize: 17),
+                                      Text(
+                                        ": ${orders['order']['appointment']['signerEmail'] ?? "none"}",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          // fontWeight: FontWeight.w400,
+                                          fontSize: 17.5,
                                         ),
                                       ),
                                     ],
                                   ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  orders['order']['appointment']
+                                              ['signerAddress'] !=
+                                          null
+                                      ? Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Address",
+                                              style: TextStyle(
+                                                  color: Colors.black
+                                                      .withOpacity(0.8),
+                                                  fontSize: 17),
+                                            ),
+                                            SizedBox(
+                                              width: 15,
+                                            ),
+                                            Flexible(
+                                              child: Text(
+                                                "${orders['order']['appointment']['signerAddress']}",
+                                                style: TextStyle(
+                                                    color: Colors.black
+                                                        .withOpacity(0.8),
+                                                    fontSize: 17),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Container(),
                                   SizedBox(
                                     height: 10,
                                   ),
@@ -1662,12 +1713,12 @@ class _SecondScreenState extends State<SecondScreen>
                             ),
                           ),
                           Card(
-                            elevation: 0,
+                            elevation: 4,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(10.0),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1677,15 +1728,15 @@ class _SecondScreenState extends State<SecondScreen>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      Icon(
-                                        FontAwesomeIcons.stickyNote,
-                                        color: Colors.yellow.shade900,
+                                      Image.asset(
+                                        "assets/company.jpg",
+                                        height: 50,
                                       ),
                                       SizedBox(
-                                        width: 10,
+                                        width: 5,
                                       ),
                                       Text(
-                                        "Closing Agent Information",
+                                        "Title Company & Agent Information",
                                         style: TextStyle(
                                             fontSize: 17,
                                             color: Colors.black,
@@ -1699,7 +1750,7 @@ class _SecondScreenState extends State<SecondScreen>
                                   Row(
                                     children: [
                                       Text(
-                                        "Closing Agent",
+                                        "Company Name",
                                         style: TextStyle(
                                             color:
                                                 Colors.black.withOpacity(0.8),
@@ -1734,7 +1785,32 @@ class _SecondScreenState extends State<SecondScreen>
                                         width: 15,
                                       ),
                                       Text(
-                                        ": ${orders['order']['customer']['firstName'] + " " + orders['order']['customer']['lastName'] ?? ""}",
+                                        ": ${orders['order']['customer']['firstName']}",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          // fontWeight: FontWeight.w400,
+                                          fontSize: 17.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "CA Last Name",
+                                        style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.8),
+                                            fontSize: 17),
+                                      ),
+                                      SizedBox(
+                                        width: 15,
+                                      ),
+                                      Text(
+                                        ": ${orders['order']['customer']['lastName']}",
                                         style: TextStyle(
                                           color: Colors.black,
                                           // fontWeight: FontWeight.w400,
@@ -1784,7 +1860,7 @@ class _SecondScreenState extends State<SecondScreen>
                                         width: 15,
                                       ),
                                       Text(
-                                        ": ${orders['order']['customer']['email']}",
+                                        ": ${orders['order']['customer']['email'] ?? "none"}",
                                         style: TextStyle(
                                           color: Colors.black,
                                           // fontWeight: FontWeight.w400,
@@ -1792,6 +1868,40 @@ class _SecondScreenState extends State<SecondScreen>
                                         ),
                                       ),
                                     ],
+                                  ),
+                                  SizedBox(
+                                    height: 17,
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Address",
+                                        style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.8),
+                                            fontSize: 17),
+                                      ),
+                                      SizedBox(
+                                        width: 15,
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          ": ${orders['order']['customer']['companyAddress']}",
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            // fontWeight: FontWeight.w400,
+                                            fontSize: 17.5,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20,
                                   ),
                                 ],
                               ),

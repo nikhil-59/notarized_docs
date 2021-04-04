@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class NotaryServices {
@@ -9,7 +10,7 @@ class NotaryServices {
     try {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderId": orderId, "notaryId": notaryId};
-      dio.options.headers['auth_token'] = jwt;
+      dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(
           "https://my-notary-app.herokuapp.com/notary/acceptOrder",
           data: body);
@@ -22,7 +23,7 @@ class NotaryServices {
     try {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderIdToDecline": orderId, "notaryId": notaryId};
-      dio.options.headers['auth_token'] = jwt;
+      dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(
           "https://my-notary-app.herokuapp.com/notary/declineOrder",
           data: body);
@@ -34,7 +35,7 @@ class NotaryServices {
     try {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderId": orderId, "notaryId": notaryId};
-      dio.options.headers['auth_token'] = jwt;
+      dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(
           "https://my-notary-app.herokuapp.com/notary/markDocumentsDownloaded",
           data: body);
@@ -48,7 +49,7 @@ class NotaryServices {
     try {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderId": orderId, "notaryId": notaryId};
-      dio.options.headers['auth_token'] = jwt;
+      dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(
           "https://my-notary-app.herokuapp.com/notary/markOrderInProgress",
           data: body);
@@ -62,7 +63,7 @@ class NotaryServices {
     try {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderId": orderId, "notaryId": notaryId};
-      dio.options.headers['auth_token'] = jwt;
+      dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(
           "https://my-notary-app.herokuapp.com/notary/markSigningCompleted",
           data: body);
@@ -76,7 +77,7 @@ class NotaryServices {
     try {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderId": orderId, "notaryId": notaryId};
-      dio.options.headers['auth_token'] = jwt;
+      dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(
           "https://my-notary-app.herokuapp.com/notary/markOrderAsConfirmed",
           data: body);
@@ -90,7 +91,7 @@ class NotaryServices {
     try {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderId": orderId, "notaryId": notaryId};
-      dio.options.headers['auth_token'] = jwt;
+      dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(
           "https://my-notary-app.herokuapp.com/notary/markOrderAsDelivered",
           data: body);
@@ -104,7 +105,7 @@ class NotaryServices {
     try {
       print(pageNumber);
       String jwt = await storage.read(key: 'jwt');
-      dio.options.headers['auth_token'] = jwt;
+      dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(
           "https://my-notary-app.herokuapp.com/notary/getInProgressOrders",
           data: {"notaryId": notaryId, "pageNumber": pageNumber});
@@ -119,7 +120,7 @@ class NotaryServices {
     try {
       print(pageNumber);
       String jwt = await storage.read(key: 'jwt');
-      dio.options.headers['auth_token'] = jwt;
+      dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(
           "https://my-notary-app.herokuapp.com/notary/getCompletedOrders",
           data: {"notaryId": notaryId, "pageNumber": pageNumber});
@@ -133,7 +134,7 @@ class NotaryServices {
   getAppointments(DateTime dateTime, String notaryId) async {
     try {
       String jwt = await storage.read(key: 'jwt');
-      dio.options.headers['auth_token'] = jwt;
+      dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(
           "https://my-notary-app.herokuapp.com/notary/getDashboard",
           data: {
@@ -155,7 +156,7 @@ class NotaryServices {
   getUserProfileInfo(String notaryId) async {
     try {
       String jwt = await storage.read(key: 'jwt');
-      dio.options.headers['auth_token'] = jwt;
+      dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(
         "https://my-notary-app.herokuapp.com/notary/getProfile",
         data: {"notaryId": notaryId, "PageNumber": "0"},
@@ -170,7 +171,7 @@ class NotaryServices {
   getEarnings(String notaryId, int pageNumber) async {
     print("current page Number $pageNumber");
     String jwt = await storage.read(key: 'jwt');
-    dio.options.headers['auth_token'] = jwt;
+    dio.options.headers['Authorization'] = jwt;
     var response = await dio.post(
       "https://my-notary-app.herokuapp.com/notary/getEarnings",
       data: {"notaryId": notaryId, "pageNumber": pageNumber},
@@ -182,7 +183,7 @@ class NotaryServices {
   getAllMessages(String notaryId, int pageNumber, String chatRoom) async {
     try {
       String jwt = await storage.read(key: 'jwt');
-      dio.options.headers['auth_token'] = jwt;
+      dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(
         "https://my-notary-app.herokuapp.com/notary/listMessages",
         data: {
@@ -201,7 +202,7 @@ class NotaryServices {
   sendMessage({String message, String notaryId, String chatRoom}) async {
     try {
       String jwt = await storage.read(key: 'jwt');
-      dio.options.headers['auth_token'] = jwt;
+      dio.options.headers['Authorization'] = jwt;
       await dio.post(
         "https://my-notary-app.herokuapp.com/notary/sendMessage/",
         data: {
@@ -211,5 +212,12 @@ class NotaryServices {
         },
       );
     } catch (e) {}
+  }
+
+  getToken() async {
+    final storage = new FlutterSecureStorage();
+    String token = await FirebaseAuth.instance.currentUser.getIdToken();
+    storage.write(key: "jwt", value: "Bearer " + token);
+    print(token);
   }
 }

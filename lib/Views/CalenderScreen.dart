@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:myknott/Services/Services.dart';
 import 'package:table_calendar/table_calendar.dart';
-
-import 'Services/Services.dart';
 import 'secondScreen.dart';
 
 class CalenderScreen extends StatefulWidget {
@@ -26,6 +25,7 @@ class _CalenderScreenState extends State<CalenderScreen>
   @override
   // ignore: must_call_super
   initState() {
+    NotaryServices().getToken();
     getAppointment(DateTime.now());
     super.initState();
   }
@@ -44,6 +44,7 @@ class _CalenderScreenState extends State<CalenderScreen>
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -52,19 +53,17 @@ class _CalenderScreenState extends State<CalenderScreen>
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black),
         title: Text(
-          "Order Details",
+          "All Appointments",
           style: TextStyle(
-              color: Colors.black, fontWeight: FontWeight.w700, fontSize: 19),
+              color: Colors.black, fontWeight: FontWeight.w700, fontSize: 18),
         ),
       ),
       body: Container(
         child: Column(
           children: [
             Container(
-              // height: MediaQuery.of(context).size.height / 3,
               child: TableCalendar(
                 calendarStyle: CalendarStyle(
-                  // markersColor: Colors.blue.shade800,
                   selectedColor: Colors.blue.shade800,
                   highlightToday: false,
                 ),
@@ -78,7 +77,6 @@ class _CalenderScreenState extends State<CalenderScreen>
                   print(day);
                   getAppointment(day);
                 },
-                // endDay: DateTime.now(),
               ),
             ),
             Expanded(
@@ -166,7 +164,7 @@ class _CalenderScreenState extends State<CalenderScreen>
                                                 height: 5,
                                               ),
                                               Text(
-                                                DateFormat('MMM-d-yyyy hh:mm a')
+                                                DateFormat('MM/dd/yyyy hh:mm a')
                                                     .format(DateTime.parse(
                                                             data['appointments']
                                                                         [index][

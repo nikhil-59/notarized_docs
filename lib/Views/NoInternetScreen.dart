@@ -1,14 +1,12 @@
 import 'dart:async';
-
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter/foundation.dart';
-import 'package:myknott/Views/AuthScreen.dart';
-import 'package:myknott/Views/Services/auth.dart';
+import 'package:myknott/Services/Services.dart';
+import 'package:myknott/Services/auth.dart';
 import 'package:myknott/main.dart';
 
 class NoInternetScreen extends StatefulWidget {
@@ -26,13 +24,15 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
   }
 
   func() async {
-    print("internet is on");
     await Firebase.initializeApp();
     setState(() {
       loading = true;
     });
-    await getToken();
-    FirebaseMessaging.instance.getToken().then((value) => print(value));
+    try {
+      await NotaryServices().getToken();
+    } catch (e) {
+      print(e);
+    }
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(

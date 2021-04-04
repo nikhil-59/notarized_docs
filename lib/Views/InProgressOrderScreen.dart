@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
-import 'package:myknott/Views/Services/Services.dart';
+import 'package:myknott/Services/Services.dart';
 import 'package:myknott/Views/secondScreen.dart';
 
 class InProgressOrderScreen extends StatefulWidget {
   final String notaryId;
+  final Function updateTotal;
 
-  const InProgressOrderScreen({Key key, this.notaryId}) : super(key: key);
+  const InProgressOrderScreen({Key key, this.notaryId, this.updateTotal})
+      : super(key: key);
 
   @override
   _InProgressOrderScreenState createState() => _InProgressOrderScreenState();
@@ -30,6 +32,8 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
       var response = await NotaryServices()
           .getInProgressOrders(widget.notaryId, pageNumber);
       orders.addAll(response);
+      widget.updateTotal(response['orderCount']);
+      print(orders);
       if (response['pageNumber'] == response['pageCount']) {
         hasData = true;
         print("-----------end of list----------");
@@ -57,11 +61,13 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
 
   @override
   void initState() {
+    NotaryServices().getToken();
     super.initState();
     getInProgressOrders();
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     return orders.isNotEmpty
         ? LazyLoadScrollView(
@@ -108,15 +114,29 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                                       ),
                               ),
                               // orders['orders'][index]["customer"]['userImageURL']),
-                              title: Text(
-                                orders['orders'][index]["customer"]
-                                        ['firstName'] +
-                                    " " +
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
                                     orders['orders'][index]["customer"]
-                                        ['lastName'],
-                                style: TextStyle(
-                                    fontSize: 16.5,
-                                    fontWeight: FontWeight.bold),
+                                            ['firstName'] +
+                                        " " +
+                                        orders['orders'][index]["customer"]
+                                            ['lastName'],
+                                    style: TextStyle(
+                                        fontSize: 16.5,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    "\$ " +
+                                        orders['orders'][index]['amount']
+                                            .toString(),
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
                               ),
                               subtitle: Text(
                                 "Order Placed at ${DateFormat('MM/dd/yyyy hh:mm a').format(DateTime.parse(orders['orders'][index]['createdAt']).toLocal())} ",

@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
-import 'package:myknott/Views/Services/Services.dart';
+import 'package:myknott/Services/Services.dart';
 import 'package:myknott/Views/secondScreen.dart';
 
 class CompletedOrderScreen extends StatefulWidget {
   final String notaryId;
+  final Function updateCompleted;
 
-  const CompletedOrderScreen({Key key, this.notaryId}) : super(key: key);
+  const CompletedOrderScreen({Key key, this.notaryId, this.updateCompleted})
+      : super(key: key);
   @override
   _CompletedOrderScreenState createState() => _CompletedOrderScreenState();
 }
@@ -32,6 +34,7 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
       var response = await NotaryServices()
           .getCompletedOrders(widget.notaryId, pageNumber);
       orders.addAll(response);
+      widget.updateCompleted(response['orderCount']);
       if (response['pageNumber'] == response['pageCount']) {
         hasData = true;
         print("-----------end of list----------");
@@ -63,11 +66,13 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
   List data = [];
   @override
   void initState() {
+    NotaryServices().getToken();
     getCompletedOrders();
     super.initState();
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     return !isloading
         ? LazyLoadScrollView(
@@ -119,15 +124,29 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                 ),
                               ),
                               // orders['orders'][index]["customer"]['userImageURL']),
-                              title: Text(
-                                orders['orders'][index]["customer"]
-                                        ['firstName'] +
-                                    " " +
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
                                     orders['orders'][index]["customer"]
-                                        ['lastName'],
-                                style: TextStyle(
-                                    fontSize: 16.5,
-                                    fontWeight: FontWeight.bold),
+                                            ['firstName'] +
+                                        " " +
+                                        orders['orders'][index]["customer"]
+                                            ['lastName'],
+                                    style: TextStyle(
+                                        fontSize: 16.5,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    "\$ " +
+                                        orders['orders'][index]['amount']
+                                            .toString(),
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
                               ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

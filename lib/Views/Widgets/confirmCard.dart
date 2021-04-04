@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:future_button/future_button.dart';
-import 'package:myknott/Views/Services/Services.dart';
+import 'package:myknott/Services/Services.dart';
 
 class ConfirmCards extends StatefulWidget {
   final Function refresh;
@@ -30,7 +30,7 @@ class _ConfirmCardsState extends State<ConfirmCards> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0.5,
+      elevation: 0.3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
@@ -44,20 +44,35 @@ class _ConfirmCardsState extends State<ConfirmCards> {
             padding: const EdgeInsets.all(2.0),
             child: ListTile(
               // isThreeLine: true,
-              leading: CircleAvatar(
-                backgroundColor: Colors.transparent,
-                maxRadius: widget.imageUrl != null ? 20 : 0,
-                child: widget.imageUrl != null
-                    ? ClipRRect(
+              leading: widget.imageUrl != null
+                  ? CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      maxRadius: 20,
+                      child: ClipRRect(
                         borderRadius: BorderRadius.circular(50),
                         child: CachedNetworkImage(
                           height: 40,
                           width: 40,
                           imageUrl: widget.imageUrl,
                         ),
-                      )
-                    : Container(),
-              ),
+                      ),
+                    )
+                  : Container(
+                      height: 40,
+                      width: 40,
+                      child: CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.blue.shade700,
+                        child: Text(
+                          widget.name[0],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16.5),
+                        ),
+                      ),
+                    ),
               title: Text(
                 widget.name,
                 style: TextStyle(fontSize: 15.5, fontWeight: FontWeight.bold),
@@ -72,17 +87,6 @@ class _ConfirmCardsState extends State<ConfirmCards> {
               subtitle: Text(
                 widget.address,
                 style: TextStyle(fontSize: 15.5),
-              ),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width - 120,
-            height: 0.5,
-            child: Text(""),
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(
-                    color: Colors.black.withOpacity(0.3), width: 0.5),
               ),
             ),
           ),

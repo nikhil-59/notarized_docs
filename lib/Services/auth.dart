@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:myknott/Services/Services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -25,6 +26,7 @@ class AuthService {
         email: email.trim(),
         password: password.trim(),
       );
+      await NotaryServices().getToken();
       return await getUserInfo(userCredential.user.uid,
           userCredential.user.email, userCredential.user.providerData.first);
     } catch (e) {
@@ -64,12 +66,9 @@ class AuthService {
   }
 
   Future<Map> getUserInfo(String uid, String email, UserInfo user) async {
-    print("uid $uid");
-    print("email $email");
-
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String jwt = await storage.read(key: "jwt");
-    dio.options.headers['auth_token'] = jwt;
+    dio.options.headers['Authorization'] = jwt;
     try {
       var response = await dio
           .post('https://my-notary-app.herokuapp.com/notary/login/', data: {
@@ -99,8 +98,6 @@ class AuthService {
       } else if (response.data['status'] == 1 &&
           response.data['registered'] == 3 &&
           response.data['notary']['isApproved'] == false) {
-        print(response.data);
-        // debugPrint()
         String userInfo = jsonEncode(response.data);
         await prefs.setString("userInfo", userInfo);
         return {
@@ -112,7 +109,6 @@ class AuthService {
       } else if (response.data['status'] == 1 &&
           response.data['registered'] < 3) {
         print(response.data);
-        // debugPrint()
         String userInfo = jsonEncode(response.data);
         await prefs.setString("userInfo", userInfo);
         return {
@@ -144,9 +140,9 @@ class AuthService {
   Future<bool> check() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     if (preferences.containsKey("isloggedIn")) {
-      if (preferences.getBool("isloggedIn") == true)
+      if (preferences.getBool("isloggedIn") == true) {
         return true;
-      else
+      } else
         return false;
     } else {
       return false;
@@ -171,7 +167,7 @@ class AuthService {
   updateToken(token) async {
     print("updated token $token");
     String jwt = await storage.read(key: "jwt");
-    dio.options.headers['auth_token'] = jwt;
+    dio.options.headers['Authorization'] = jwt;
     try {
       var response = await dio
           .post('https://my-notary-app.herokuapp.com/notary/login/', data: {
@@ -200,6 +196,7 @@ class AuthService {
       );
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
+      await NotaryServices().getToken();
       return await getUserInfo(userCredential.user.uid,
           userCredential.user.email, userCredential.user.providerData.first);
     } catch (e) {
@@ -237,18 +234,23 @@ class AuthService {
   }
 
   Future<Map> signInWithFacebook(context) async {
-    print("function trigged");
     try {
       final LoginResult result = await FacebookAuth.instance.login();
       final FacebookAuthCredential facebookAuthCredential =
           FacebookAuthProvider.credential(result.accessToken.token);
-      print(facebookAuthCredential.token);
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithCredential(facebookAuthCredential);
-      print(userCredential.user.providerData.asMap());
+      await NotaryServices().getToken();
+      if (userCredential.user.email == null) {
+        await userCredential.user.updateEmail(
+            userCredential.user.displayName.replaceAll(" ", "") +
+                "@facebook.com");
+      }
       return await getUserInfo(
           userCredential.user.uid,
-          userCredential.user.providerData.first.email,
+          userCredential.user.providerData.first.email ??
+              userCredential.user.displayName.replaceAll(" ", "") +
+                  "@facebook.com",
           userCredential.user.providerData.first);
     } catch (e) {
       print(e.toString());

@@ -154,7 +154,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
                   Text(
                     widget.isRegister
                         ? "We will notify you once your account is live."
-                        : "Please register your profile in Notary App website",
+                        : "Please register your profile in NotarizedDocs website",
                     style: TextStyle(
                       fontSize: 15,
                       color: Colors.black,

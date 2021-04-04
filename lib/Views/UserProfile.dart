@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:myknott/Views/Services/Services.dart';
+import 'package:myknott/Services/Services.dart';
 
 class UserProfile extends StatefulWidget {
   final String notaryId;
@@ -26,6 +26,7 @@ class _UserProfileState extends State<UserProfile>
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -54,8 +55,26 @@ class _UserProfileState extends State<UserProfile>
                                       width: 80,
                                     )
                                   : Container(
+                                      color: Colors.blue,
                                       height: 80,
                                       width: 80,
+                                      child: CircleAvatar(
+                                        radius: 20,
+                                        backgroundColor: Colors.blue.shade700,
+                                        child: Text(
+                                          userInfo['notary']["firstName"][0]
+                                                      .toUpperCase() +
+                                                  " " +
+                                                  userInfo['notary']["lastName"]
+                                                      [0] ??
+                                              "".toUpperCase(),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.white),
+                                        ),
+                                      ),
                                     ),
                             ),
                             SizedBox(
@@ -68,12 +87,12 @@ class _UserProfileState extends State<UserProfile>
                               style: TextStyle(
                                   fontSize: 25, fontWeight: FontWeight.bold),
                             ),
-                            Text(
-                              "A Short Description of ${userInfo['notary']["firstName"]}",
-                              style: TextStyle(
-                                  fontSize: 17,
-                                  color: Colors.black.withOpacity(0.8)),
-                            ),
+                            // Text(
+                            //   "A Short Description of ${userInfo['notary']["firstName"]}",
+                            //   style: TextStyle(
+                            //       fontSize: 17,
+                            //       color: Colors.black.withOpacity(0.8)),
+                            // ),
                           ],
                         ),
                       ),
@@ -123,10 +142,7 @@ class _UserProfileState extends State<UserProfile>
                                   disabledBorder: InputBorder.none),
                               style: TextStyle(
                                   fontSize: 17, fontWeight: FontWeight.bold),
-                              initialValue: userInfo['notary']
-                                      ['phoneCountryCode'] +
-                                  " " +
-                                  userInfo['notary']['phoneNumber'],
+                              initialValue: userInfo['notary']['phoneNumber'],
                             ),
                             SizedBox(
                               height: 10,
@@ -144,41 +160,12 @@ class _UserProfileState extends State<UserProfile>
                               initialValue: userInfo['notary']['email'],
                             ),
                             SizedBox(
-                              height: 10,
-                            ),
-                            Center(
-                              child: MaterialButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(7),
-                                ),
-                                color: Colors.blue.shade800,
-                                onPressed: () {},
-                                child: Container(
-                                  height: 40,
-                                  width:
-                                      MediaQuery.of(context).size.width / 2.5,
-                                  child: Center(
-                                    child: Text(
-                                      "Update Profile",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 15,
+                              height: 30,
                             ),
                             Text(
                               "Note: To edit other details, Please log in from your webbrowser. visit www.notarizeddocs.com/notary",
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 14.5),
-                            ),
-                            SizedBox(
-                              height: 5,
                             ),
                           ],
                         ),
