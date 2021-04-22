@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:myknott/Config.dart/CustomColors.dart';
 import 'package:myknott/Services/Services.dart';
 
 class UserProfile extends StatefulWidget {
@@ -13,6 +14,7 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile>
     with AutomaticKeepAliveClientMixin<UserProfile> {
   Map userInfo = {};
+  final Color blueColor = CustomColor().blueColor;
 
   @override
   void initState() {
@@ -55,12 +57,12 @@ class _UserProfileState extends State<UserProfile>
                                       width: 80,
                                     )
                                   : Container(
-                                      color: Colors.blue,
+                                      color: blueColor,
                                       height: 80,
                                       width: 80,
                                       child: CircleAvatar(
                                         radius: 20,
-                                        backgroundColor: Colors.blue.shade700,
+                                        backgroundColor: blueColor,
                                         child: Text(
                                           userInfo['notary']["firstName"][0]
                                                       .toUpperCase() +
@@ -185,6 +187,7 @@ class _UserProfileState extends State<UserProfile>
                     width: 17,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
                     ),
                   ),
                   SizedBox(width: 10),

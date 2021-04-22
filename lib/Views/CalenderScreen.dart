@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:myknott/Config.dart/CustomColors.dart';
 import 'package:myknott/Services/Services.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'secondScreen.dart';
+import 'OrderScreen.dart';
 
 class CalenderScreen extends StatefulWidget {
   final String notaryId;
@@ -17,6 +17,7 @@ class CalenderScreen extends StatefulWidget {
 class _CalenderScreenState extends State<CalenderScreen>
     with AutomaticKeepAliveClientMixin {
   Map data = {};
+  final Color blueColor = CustomColor().blueColor;
   bool isloading = false;
   DateTime dateTime;
   final CalendarController calendarController = CalendarController();
@@ -40,7 +41,7 @@ class _CalenderScreenState extends State<CalenderScreen>
     setState(() {
       isloading = false;
     });
-    print(data);
+    //print(data);
   }
 
   @override
@@ -64,7 +65,7 @@ class _CalenderScreenState extends State<CalenderScreen>
             Container(
               child: TableCalendar(
                 calendarStyle: CalendarStyle(
-                  selectedColor: Colors.blue.shade800,
+                  selectedColor: Colors.blue.shade900,
                   highlightToday: false,
                 ),
                 headerStyle: HeaderStyle(
@@ -74,7 +75,7 @@ class _CalenderScreenState extends State<CalenderScreen>
                     formatButtonVisible: false),
                 calendarController: calendarController,
                 onDaySelected: (day, events, holidays) {
-                  print(day);
+                  //print(day);
                   getAppointment(day);
                 },
               ),
@@ -96,8 +97,9 @@ class _CalenderScreenState extends State<CalenderScreen>
                                 highlightColor: Colors.transparent,
                                 onTap: () {
                                   Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (_) => SecondScreen(
+                                    PageRouteBuilder(
+                                      transitionDuration: Duration(seconds: 0),
+                                      pageBuilder: (_, __, ___) => OrderScreen(
                                         notaryId: widget.notaryId,
                                         isPending: false,
                                         orderId: data['appointments'][index]
@@ -189,9 +191,9 @@ class _CalenderScreenState extends State<CalenderScreen>
                                               padding: const EdgeInsets.only(
                                                   right: 15.0),
                                               child: Text(
-                                                "Change Status",
+                                                "Update Status",
                                                 style: TextStyle(
-                                                    color: Colors.blue.shade900,
+                                                    color: blueColor,
                                                     fontSize: 17,
                                                     fontWeight:
                                                         FontWeight.bold),
@@ -216,8 +218,8 @@ class _CalenderScreenState extends State<CalenderScreen>
                                     SizedBox(
                                       height: 50,
                                     ),
-                                    SvgPicture.asset(
-                                      "assets/calendar.svg",
+                                    Image.asset(
+                                      "assets/appointment1.png",
                                       height: 100,
                                       width: 100,
                                     ),
@@ -252,6 +254,9 @@ class _CalenderScreenState extends State<CalenderScreen>
                             width: 17,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.black,
+                              ),
                             ),
                           ),
                           SizedBox(width: 10),

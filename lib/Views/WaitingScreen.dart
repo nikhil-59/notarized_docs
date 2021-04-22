@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:myknott/Config.dart/CustomColors.dart';
 import 'package:myknott/Views/homePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,6 +14,8 @@ class WaitingScreen extends StatefulWidget {
 }
 
 class _WaitingScreenState extends State<WaitingScreen> {
+  final Color blueColor = CustomColor().blueColor;
+
   adjustStatusBar() {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -27,8 +30,9 @@ class _WaitingScreenState extends State<WaitingScreen> {
       if (message.data['action'] == 'approved') {
         await prefs.setBool("isloggedIn", true);
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => HomePage(),
+          PageRouteBuilder(
+            transitionDuration: Duration(seconds: 0),
+            pageBuilder: (context, _, __) => HomePage(),
           ),
         );
       }
@@ -36,8 +40,9 @@ class _WaitingScreenState extends State<WaitingScreen> {
     if (message.data['action'] == 'revoked') {
       await prefs.clear();
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => WaitingScreen(isRegister: true),
+        PageRouteBuilder(
+          transitionDuration: Duration(seconds: 0),
+          pageBuilder: (_, __, ___) => WaitingScreen(isRegister: true),
         ),
       );
     }
@@ -59,7 +64,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
     //   (element) {
     //     if (element.data['type'] == 1 || element.data['type'] == '1') {
     //       Navigator.of(context).pushReplacement(
-    //         MaterialPageRoute(
+    //         PageRouteBuilder(
     //           builder: (context) => HomePage(),
     //         ),
     //       );
@@ -106,7 +111,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
                         Text(
                           "docs",
                           style: TextStyle(
-                              color: Colors.blue.shade800,
+                              color: blueColor,
                               fontSize: 50,
                               fontWeight: FontWeight.bold),
                         ),
@@ -118,7 +123,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
                         "Pays Attention to the smallest Details.",
                         style: TextStyle(
                             fontSize: 15,
-                            color: Colors.blue.shade900,
+                            color: blueColor,
                             fontWeight: FontWeight.w500),
                       ),
                     ),

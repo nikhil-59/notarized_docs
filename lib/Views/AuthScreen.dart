@@ -119,21 +119,22 @@ class _AuthScreenState extends State<AuthScreen> {
                                 maskType: EasyLoadingMaskType.clear);
                             Map result =
                                 await authService.signInWithFacebook(context);
-                            print(result);
                             if (result["status"] == 1 &&
                                 result["isloggedSuccessful"] &&
                                 result['isapproved'] &&
                                 result['isregister']) {
                               Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (_) => HomePage(),
+                                PageRouteBuilder(
+                                  transitionDuration: Duration(seconds: 0),
+                                  pageBuilder: (_, __, ___) => HomePage(),
                                 ),
                               );
                             } else if (!result['isregister'] &&
                                 result["isloggedSuccessful"]) {
                               Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (_) => WaitingScreen(
+                                PageRouteBuilder(
+                                  transitionDuration: Duration(seconds: 0),
+                                  pageBuilder: (_, __, ___) => WaitingScreen(
                                     isRegister: false,
                                   ),
                                 ),
@@ -141,8 +142,9 @@ class _AuthScreenState extends State<AuthScreen> {
                             } else if (!result['isapproved'] &&
                                 result["isloggedSuccessful"]) {
                               Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (_) => WaitingScreen(
+                                PageRouteBuilder(
+                                  transitionDuration: Duration(seconds: 0),
+                                  pageBuilder: (_, __, ___) => WaitingScreen(
                                     isRegister: true,
                                   ),
                                 ),
@@ -164,7 +166,6 @@ class _AuthScreenState extends State<AuthScreen> {
                                   ),
                                 ),
                               );
-                              print("something went wrong");
                               return;
                             }
                           } catch (e) {
@@ -211,21 +212,23 @@ class _AuthScreenState extends State<AuthScreen> {
                                 maskType: EasyLoadingMaskType.clear);
                             Map result =
                                 await authService.signInWithGmail(context);
-                            print(result);
+                            //print(result);
                             if (result["status"] == 1 &&
                                 result["isloggedSuccessful"] &&
                                 result['isapproved'] &&
                                 result['isregister']) {
                               Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (_) => HomePage(),
+                                PageRouteBuilder(
+                                  transitionDuration: Duration(seconds: 0),
+                                  pageBuilder: (_, __, ___) => HomePage(),
                                 ),
                               );
                             } else if (!result['isregister'] &&
                                 result["isloggedSuccessful"]) {
                               Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (_) => WaitingScreen(
+                                PageRouteBuilder(
+                                  transitionDuration: Duration(seconds: 0),
+                                  pageBuilder: (_, __, ___) => WaitingScreen(
                                     isRegister: false,
                                   ),
                                 ),
@@ -233,8 +236,9 @@ class _AuthScreenState extends State<AuthScreen> {
                             } else if (!result['isapproved'] &&
                                 result["isloggedSuccessful"]) {
                               Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (_) => WaitingScreen(
+                                PageRouteBuilder(
+                                  transitionDuration: Duration(seconds: 0),
+                                  pageBuilder: (_, __, ___) => WaitingScreen(
                                     isRegister: true,
                                   ),
                                 ),
@@ -255,7 +259,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                   ),
                                 ),
                               );
-                              print("something went wrong");
+                              //print("something went wrong");
                               return;
                             }
                           } catch (e) {
@@ -507,15 +511,17 @@ class _AuthScreenState extends State<AuthScreen> {
                             result['isapproved'] &&
                             result['isregister']) {
                           Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) => HomePage(),
+                            PageRouteBuilder(
+                              transitionDuration: Duration(seconds: 0),
+                              pageBuilder: (_, __, ___) => HomePage(),
                             ),
                           );
                         } else if (!result['isregister'] &&
                             result["isloggedSuccessful"]) {
                           Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) => WaitingScreen(
+                            PageRouteBuilder(
+                              transitionDuration: Duration(seconds: 0),
+                              pageBuilder: (_, __, ___) => WaitingScreen(
                                 isRegister: false,
                               ),
                             ),
@@ -523,8 +529,9 @@ class _AuthScreenState extends State<AuthScreen> {
                         } else if (!result['isapproved'] &&
                             result["isloggedSuccessful"]) {
                           Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) => WaitingScreen(
+                            PageRouteBuilder(
+                              transitionDuration: Duration(seconds: 0),
+                              pageBuilder: (_, __, ___) => WaitingScreen(
                                 isRegister: true,
                               ),
                             ),
@@ -547,7 +554,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               ),
                             ),
                           );
-                          print("something went wrong");
+                          //print("something went wrong");
                           return;
                         }
                       } catch (e) {

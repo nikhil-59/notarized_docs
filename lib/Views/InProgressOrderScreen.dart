@@ -1,10 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:myknott/Services/Services.dart';
-import 'package:myknott/Views/secondScreen.dart';
+import 'package:myknott/Views/OrderScreen.dart';
 
 class InProgressOrderScreen extends StatefulWidget {
   final String notaryId;
@@ -33,15 +32,12 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
           .getInProgressOrders(widget.notaryId, pageNumber);
       orders.addAll(response);
       widget.updateTotal(response['orderCount']);
-      print(orders);
       if (response['pageNumber'] == response['pageCount']) {
         hasData = true;
-        print("-----------end of list----------");
       } else
         pageNumber += 1;
     } catch (e) {}
     setState(() {});
-    print(widget.notaryId);
   }
 
   getMoreData() async {
@@ -51,7 +47,6 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
       orders['orders'].addAll(response['orders']);
       if (response['pageNumber'] == response['pageCount']) {
         hasData = true;
-        print("-----------end of list----------");
       } else {
         pageNumber += 1;
       }
@@ -74,6 +69,7 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
             onEndOfPage: getMoreData,
             isLoading: hasData,
             child: RefreshIndicator(
+              color: Colors.black,
               onRefresh: () => getInProgressOrders(),
               child: ListView.builder(
                 itemCount:
@@ -89,8 +85,9 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                               tileColor: Colors.white,
 
                               onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => SecondScreen(
+                                PageRouteBuilder(
+                                  transitionDuration: Duration(seconds: 0),
+                                  pageBuilder: (_, __, ___) => OrderScreen(
                                     isPending: false,
                                     notaryId: widget.notaryId,
                                     orderId: orders['orders'][index]['_id'],
@@ -157,8 +154,8 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SvgPicture.asset(
-                                "assets/checklist.svg",
+                              Image.asset(
+                                "assets/appointment1.png",
                                 height: 100,
                                 width: 100,
                               ),
@@ -194,6 +191,9 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                   width: 17,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Colors.black,
+                    ),
                   ),
                 ),
                 SizedBox(width: 10),

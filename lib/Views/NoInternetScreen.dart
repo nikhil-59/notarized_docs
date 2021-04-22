@@ -35,8 +35,9 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
     }
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => AuthService().handleAuth(),
+      PageRouteBuilder(
+        transitionDuration: Duration(seconds: 0),
+        pageBuilder: (_, __, ___) => AuthService().handleAuth(),
       ),
     );
   }

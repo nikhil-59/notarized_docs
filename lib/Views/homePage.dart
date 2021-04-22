@@ -4,16 +4,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
+import 'package:myknott/Config.dart/CustomColors.dart';
 import 'package:myknott/Services/auth.dart';
 import 'package:myknott/Views/CalenderScreen.dart';
 import 'package:myknott/Views/ProgessScreen.dart';
 import 'package:myknott/Views/UserProfile.dart';
 import 'package:myknott/Views/Widgets/card.dart';
 import 'package:myknott/Views/Widgets/confirmCard.dart';
-import 'package:myknott/Views/secondScreen.dart';
+import 'package:myknott/Views/OrderScreen.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:myknott/Views/Amount.dart';
@@ -28,6 +29,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   Dio dio = Dio();
+  final Color blueColor = CustomColor().blueColor;
   final storage = FlutterSecureStorage();
   TabController tabController;
   int currentIndex = 0;
@@ -39,6 +41,7 @@ class _HomePageState extends State<HomePage>
   bool isloading = false;
   String totalAppointment = "";
   String totalpending = "";
+  bool ispendingLoading = false;
 
   updateAppointment(int order) {
     if (order == 0) {
@@ -52,12 +55,13 @@ class _HomePageState extends State<HomePage>
       totalpending = "";
     } else
       totalpending = "($order)";
+    // setState(() {});
   }
 
   handleForegroundNotification(RemoteMessage message) async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     if (message.data['type'] == 2 || message.data['type'] == "2") {
-      print("new order");
+      //print("new order");
       pendingList.clear();
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
@@ -97,7 +101,7 @@ class _HomePageState extends State<HomePage>
       String notaryId = message.data['notaryId'];
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => SecondScreen(
+          builder: (context) => OrderScreen(
             isPending: true,
             notaryId: notaryId,
             orderId: orderId,
@@ -105,13 +109,13 @@ class _HomePageState extends State<HomePage>
         ),
       );
     } else if (message.data['type'] == 0 || message.data['type'] == "0") {
-      print("type 0 action is triggered");
+      //print("type 0 action is triggered");
       String orderId = message.data['orderId'];
       String notaryId = message.data['notaryId'];
 
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => SecondScreen(
+          builder: (context) => OrderScreen(
             isPending: false,
             notaryId: notaryId,
             orderId: orderId,
@@ -133,7 +137,7 @@ class _HomePageState extends State<HomePage>
       String notaryId = message.data['notaryId'];
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => SecondScreen(
+          builder: (context) => OrderScreen(
             isPending: false,
             notaryId: notaryId,
             orderId: orderId,
@@ -207,20 +211,13 @@ class _HomePageState extends State<HomePage>
         setState(() {});
       }
     } catch (e) {
-      print(e);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.black,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-          content: Text(
-            "Something went wrong...",
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-        ),
-      );
+      //print(e);
+      Fluttertoast.showToast(
+          msg: "Something went wrong..",
+          backgroundColor: blueColor,
+          fontSize: 16,
+          textColor: Colors.white,
+          gravity: ToastGravity.BOTTOM);
     }
   }
 
@@ -228,13 +225,16 @@ class _HomePageState extends State<HomePage>
     setState(() {
       pageNumber = 0;
       hasData = false;
+      ispendingLoading = true;
     });
-
     try {
-      pendingList.clear();
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
-      Map data = {"notaryId": userInfo['notary']['_id'], "pageNumber": "0"};
+      pendingList.clear();
+      Map data = {
+        "notaryId": userInfo['notary']['_id'],
+        "pageNumber": pageNumber
+      };
       var response = await dio.post(
           "https://my-notary-app.herokuapp.com/notary/getInvites/",
           data: data);
@@ -255,25 +255,18 @@ class _HomePageState extends State<HomePage>
         updatePending(response.data['inviteCount']);
       }
     } catch (e) {
-      print(e);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.black,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-          content: Text(
-            "Something went wrong...",
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-        ),
-      );
+      Fluttertoast.showToast(
+          msg: "Something went wrong..",
+          backgroundColor: blueColor,
+          fontSize: 16,
+          textColor: Colors.white,
+          gravity: ToastGravity.BOTTOM);
     }
     setState(() {
       isloading = true;
+      ispendingLoading = false;
     });
-    print(pendingList);
+    //print(pendingList);
   }
 
   fetchMoreData() async {
@@ -289,7 +282,7 @@ class _HomePageState extends State<HomePage>
           data: data);
       if (response.data['pageNumber'] == response.data['pageCount']) {
         hasData = true;
-        print("-------------------Page Ended--------------");
+        //print("-------------------Page Ended--------------");
       } else
         pageNumber += 1;
       for (var item in response.data["orders"]) {
@@ -304,15 +297,16 @@ class _HomePageState extends State<HomePage>
         );
       }
     } catch (e) {
-      print(e);
+      //print(e);
     }
     setState(() {
       isloading = true;
     });
-    print(pendingList);
+    //print(pendingList);
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     String greeting() {
       var hour = DateTime.now().hour;
@@ -327,54 +321,62 @@ class _HomePageState extends State<HomePage>
 
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: SalomonBottomBar(
-        currentIndex: currentIndex,
-        unselectedItemColor: Colors.grey,
-        onTap: (i) {
-          tabController.animateTo(i);
-          setState(() {
-            currentIndex = i;
-          });
-        },
-        items: [
-          SalomonBottomBarItem(
-            icon: Icon(
-              Icons.home,
-              size: 28,
+      bottomNavigationBar: Material(
+        color: Colors.white,
+        elevation: 10,
+        child: SalomonBottomBar(
+          currentIndex: currentIndex,
+          selectedItemColor: blueColor,
+          unselectedItemColor: Colors.grey,
+          onTap: (i) {
+            tabController.animateTo(i);
+            setState(() {
+              currentIndex = i;
+            });
+          },
+          items: [
+            SalomonBottomBarItem(
+              icon: Icon(
+                Icons.home_filled,
+                size: 26,
+              ),
+              title: Text(
+                "Home",
+                style: TextStyle(fontSize: 14.5),
+              ),
             ),
-            title: Text(
-              "Home",
-              style: TextStyle(fontSize: 14.5),
+            SalomonBottomBarItem(
+              icon: Icon(
+                Icons.bookmark_sharp,
+                size: 26,
+              ),
+              title: Text(
+                "Orders",
+                style: TextStyle(fontSize: 14.5),
+              ),
             ),
-          ),
-          SalomonBottomBarItem(
-            icon: Icon(
-              Icons.bookmark_sharp,
-              size: 28,
+            SalomonBottomBarItem(
+              icon: Icon(
+                Icons.monetization_on,
+                size: 26,
+              ),
+              title: Text(
+                "Notary Pay",
+                style: TextStyle(fontSize: 14.5),
+              ),
             ),
-            title: Text(
-              "Orders",
-              style: TextStyle(fontSize: 14.5),
+            SalomonBottomBarItem(
+              icon: Icon(
+                Icons.person,
+                size: 26,
+              ),
+              title: Text(
+                "Profile",
+                style: TextStyle(fontSize: 14.5),
+              ),
             ),
-          ),
-          SalomonBottomBarItem(
-            icon: Icon(Icons.monetization_on, size: 28),
-            title: Text(
-              "Notary Pay",
-              style: TextStyle(fontSize: 14.5),
-            ),
-          ),
-          SalomonBottomBarItem(
-            icon: Icon(
-              Icons.person,
-              size: 28,
-            ),
-            title: Text(
-              "Profile",
-              style: TextStyle(fontSize: 14.5),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
       body: TabBarView(
         controller: tabController,
@@ -392,12 +394,9 @@ class _HomePageState extends State<HomePage>
               child: SafeArea(
                 child: (isloading)
                     ? SingleChildScrollView(
-                        physics: BouncingScrollPhysics(),
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Container(
-                            height: MediaQuery.of(context).size.height - 70,
-                            width: MediaQuery.of(context).size.width,
                             child: ListView(
                               shrinkWrap: true,
                               physics: BouncingScrollPhysics(),
@@ -435,8 +434,11 @@ class _HomePageState extends State<HomePage>
                                     GestureDetector(
                                       onTap: () {
                                         Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
+                                          PageRouteBuilder(
+                                            transitionDuration:
+                                                Duration(seconds: 0),
+                                            pageBuilder: (context, animation1,
+                                                    animation2) =>
                                                 CalenderScreen(
                                                     notaryId: userInfo['notary']
                                                         ['_id']),
@@ -525,8 +527,8 @@ class _HomePageState extends State<HomePage>
                                             SizedBox(
                                               height: 30,
                                             ),
-                                            SvgPicture.asset(
-                                              "assets/calendar.svg",
+                                            Image.asset(
+                                              "assets/appointment.png",
                                               height: 100,
                                               width: 100,
                                             ),
@@ -588,9 +590,11 @@ class _HomePageState extends State<HomePage>
                                               onTap: () async {
                                                 await Navigator.of(context)
                                                     .push(
-                                                  MaterialPageRoute(
-                                                    builder: (_) =>
-                                                        SecondScreen(
+                                                  PageRouteBuilder(
+                                                    transitionDuration:
+                                                        Duration(seconds: 0),
+                                                    pageBuilder: (_, __, ___) =>
+                                                        OrderScreen(
                                                       notaryId:
                                                           userInfo['notary']
                                                               ['_id'],
@@ -600,9 +604,11 @@ class _HomePageState extends State<HomePage>
                                                   ),
                                                 )
                                                     .whenComplete(() async {
-                                                  print(
-                                                      "---------------------");
-                                                  await getPending();
+                                                  if (ispendingLoading ==
+                                                      false) {
+                                                    print("hello");
+                                                    await getPending();
+                                                  }
                                                 });
                                               },
                                               child: ConfirmCards(
@@ -631,8 +637,8 @@ class _HomePageState extends State<HomePage>
                                             SizedBox(
                                               height: 30,
                                             ),
-                                            SvgPicture.asset(
-                                              "assets/checklist.svg",
+                                            Image.asset(
+                                              "assets/pendingorder.png",
                                               height: 100,
                                               width: 100,
                                             ),
@@ -674,7 +680,7 @@ class _HomePageState extends State<HomePage>
                                         ),
                                       ),
                                 SizedBox(
-                                  height: 20,
+                                  height: 5,
                                 ),
                               ],
                             ),
@@ -691,6 +697,9 @@ class _HomePageState extends State<HomePage>
                               width: 17,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.black,
+                                ),
                               ),
                             ),
                             SizedBox(width: 10),

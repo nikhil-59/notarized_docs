@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:myknott/Views/secondScreen.dart';
+import 'package:myknott/Config.dart/CustomColors.dart';
+import 'package:myknott/Views/OrderScreen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Cards extends StatelessWidget {
@@ -22,11 +23,13 @@ class Cards extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final Color blueColor = CustomColor().blueColor;
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => SecondScreen(
+          PageRouteBuilder(
+            transitionDuration: Duration(seconds: 0),
+            pageBuilder: (context, a, b) => OrderScreen(
               isPending: false,
               notaryId: notaryId,
               orderId: orderId,
@@ -37,9 +40,9 @@ class Cards extends StatelessWidget {
       },
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(7),
         ),
-        elevation: 0.6,
+        elevation: 3,
         child: Container(
           width: MediaQuery.of(context).size.width - 75,
           child: Column(
@@ -57,14 +60,9 @@ class Cards extends StatelessWidget {
                         onTap: () async {
                           await launch("tel:$phone");
                         },
-                        child: CircleAvatar(
-                          radius: 17,
-                          backgroundColor: Colors.green.shade600,
-                          child: Icon(
-                            Icons.phone,
-                            size: 20,
-                            color: Colors.white,
-                          ),
+                        child: Image.asset(
+                          "assets/caller.png",
+                          height: 36,
                         ),
                       ),
                       SizedBox(
@@ -74,14 +72,9 @@ class Cards extends StatelessWidget {
                         onTap: () async {
                           await launch('sms:$phone');
                         },
-                        child: CircleAvatar(
-                          radius: 17,
-                          backgroundColor: Colors.blue.shade700,
-                          child: Icon(
-                            Icons.chat_bubble,
-                            size: 19.5,
-                            color: Colors.white,
-                          ),
+                        child: Image.asset(
+                          'assets/chat.png',
+                          height: 36,
                         ),
                       )
                     ],
@@ -120,11 +113,11 @@ class Cards extends StatelessWidget {
               ),
               ClipRRect(
                 borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(5),
-                  bottomRight: Radius.circular(5),
+                  bottomLeft: Radius.circular(7),
+                  bottomRight: Radius.circular(7),
                 ),
                 child: Container(
-                  color: Colors.blue.shade700,
+                  color: blueColor,
                   height: 45,
                   child: Center(
                       child: Text(

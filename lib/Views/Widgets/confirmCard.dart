@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:future_button/future_button.dart';
+import 'package:myknott/Config.dart/CustomColors.dart';
 import 'package:myknott/Services/Services.dart';
 
 class ConfirmCards extends StatefulWidget {
@@ -27,14 +29,14 @@ class ConfirmCards extends StatefulWidget {
 }
 
 class _ConfirmCardsState extends State<ConfirmCards> {
+  final Color blueColor = CustomColor().blueColor;
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0.3,
+      elevation: 3,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(7),
       ),
-      // elevation: 3,
       child: Column(
         children: [
           SizedBox(
@@ -43,7 +45,6 @@ class _ConfirmCardsState extends State<ConfirmCards> {
           Padding(
             padding: const EdgeInsets.all(2.0),
             child: ListTile(
-              // isThreeLine: true,
               leading: widget.imageUrl != null
                   ? CircleAvatar(
                       backgroundColor: Colors.transparent,
@@ -62,7 +63,7 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                       width: 40,
                       child: CircleAvatar(
                         radius: 20,
-                        backgroundColor: Colors.blue.shade700,
+                        backgroundColor: blueColor,
                         child: Text(
                           widget.name[0],
                           textAlign: TextAlign.center,
@@ -122,13 +123,13 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                 child: Text(
                   "Decline",
                   style: TextStyle(
-                      color: Colors.black.withOpacity(0.5),
+                      color: Colors.black.withOpacity(1),
                       fontSize: 15.5,
                       fontWeight: FontWeight.bold),
                 ),
               ),
               FutureFlatButton(
-                disabledColor: Colors.blue.shade700,
+                disabledColor: blueColor,
                 progressIndicatorBuilder: (context) => SizedBox(
                   height: 17,
                   width: 17,
@@ -140,29 +141,22 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                   ),
                 ),
                 onPressed: () async {
-                  await NotaryServices()
+                  bool success = await NotaryServices()
                       .acceptNotary(widget.notaryId, widget.orderId);
                   await widget.refresh();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      behavior: SnackBarBehavior.floating,
-                      backgroundColor: Colors.blue.shade700,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                      content: Text(
-                        "Order Accepted..",
-                        style: TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  );
+                  Fluttertoast.showToast(
+                      msg: success
+                          ? "Order accepted."
+                          : "Can't accept order now.",
+                      backgroundColor: blueColor,
+                      fontSize: 16,
+                      textColor: Colors.white,
+                      gravity: ToastGravity.SNACKBAR);
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
-                color: Colors.blue.shade700,
+                color: blueColor,
                 child: Text(
                   "Accept",
                   style: TextStyle(

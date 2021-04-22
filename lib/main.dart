@@ -55,12 +55,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Notary App',
       theme: ThemeData(
-          accentColor: Colors.black,
-          primarySwatch: CustomColor().accentColor,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          accentColor: Colors.white,
+          primarySwatch: CustomColor().appBarColor,
           fontFamily: "Whitney"),
       home: isInternet ? AuthService().handleAuth() : NoInternetScreen(),
       builder: EasyLoading.init(),
-      // home: WaitingScreen(),
     );
   }
 }

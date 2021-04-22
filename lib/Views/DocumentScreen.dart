@@ -2,10 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DocumentScreen extends StatelessWidget {
+class DocumentScreen extends StatefulWidget {
   final List documents;
+  final String notaryId;
 
-  const DocumentScreen({Key key, this.documents}) : super(key: key);
+  const DocumentScreen({Key key, this.documents, @required this.notaryId})
+      : super(key: key);
+
+  @override
+  _DocumentScreenState createState() => _DocumentScreenState();
+}
+
+class _DocumentScreenState extends State<DocumentScreen> {
+  List<Map> docs = [];
+
+  @override
+  void initState() {
+    getCustomerDocs();
+    super.initState();
+  }
+
+  getCustomerDocs() {
+    for (var i in widget.documents) {
+      if (i['uploadedBy'] != widget.notaryId) {
+        //print("yes");
+        docs.add(i);
+      }
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,23 +39,17 @@ class DocumentScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            documents.isNotEmpty
+            docs.isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Row(
                       children: [
-                        //
-                        SvgPicture.asset(
-                          "assets/documents.svg",
-                          width: 30,
-                          height: 30,
-                        ),
                         SizedBox(
                           width: 10,
                         ),
                         Flexible(
                           child: Text(
-                            "Documents",
+                            "Documents Uploaded By Customer",
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.w700),
                           ),
@@ -47,13 +66,8 @@ class DocumentScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SvgPicture.asset(
-                          "assets/documents.svg",
-                          height: 100,
-                          width: 100,
-                        ),
                         SizedBox(
-                          height: 15,
+                          height: 100,
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -72,7 +86,7 @@ class DocumentScreen extends StatelessWidget {
             ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: documents.length,
+              itemCount: docs.length,
               // itemCount: 0,
               itemBuilder: (context, index) {
                 return Padding(
@@ -84,17 +98,17 @@ class DocumentScreen extends StatelessWidget {
                       children: [
                         Text(
                           "${index + 1}.",
-                          style: TextStyle(
-                              fontSize: 16.5, fontWeight: FontWeight.w700),
+                          style: TextStyle(fontSize: 16.5),
                         ),
                         SizedBox(
-                          width: 20,
+                          width: 10,
                         ),
                         Flexible(
                           child: Text(
-                            documents[index]['documentName'],
-                            style: TextStyle(
-                                fontSize: 16.5, fontWeight: FontWeight.w700),
+                            docs[index]['documentName'],
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 16.5),
                           ),
                         ),
                       ],
@@ -105,14 +119,14 @@ class DocumentScreen extends StatelessWidget {
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       onTap: () async {
-                        await launch(documents[index]['documentURL']);
+                        await launch(docs[index]['documentURL']);
                       },
                       child: Text(
                         "View",
                         style: TextStyle(
-                            fontSize: 17,
+                            fontSize: 16.5,
                             fontWeight: FontWeight.w700,
-                            color: Colors.purple.shade800),
+                            color: Color(0xff051c91)),
                       ),
                     ),
                   ),

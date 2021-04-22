@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:amazon_s3_cognito/amazon_s3_cognito.dart';
+import 'package:amazon_s3_cognito/aws_region.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -15,7 +18,11 @@ class NotaryServices {
           "https://my-notary-app.herokuapp.com/notary/acceptOrder",
           data: body);
       print(response.data);
-    } catch (e) {}
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 
   declineNotary(String notaryId, String orderId) async {
@@ -28,7 +35,10 @@ class NotaryServices {
           "https://my-notary-app.herokuapp.com/notary/declineOrder",
           data: body);
       print(response.data);
-    } catch (e) {}
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   markDocumentsDownloaded(String notaryId, String orderId) async {
@@ -219,5 +229,38 @@ class NotaryServices {
     String token = await FirebaseAuth.instance.currentUser.getIdToken();
     storage.write(key: "jwt", value: "Bearer " + token);
     print(token);
+  }
+
+  uploadImageToAPI(File _image, String notaryId, String orderId) async {
+    print("notaryId $notaryId");
+    print("orderId $orderId");
+    String fileName = _image.path.split('/').last;
+    String name = "n/$notaryId/o/$orderId/$fileName";
+    print(name);
+    String uploadedImageUrl = await AmazonS3Cognito.upload(
+        _image.path,
+        "mynotarybucket1",
+        "us-east-2:98ee1e86-593d-4880-99af-0cd58dbfac15",
+        name,
+        AwsRegion.US_EAST_2,
+        AwsRegion.US_EAST_2);
+    print(uploadedImageUrl);
+    Map body = {
+      "documentArray": [
+        {
+          "documentName": fileName,
+          "documentURL": uploadedImageUrl,
+        }
+      ],
+      "orderId": orderId,
+      "notaryId": notaryId
+    };
+    String jwt = await storage.read(key: 'jwt');
+    dio.options.headers['Authorization'] = jwt;
+    var response = await dio.post(
+        "https://my-notary-app.herokuapp.com/notary/uploadMultipleDocumentsForOrder",
+        data: body);
+    print("=====================");
+    print(response.data);
   }
 }

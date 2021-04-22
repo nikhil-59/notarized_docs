@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.myknott">
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.VIBRATE" android:maxSdkVersion="17" />
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <application android:label="NotarizedDocs" android:icon="@mipmap/ic_launcher">
     <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBaP_8CbqOOcj3cOA4122iOZI_EIH0hv8o" />
     <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />

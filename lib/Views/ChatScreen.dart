@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
+import 'package:myknott/Config.dart/CustomColors.dart';
 import 'package:myknott/Services/Services.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -24,6 +25,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen>
     with AutomaticKeepAliveClientMixin {
   final NotaryServices notaryServices = NotaryServices();
+  final Color blueColor = CustomColor().blueColor;
   TextEditingController messageController = TextEditingController();
   List messageList = [];
   bool isloading = true;
@@ -62,7 +64,7 @@ class _ChatScreenState extends State<ChatScreen>
         ),
       ),
     );
-    print(messageList.length);
+    //print(messageList.length);
     pageNumber = pageNumber + 1;
     setState(() {
       isloading = false;
@@ -71,10 +73,10 @@ class _ChatScreenState extends State<ChatScreen>
   }
 
   loadmoreMessage() async {
-    print(pageNumber);
+    //print(pageNumber);
     var messages = await notaryServices.getAllMessages(
         widget.notaryId, pageNumber, widget.chatRoom);
-    print("Page Count " + messages['pageNumber'].toString());
+    //print("Page Count " + messages['pageNumber'].toString());
     if (messages['chatMessageCount'] == messageList.length) {
       setState(() {
         hasData = true;
@@ -94,13 +96,13 @@ class _ChatScreenState extends State<ChatScreen>
       pageNumber = pageNumber + 1;
     });
 
-    print(messageList.length);
+    //print(messageList.length);
   }
 
   setNewMessageToList(message) {
     var newData = json.decode(message['sentBy']);
-    print(message);
-    print("new message type type 3");
+    //print(message);
+    //print("new message type type 3");
     messageList.insert(0, {
       "sentAt": message['sentAt'],
       "_id": message['_id'],
@@ -148,10 +150,10 @@ class _ChatScreenState extends State<ChatScreen>
   handleNotificationClick(RemoteMessage message) async {
     // For handling new message notification
     if (message.data['type'] == "3" || message.data['type'] == "0") {
-      print("new message");
+      //print("new message");
       if (message.data['chatroom'] == widget.chatRoom) {
         setNewMessageToList(message.data);
-        print("new message");
+        //print("new message");
       }
     }
   }
@@ -160,7 +162,7 @@ class _ChatScreenState extends State<ChatScreen>
   void initState() {
     NotaryServices().getToken();
     FirebaseMessaging.onMessage.any((element) {
-      print("new message");
+      //print("new message");
       handleNotificationClick(element);
       return false;
     });
@@ -225,7 +227,7 @@ class _ChatScreenState extends State<ChatScreen>
                               fontSize: 17, fontWeight: FontWeight.bold),
                           decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintText: "Enter Message..."),
+                              hintText: "Type a message..."),
                         ),
                       ),
                     ),
@@ -249,12 +251,20 @@ class _ChatScreenState extends State<ChatScreen>
                       },
                       child: CircleAvatar(
                         radius: 23,
-                        backgroundColor: Colors.blue.shade800,
-                        child: Center(
-                          child: Icon(
-                            Icons.send_rounded,
-                            color: Colors.white,
-                          ),
+                        backgroundColor: blueColor,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 4,
+                            ),
+                            Center(
+                              child: Icon(
+                                Icons.send_rounded,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -270,9 +280,9 @@ class _ChatScreenState extends State<ChatScreen>
                           initCategory: Category.RECENT,
                           bgColor: Color(0xFFF2F2F2),
                           // bgColor: Colors.white,
-                          indicatorColor: Colors.blue.shade800,
+                          indicatorColor: blueColor,
                           iconColor: Colors.grey,
-                          iconColorSelected: Colors.blue.shade800,
+                          iconColorSelected: blueColor,
                           progressIndicatorColor: Colors.transparent,
                           showRecentsTab: true,
                           recentsLimit: 28,
@@ -288,7 +298,7 @@ class _ChatScreenState extends State<ChatScreen>
                           buttonMode: ButtonMode.CUPERTINO),
                       onEmojiSelected: (emoji, category) {
                         messageController.text += category.emoji;
-                        print(emoji);
+                        //print(emoji);
                       },
                     ),
                   )
@@ -325,6 +335,9 @@ class _ChatScreenState extends State<ChatScreen>
                       width: 17,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.black,
+                        ),
                       ),
                     ),
                     SizedBox(width: 10),
@@ -429,6 +442,9 @@ Widget leftChild(messageList, index) {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
+                        SizedBox(
+                          height: 5,
+                        ),
                       ],
                     ),
                   ),
@@ -460,7 +476,7 @@ Widget rightChild(messageList, index) {
                 child: Bubble(
                   alignment: Alignment.centerRight,
                   nip: BubbleNip.rightTop,
-                  color: Colors.blue.shade700,
+                  color: CustomColor().chatColor,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -511,6 +527,9 @@ Widget rightChild(messageList, index) {
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                         ),
+                      ),
+                      SizedBox(
+                        height: 5,
                       ),
                     ],
                   ),

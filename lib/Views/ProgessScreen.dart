@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myknott/Config.dart/CustomColors.dart';
 import 'package:myknott/Views/CompletedOrderScreen.dart';
 import 'package:myknott/Views/InProgressOrderScreen.dart';
 
@@ -61,7 +62,7 @@ class _ProgressScreenState extends State<ProgressScreen>
             labelColor: Colors.black,
             unselectedLabelColor: Colors.black.withOpacity(0.8),
             controller: tabController,
-            indicatorColor: Colors.blue.shade900,
+            indicatorColor: CustomColor().blueColor,
             indicatorWeight: 2.5,
             indicatorSize: TabBarIndicatorSize.tab,
             enableFeedback: true,

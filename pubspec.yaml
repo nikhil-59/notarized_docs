@@ -11,6 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  file_picker: ^3.0.1
   future_button: ^0.1.2
   connectivity: ^3.0.3
   font_awesome_flutter:
@@ -29,8 +30,10 @@ dependencies:
   cached_network_image:
   cupertino_icons: ^1.0.2
   firebase_messaging: ^9.0.0
-  awesome_notifications: ^0.0.5+8
   url_launcher: ^6.0.2
+  amazon_s3_cognito: ^0.6.0
+  image_picker: ^0.7.4
+  fluttertoast: ^8.0.4
   lazy_load_scrollview: ^1.3.0
   bubble: ^1.2.1
   emoji_picker_flutter: any

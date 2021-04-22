@@ -1,7 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:myknott/Config.dart/CustomColors.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -17,15 +17,13 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen>
     with AutomaticKeepAliveClientMixin<MapScreen> {
   List<Marker> _markers = <Marker>[];
-
+  final Color blueColor = CustomColor().blueColor;
   Future<void> openMap(double latitude, double longitude) async {
     String googleUrl =
         'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
     if (await canLaunch(googleUrl)) {
       await launch(googleUrl);
-    } else {
-      print('Could not open the map.');
-    }
+    } else {}
   }
 
   @override
@@ -65,14 +63,12 @@ class _MapScreenState extends State<MapScreen>
           ),
           widget.orderInfo.isNotEmpty
               ? SlidingUpPanel(
-                  // margin: EdgeInsets.symmetric(horizontal: 5),
-
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
                   ),
                   parallaxEnabled: true,
-                  maxHeight: 380,
+                  maxHeight: 340,
                   backdropEnabled: true,
                   minHeight: 120,
                   panel: ClipRRect(
@@ -106,10 +102,12 @@ class _MapScreenState extends State<MapScreen>
                                             77.1025),
                                     child: Column(
                                       children: [
-                                        Icon(
-                                          Icons.location_pin,
-                                          color: Colors.red.shade700,
-                                          size: 50,
+                                        Image.asset(
+                                          "assets/location.png",
+                                          height: 50,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
                                         ),
                                         SizedBox(
                                           width: 200,
@@ -118,8 +116,8 @@ class _MapScreenState extends State<MapScreen>
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.purple.shade800,
+                                              fontWeight: FontWeight.w800,
+                                              color: Color(0xff051c91),
                                             ),
                                           ),
                                         )
@@ -137,7 +135,7 @@ class _MapScreenState extends State<MapScreen>
                                             CrossAxisAlignment.start,
                                         children: [
                                           SizedBox(
-                                            height: 5,
+                                            width: 5,
                                           ),
                                           Text(
                                             "Address",
@@ -208,29 +206,9 @@ class _MapScreenState extends State<MapScreen>
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        CircleAvatar(
-                                          backgroundColor: Colors.blue.shade900,
-                                          maxRadius: 22,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(50),
-                                            child: widget.orderInfo['order']
-                                                            ['customer']
-                                                        ['userImageURL'] !=
-                                                    null
-                                                ? CachedNetworkImage(
-                                                    imageUrl: widget.orderInfo[
-                                                            'order']['customer']
-                                                        ['userImageURL'],
-                                                    width: 50,
-                                                    height: 50,
-                                                    fit: BoxFit.fill,
-                                                  )
-                                                : Container(
-                                                    width: 50,
-                                                    height: 50,
-                                                  ),
-                                          ),
+                                        Image.asset(
+                                          "assets/avatar.png",
+                                          height: 40,
                                         ),
                                         SizedBox(
                                           width: 10,
@@ -301,6 +279,8 @@ class _MapScreenState extends State<MapScreen>
                                                 ['signerAddress'] !=
                                             null
                                         ? Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 "Address",
@@ -309,23 +289,28 @@ class _MapScreenState extends State<MapScreen>
                                                         .withOpacity(0.8),
                                                     fontSize: 17),
                                               ),
+                                              SizedBox(
+                                                width: 15,
+                                              ),
+                                              widget.orderInfo['order']
+                                                              ['appointment']
+                                                          ['signerAddress'] !=
+                                                      null
+                                                  ? Flexible(
+                                                      child: Text(
+                                                        "${widget.orderInfo['order']['appointment']['signerAddress'] ?? ""}",
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.8),
+                                                            fontSize: 17),
+                                                      ),
+                                                    )
+                                                  : Container(),
                                             ],
-                                          )
-                                        : Container(),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    widget.orderInfo['order']['appointment']
-                                                ['signerAddress'] !=
-                                            null
-                                        ? Text(
-                                            "${widget.orderInfo['order']['appointment']['signerAddress'] ?? ""}",
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                color: Colors.black
-                                                    .withOpacity(0.8),
-                                                fontSize: 17),
                                           )
                                         : Container(),
                                   ],
