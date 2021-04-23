@@ -41,7 +41,6 @@ class _HomePageState extends State<HomePage>
   bool isloading = false;
   String totalAppointment = "";
   String totalpending = "";
-  bool ispendingLoading = false;
 
   updateAppointment(int order) {
     if (order == 0) {
@@ -225,7 +224,6 @@ class _HomePageState extends State<HomePage>
     setState(() {
       pageNumber = 0;
       hasData = false;
-      ispendingLoading = true;
     });
     try {
       String jwt = await storage.read(key: 'jwt');
@@ -264,7 +262,6 @@ class _HomePageState extends State<HomePage>
     }
     setState(() {
       isloading = true;
-      ispendingLoading = false;
     });
     //print(pendingList);
   }
@@ -588,8 +585,9 @@ class _HomePageState extends State<HomePage>
                                           for (var item in pendingList)
                                             GestureDetector(
                                               onTap: () async {
-                                                await Navigator.of(context)
-                                                    .push(
+                                                bool isDone =
+                                                    await Navigator.of(context)
+                                                        .push(
                                                   PageRouteBuilder(
                                                     transitionDuration:
                                                         Duration(seconds: 0),
@@ -602,14 +600,16 @@ class _HomePageState extends State<HomePage>
                                                       isPending: true,
                                                     ),
                                                   ),
-                                                )
-                                                    .whenComplete(() async {
-                                                  if (ispendingLoading ==
-                                                      false) {
-                                                    print("hello");
-                                                    await getPending();
+                                                );
+                                                print(isDone);
+                                                try {
+                                                  if (!isDone) {
+                                                    pendingList.remove(item);
+                                                    updatePending(
+                                                        pendingList.length);
+                                                    setState(() {});
                                                   }
-                                                });
+                                                } catch (e) {}
                                               },
                                               child: ConfirmCards(
                                                 address: item["address"],

@@ -95,607 +95,631 @@ class _OrderScreenState extends State<OrderScreen>
   @override
   Widget build(BuildContext context) {
     bool ispending = isPending ?? widget.isPending;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          "Order Details",
-          style: TextStyle(
-              color: Colors.black, fontWeight: FontWeight.w700, fontSize: 19),
-        ),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pop(isPending);
+        return true;
+      },
+      child: Scaffold(
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData().copyWith(color: Colors.black),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(50.0),
-          child: TabBar(
-            physics: BouncingScrollPhysics(),
-            labelColor: Colors.black,
-            unselectedLabelColor: Colors.black.withOpacity(0.7),
-            controller: tabController,
-            isScrollable: true,
-            indicatorColor: blueColor,
-            indicatorWeight: 2.5,
-            indicatorSize: TabBarIndicatorSize.tab,
-            tabs: [
-              Tab(
-                child: Text(
-                  "Details",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        appBar: AppBar(
+          title: Text(
+            "Order Details",
+            style: TextStyle(
+                color: Colors.black, fontWeight: FontWeight.w700, fontSize: 19),
+          ),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pop(isPending);
+              }),
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData().copyWith(color: Colors.black),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(50.0),
+            child: TabBar(
+              physics: BouncingScrollPhysics(),
+              labelColor: Colors.black,
+              unselectedLabelColor: Colors.black.withOpacity(0.7),
+              controller: tabController,
+              isScrollable: true,
+              indicatorColor: blueColor,
+              indicatorWeight: 2.5,
+              indicatorSize: TabBarIndicatorSize.tab,
+              tabs: [
+                Tab(
+                  child: Text(
+                    "Details",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
                 ),
-              ),
-              Tab(
-                child: Text(
-                  "Chat",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                Tab(
+                  child: Text(
+                    "Chat",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
                 ),
-              ),
-              Tab(
-                child: Text(
-                  "Documents",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                Tab(
+                  child: Text(
+                    "Documents",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
                 ),
-              ),
-              Tab(
-                child: Text(
-                  "Signing Location",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                Tab(
+                  child: Text(
+                    "Signing Location",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-      body: TabBarView(
-        controller: tabController,
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          (orders.isEmpty)
-              ? Center(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 17,
-                        width: 17,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.black,
+        body: TabBarView(
+          controller: tabController,
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            (orders.isEmpty)
+                ? Center(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 17,
+                          width: 17,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.black,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        "Please Wait ...",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                )
-              : SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 5,
-                          ),
-                          ispending
-                              ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    FutureFlatButton(
-                                      disabledColor: Colors.yellow,
-                                      progressIndicatorBuilder: (context) =>
-                                          SizedBox(
-                                        height: 17,
-                                        width: 17,
-                                        child: Center(
-                                          child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                              Colors.black.withOpacity(0.5),
+                        SizedBox(width: 10),
+                        Text(
+                          "Please Wait ...",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  )
+                : SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 5,
+                            ),
+                            ispending
+                                ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      FutureFlatButton(
+                                        disabledColor: Colors.yellow,
+                                        progressIndicatorBuilder: (context) =>
+                                            SizedBox(
+                                          height: 17,
+                                          width: 17,
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                Colors.black.withOpacity(0.5),
+                                              ),
+                                              strokeWidth: 2,
                                             ),
-                                            strokeWidth: 2,
                                           ),
                                         ),
-                                      ),
-                                      onPressed: () async {
-                                        await NotaryServices().declineNotary(
-                                            widget.notaryId, widget.orderId);
-                                        Navigator.of(context).pop();
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      color: Colors.yellow,
-                                      child: Text(
-                                        "Decline",
-                                        style: TextStyle(
-                                            color: Colors.black.withOpacity(1),
-                                            fontSize: 15.5,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    FutureFlatButton(
-                                      disabledColor: blueColor,
-                                      progressIndicatorBuilder: (context) =>
-                                          SizedBox(
-                                        height: 17,
-                                        width: 17,
-                                        child: Center(
-                                          child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                              Colors.white,
-                                            ),
-                                            strokeWidth: 2,
-                                          ),
+                                        onPressed: () async {
+                                          await NotaryServices().declineNotary(
+                                              widget.notaryId, widget.orderId);
+                                          Navigator.of(context).pop(false);
+                                        },
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        color: Colors.yellow,
+                                        child: Text(
+                                          "Decline",
+                                          style: TextStyle(
+                                              color:
+                                                  Colors.black.withOpacity(1),
+                                              fontSize: 15.5,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ),
-                                      onPressed: () async {
-                                        bool success = await NotaryServices()
-                                            .acceptNotary(widget.notaryId,
-                                                widget.orderId);
-                                        Fluttertoast.showToast(
-                                            msg: success
-                                                ? "Order accepted."
-                                                : "Can't accept order now.",
-                                            backgroundColor: blueColor,
-                                            fontSize: 16,
-                                            textColor: Colors.white,
-                                            gravity: ToastGravity.SNACKBAR);
-                                        if (success) {
-                                          setState(() {
-                                            isPending = false;
-                                          });
-                                        }
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      color: blueColor,
-                                      child: Text(
-                                        "Accept",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15.5,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    )
-                                  ],
-                                )
-                              : Container(),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Order Status",
-                                style: TextStyle(
-                                  color: blueColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                      FutureFlatButton(
+                                        disabledColor: blueColor,
+                                        progressIndicatorBuilder: (context) =>
+                                            SizedBox(
+                                          height: 17,
+                                          width: 17,
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                Colors.white,
+                                              ),
+                                              strokeWidth: 2,
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () async {
+                                          bool success = await NotaryServices()
+                                              .acceptNotary(widget.notaryId,
+                                                  widget.orderId);
+                                          Fluttertoast.showToast(
+                                              msg: success
+                                                  ? "Order accepted."
+                                                  : "Can't accept order now.",
+                                              backgroundColor: blueColor,
+                                              fontSize: 16,
+                                              textColor: Colors.white,
+                                              gravity: ToastGravity.SNACKBAR);
+                                          if (success) {
+                                            setState(() {
+                                              isPending = false;
+                                            });
+                                          }
+                                        },
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        color: blueColor,
+                                        child: Text(
+                                          "Accept",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15.5,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                : Container(),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Order Status",
+                                  style: TextStyle(
+                                    color: blueColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              changeStatus(context),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Container(
-                            // color: Colors.black,
-                            height: 120,
-                            child: Center(
-                              child: ListView(
-                                shrinkWrap: true,
-                                physics: BouncingScrollPhysics(),
-                                scrollDirection: Axis.horizontal,
-                                children: [
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width + 160,
-                                    child: Column(
-                                      children: [
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width +
-                                              150,
-                                          child: Row(
-                                            children: [
-                                              SizedBox(
-                                                width: 30,
-                                              ),
-                                              orders['order']['confirmedAt'] !=
-                                                      null
-                                                  ? DotIndicator(
-                                                      color: blueColor,
-                                                    )
-                                                  : OutlinedDotIndicator(
-                                                      color: blueColor,
-                                                    ),
-
-                                              Container(
-                                                color: blueColor,
-                                                height: 3.0,
-                                                width: 100.0,
-                                              ),
-
-                                              orders['order'][
-                                                          'docsDownloadedAt'] !=
-                                                      null
-                                                  ? DotIndicator(
-                                                      color: blueColor,
-                                                    )
-                                                  : OutlinedDotIndicator(
-                                                      color: blueColor,
-                                                    ),
-
-                                              //
-                                              Container(
-                                                color: blueColor,
-                                                height: 3.0,
-                                                width: 100.0,
-                                              ),
-
-                                              orders['order']
-                                                          ['notaryArrivedAt'] ==
-                                                      null
-                                                  ? OutlinedDotIndicator(
-                                                      color: blueColor,
-                                                    )
-                                                  : DotIndicator(
-                                                      color: blueColor,
-                                                    ),
-
-                                              //
-                                              Container(
-                                                color: blueColor,
-                                                height: 3.0,
-                                                width: 100.0,
-                                              ),
-
-                                              orders['order'][
-                                                          'signingCompletedAt'] ==
-                                                      null
-                                                  ? OutlinedDotIndicator(
-                                                      color: blueColor,
-                                                    )
-                                                  : DotIndicator(
-                                                      color: blueColor,
-                                                    ),
-                                              Container(
-                                                color: blueColor,
-                                                height: 3.0,
-                                                width: 100.0,
-                                              ),
-
-                                              //
-                                              orders['order']['deliveredAt'] ==
-                                                      null
-                                                  ? OutlinedDotIndicator(
-                                                      color: blueColor,
-                                                    )
-                                                  : DotIndicator(
-                                                      color: blueColor,
-                                                    ),
-                                            ],
-                                            // shrinkWrap: true,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Column(
+                                changeStatus(context),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            Container(
+                              // color: Colors.black,
+                              height: 120,
+                              child: Center(
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  physics: BouncingScrollPhysics(),
+                                  scrollDirection: Axis.horizontal,
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width +
+                                          160,
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width +
+                                                150,
+                                            child: Row(
                                               children: [
-                                                Container(
-                                                  width: 90,
-                                                  child: Text(
-                                                    "Signer Contacted",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: 14.5),
-                                                  ),
-                                                ),
                                                 SizedBox(
-                                                  height: 10,
+                                                  width: 30,
                                                 ),
                                                 orders['order']
                                                             ['confirmedAt'] !=
                                                         null
-                                                    ? Container(
-                                                        width: 90,
-                                                        child: Text(
-                                                          DateFormat(
-                                                            "MM/dd/yyyy hh:mm a",
-                                                          ).format(
-                                                            DateTime.parse(
-                                                              orders['order'][
-                                                                  'confirmedAt'],
-                                                            ).toLocal(),
-                                                          ),
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              fontSize: 14.5),
-                                                        ),
+                                                    ? DotIndicator(
+                                                        color: blueColor,
                                                       )
-                                                    : Container(),
-                                              ],
-                                            ),
-                                            //
-                                            Column(
-                                              children: [
+                                                    : OutlinedDotIndicator(
+                                                        color: blueColor,
+                                                      ),
+
                                                 Container(
-                                                  width: 120,
-                                                  child: Text(
-                                                    "Documents Downloaded",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: 14.5),
-                                                  ),
+                                                  color: blueColor,
+                                                  height: 3.0,
+                                                  width: 100.0,
                                                 ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
+
                                                 orders['order'][
                                                             'docsDownloadedAt'] !=
                                                         null
-                                                    ? Container(
-                                                        width: 90,
-                                                        child: Text(
-                                                          DateFormat(
-                                                            "MM/dd/yyyy hh:mm a",
-                                                          ).format(
-                                                            DateTime.parse(
-                                                              orders['order'][
-                                                                  'docsDownloadedAt'],
-                                                            ).toLocal(),
-                                                          ),
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              fontSize: 14.5),
-                                                        ),
+                                                    ? DotIndicator(
+                                                        color: blueColor,
                                                       )
-                                                    : Container(),
-                                              ],
-                                            ),
-                                            //
-                                            Column(
-                                              children: [
+                                                    : OutlinedDotIndicator(
+                                                        color: blueColor,
+                                                      ),
+
+                                                //
                                                 Container(
-                                                  width: 120,
-                                                  child: Text(
-                                                    "Arrived to Appointment",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: 14.5),
-                                                  ),
+                                                  color: blueColor,
+                                                  height: 3.0,
+                                                  width: 100.0,
                                                 ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
+
                                                 orders['order'][
-                                                            'notaryArrivedAt'] !=
+                                                            'notaryArrivedAt'] ==
                                                         null
-                                                    ? Container(
-                                                        width: 90,
-                                                        child: Text(
-                                                          DateFormat(
-                                                            "MM/dd/yyyy hh:mm a",
-                                                          ).format(
-                                                            DateTime.parse(
-                                                              orders['order'][
-                                                                  'notaryArrivedAt'],
-                                                            ).toLocal(),
-                                                          ),
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              fontSize: 14.5),
-                                                        ),
+                                                    ? OutlinedDotIndicator(
+                                                        color: blueColor,
                                                       )
-                                                    : Container(),
-                                              ],
-                                            ),
-                                            Column(
-                                              children: [
+                                                    : DotIndicator(
+                                                        color: blueColor,
+                                                      ),
+
+                                                //
                                                 Container(
-                                                  width: 100,
-                                                  child: Text(
-                                                    "Signing Completed",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: 14.5),
-                                                  ),
+                                                  color: blueColor,
+                                                  height: 3.0,
+                                                  width: 100.0,
                                                 ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
+
                                                 orders['order'][
-                                                            'signingCompletedAt'] !=
+                                                            'signingCompletedAt'] ==
                                                         null
-                                                    ? Container(
-                                                        width: 90,
-                                                        child: Text(
-                                                          DateFormat(
-                                                            "MM/dd/yyyy hh:mm a",
-                                                          ).format(
-                                                            DateTime.parse(
-                                                              orders['order'][
-                                                                  'signingCompletedAt'],
-                                                            ).toLocal(),
-                                                          ),
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              fontSize: 14.5),
-                                                        ),
+                                                    ? OutlinedDotIndicator(
+                                                        color: blueColor,
                                                       )
-                                                    : Container(),
-                                              ],
-                                            ),
-                                            Column(
-                                              children: [
+                                                    : DotIndicator(
+                                                        color: blueColor,
+                                                      ),
                                                 Container(
-                                                  width: 120,
-                                                  child: Text(
-                                                    "Documents Delivered",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: 14.5),
-                                                  ),
+                                                  color: blueColor,
+                                                  height: 3.0,
+                                                  width: 100.0,
                                                 ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
+
+                                                //
                                                 orders['order']
-                                                            ['deliveredAt'] !=
+                                                            ['deliveredAt'] ==
                                                         null
-                                                    ? Container(
-                                                        width: 90,
-                                                        child: Text(
-                                                          DateFormat(
-                                                            "MM/dd/yyyy hh:mm a",
-                                                          ).format(
-                                                            DateTime.parse(
-                                                              orders['order'][
-                                                                  'deliveredAt'],
-                                                            ).toLocal(),
-                                                          ),
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              fontSize: 14.5),
-                                                        ),
+                                                    ? OutlinedDotIndicator(
+                                                        color: blueColor,
                                                       )
-                                                    : Container(),
+                                                    : DotIndicator(
+                                                        color: blueColor,
+                                                      ),
                                               ],
+                                              // shrinkWrap: true,
                                             ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Escrow Number :",
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      height: 2,
-                                    ),
-                                    Text(
-                                      "#" +
-                                          orders["order"]["appointment"]
-                                                  ["escrowNumber"]
-                                              .toString(),
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w500),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Column(
+                                                children: [
+                                                  Container(
+                                                    width: 90,
+                                                    child: Text(
+                                                      "Signer Contacted",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: 14.5),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  orders['order']
+                                                              ['confirmedAt'] !=
+                                                          null
+                                                      ? Container(
+                                                          width: 90,
+                                                          child: Text(
+                                                            DateFormat(
+                                                              "MM/dd/yyyy hh:mm a",
+                                                            ).format(
+                                                              DateTime.parse(
+                                                                orders['order'][
+                                                                    'confirmedAt'],
+                                                              ).toLocal(),
+                                                            ),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                fontSize: 14.5),
+                                                          ),
+                                                        )
+                                                      : Container(),
+                                                ],
+                                              ),
+                                              //
+                                              Column(
+                                                children: [
+                                                  Container(
+                                                    width: 120,
+                                                    child: Text(
+                                                      "Documents Downloaded",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: 14.5),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  orders['order'][
+                                                              'docsDownloadedAt'] !=
+                                                          null
+                                                      ? Container(
+                                                          width: 90,
+                                                          child: Text(
+                                                            DateFormat(
+                                                              "MM/dd/yyyy hh:mm a",
+                                                            ).format(
+                                                              DateTime.parse(
+                                                                orders['order'][
+                                                                    'docsDownloadedAt'],
+                                                              ).toLocal(),
+                                                            ),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                fontSize: 14.5),
+                                                          ),
+                                                        )
+                                                      : Container(),
+                                                ],
+                                              ),
+                                              //
+                                              Column(
+                                                children: [
+                                                  Container(
+                                                    width: 120,
+                                                    child: Text(
+                                                      "Arrived to Appointment",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: 14.5),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  orders['order'][
+                                                              'notaryArrivedAt'] !=
+                                                          null
+                                                      ? Container(
+                                                          width: 90,
+                                                          child: Text(
+                                                            DateFormat(
+                                                              "MM/dd/yyyy hh:mm a",
+                                                            ).format(
+                                                              DateTime.parse(
+                                                                orders['order'][
+                                                                    'notaryArrivedAt'],
+                                                              ).toLocal(),
+                                                            ),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                fontSize: 14.5),
+                                                          ),
+                                                        )
+                                                      : Container(),
+                                                ],
+                                              ),
+                                              Column(
+                                                children: [
+                                                  Container(
+                                                    width: 100,
+                                                    child: Text(
+                                                      "Signing Completed",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: 14.5),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  orders['order'][
+                                                              'signingCompletedAt'] !=
+                                                          null
+                                                      ? Container(
+                                                          width: 90,
+                                                          child: Text(
+                                                            DateFormat(
+                                                              "MM/dd/yyyy hh:mm a",
+                                                            ).format(
+                                                              DateTime.parse(
+                                                                orders['order'][
+                                                                    'signingCompletedAt'],
+                                                              ).toLocal(),
+                                                            ),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                fontSize: 14.5),
+                                                          ),
+                                                        )
+                                                      : Container(),
+                                                ],
+                                              ),
+                                              Column(
+                                                children: [
+                                                  Container(
+                                                    width: 120,
+                                                    child: Text(
+                                                      "Documents Delivered",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: 14.5),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  orders['order']
+                                                              ['deliveredAt'] !=
+                                                          null
+                                                      ? Container(
+                                                          width: 90,
+                                                          child: Text(
+                                                            DateFormat(
+                                                              "MM/dd/yyyy hh:mm a",
+                                                            ).format(
+                                                              DateTime.parse(
+                                                                orders['order'][
+                                                                    'deliveredAt'],
+                                                              ).toLocal(),
+                                                            ),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                fontSize: 14.5),
+                                                          ),
+                                                        )
+                                                      : Container(),
+                                                ],
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Amount",
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      height: 2,
-                                    ),
-                                    Text(
-                                      "\$ ${orders["order"]["amount"]}",
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ],
-                                )
-                              ],
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          sigingLocation(context),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          uploadedByNotary(context),
-                          SizedBox(height: 10),
-                          uploadDocs(context),
-                          SizedBox(height: 10),
-                          orderInfo(context),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          sigerDetails(context),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          companyDetails(context),
-                        ],
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Escrow Number :",
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        height: 2,
+                                      ),
+                                      Text(
+                                        "#" +
+                                            orders["order"]["appointment"]
+                                                    ["escrowNumber"]
+                                                .toString(),
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Amount",
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        height: 2,
+                                      ),
+                                      Text(
+                                        "\$ ${orders["order"]["amount"]}",
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            sigingLocation(context),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            uploadedByNotary(context),
+                            SizedBox(height: 10),
+                            uploadDocs(context),
+                            SizedBox(height: 10),
+                            orderInfo(context),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            sigerDetails(context),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            companyDetails(context),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-          orders.isNotEmpty
-              ? ChatScreen(
-                  notaryId: widget.notaryId,
-                  chatRoom: orders['order']['chatroom'],
-                )
-              : Container(),
-          orders.isNotEmpty
-              ? DocumentScreen(
-                  documents: orders['order']['uploadedDocuments'] ?? [],
-                  notaryId: widget.notaryId,
-                )
-              : Container(),
-          MapScreen(
-            orderInfo: orders,
-          ),
-        ],
+            orders.isNotEmpty
+                ? ChatScreen(
+                    notaryId: widget.notaryId,
+                    chatRoom: orders['order']['chatroom'],
+                  )
+                : Container(),
+            orders.isNotEmpty
+                ? DocumentScreen(
+                    documents: orders['order']['uploadedDocuments'] ?? [],
+                    notaryId: widget.notaryId,
+                  )
+                : Container(),
+            MapScreen(
+              orderInfo: orders,
+            ),
+          ],
+        ),
       ),
     );
   }

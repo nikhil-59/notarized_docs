@@ -25,7 +25,6 @@ class _DocumentScreenState extends State<DocumentScreen> {
   getCustomerDocs() {
     for (var i in widget.documents) {
       if (i['uploadedBy'] != widget.notaryId) {
-        //print("yes");
         docs.add(i);
       }
     }
