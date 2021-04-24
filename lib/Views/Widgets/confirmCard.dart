@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:future_button/future_button.dart';
-import 'package:myknott/Config.dart/CustomColors.dart';
+import 'package:myknott/Config/CustomColors.dart';
 import 'package:myknott/Services/Services.dart';
 
 class ConfirmCards extends StatefulWidget {

@@ -8,7 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:future_button/future_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:myknott/Config.dart/CustomColors.dart';
+import 'package:myknott/Config/CustomColors.dart';
 import 'package:myknott/Views/ChatScreen.dart';
 import 'package:myknott/Views/DocumentScreen.dart';
 import 'package:myknott/Views/MapScreen.dart';

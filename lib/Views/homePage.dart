@@ -7,7 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
-import 'package:myknott/Config.dart/CustomColors.dart';
+import 'package:myknott/Config/CustomColors.dart';
 import 'package:myknott/Services/auth.dart';
 import 'package:myknott/Views/CalenderScreen.dart';
 import 'package:myknott/Views/ProgessScreen.dart';

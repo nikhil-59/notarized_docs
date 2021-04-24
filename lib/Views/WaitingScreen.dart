@@ -1,7 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:myknott/Config.dart/CustomColors.dart';
+import 'package:myknott/Config/CustomColors.dart';
 import 'package:myknott/Views/homePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myknott/Config.dart/CustomColors.dart';
+import 'package:myknott/Config/CustomColors.dart';
 import 'package:myknott/Views/OrderScreen.dart';
 import 'package:url_launcher/url_launcher.dart';
 

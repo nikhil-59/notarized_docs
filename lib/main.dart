@@ -9,7 +9,7 @@ import 'package:myknott/Services/Services.dart';
 import 'package:myknott/Services/auth.dart';
 import 'package:myknott/Views/NoInternetScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'Config.dart/CustomColors.dart';
+import 'Config/CustomColors.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
