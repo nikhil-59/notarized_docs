@@ -557,7 +557,7 @@ class _HomePageState extends State<HomePage>
                                   height: 20,
                                 ),
                                 Text(
-                                  "Pending Requests $totalpending",
+                                  "Pending Requests",
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
