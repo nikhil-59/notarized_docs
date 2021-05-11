@@ -60,7 +60,6 @@ class AuthService {
           ),
         );
       }
-      // print(e);
       return {"status": 10, "isloggedSuccessful": false};
     }
   }
@@ -68,20 +67,33 @@ class AuthService {
   Future<Map> getUserInfo(String uid, String email, UserInfo user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String jwt = await storage.read(key: "jwt");
+    print({
+      "uid": uid,
+      "email": email,
+      "emailVerified": true,
+      "photoURL": user.photoURL.toString(),
+      "displayName": user.displayName,
+      "phoneNumber": user.phoneNumber.toString(),
+      "loginThroughMobile": "hgckgvVKUGDVUVlhbvishfbvkihfbkusf",
+      "pushToken": await firebaseMessaging.getToken(),
+      "pushTokenDeviceType": "android"
+    });
+    print(jwt);
     dio.options.headers['Authorization'] = jwt;
     try {
-      var response = await dio
-          .post('https://my-notary-app.herokuapp.com/notary/login/', data: {
+      var response =
+          await dio.post(NotaryServices().baseUrl + 'notary/login/', data: {
         "uid": uid,
         "email": email,
         "emailVerified": false,
-        "photoURL": user.photoURL ?? "",
+        "photoURL": user.photoURL.toString(),
         "displayName": user.displayName,
-        "phoneNumber": user.phoneNumber ?? "",
+        "phoneNumber": user.phoneNumber.toString(),
         "loginThroughMobile": "hgckgvVKUGDVUVlhbvishfbvkihfbkusf",
         "pushToken": await firebaseMessaging.getToken(),
         "pushTokenDeviceType": "android"
       });
+
       EasyLoading.dismiss();
       if (response.data['status'] == 1 &&
           response.data['notary']['isApproved'] &&
@@ -169,8 +181,8 @@ class AuthService {
     String jwt = await storage.read(key: "jwt");
     dio.options.headers['Authorization'] = jwt;
     try {
-      var response = await dio
-          .post('https://my-notary-app.herokuapp.com/notary/login/', data: {
+      var response =
+          await dio.post(NotaryServices().baseUrl + 'notary/login/', data: {
         "uid": FirebaseAuth.instance.currentUser.uid,
         "email": FirebaseAuth.instance.currentUser.email,
         "loginThroughMobile": "hgckgvVKUGDVUVlhbvishfbvkihfbkusf",
@@ -184,10 +196,8 @@ class AuthService {
   }
 
   Future<Map> signInWithGmail(context) async {
-    print("function trigged");
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
     try {
-      print(googleUser.email);
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
       final GoogleAuthCredential credential = GoogleAuthProvider.credential(
@@ -196,6 +206,7 @@ class AuthService {
       );
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
+      print(userCredential.user.providerData);
       await NotaryServices().getToken();
       return await getUserInfo(userCredential.user.uid,
           userCredential.user.email, userCredential.user.providerData.first);

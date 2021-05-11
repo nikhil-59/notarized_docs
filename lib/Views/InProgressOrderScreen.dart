@@ -62,7 +62,6 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
   }
 
   @override
-  // ignore: must_call_super
   Widget build(BuildContext context) {
     return orders.isNotEmpty
         ? LazyLoadScrollView(
@@ -83,7 +82,6 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                             ),
                             ListTile(
                               tileColor: Colors.white,
-
                               onTap: () => Navigator.of(context).push(
                                 PageRouteBuilder(
                                   transitionDuration: Duration(seconds: 0),
@@ -110,7 +108,6 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                                         width: 40,
                                       ),
                               ),
-                              // orders['orders'][index]["customer"]['userImageURL']),
                               title: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,

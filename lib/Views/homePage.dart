@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:myknott/Config/CustomColors.dart';
+import 'package:myknott/Services/Services.dart';
 import 'package:myknott/Services/auth.dart';
 import 'package:myknott/Views/CalenderScreen.dart';
 import 'package:myknott/Views/ProgessScreen.dart';
@@ -54,20 +55,17 @@ class _HomePageState extends State<HomePage>
       totalpending = "";
     } else
       totalpending = "($order)";
-    // setState(() {});
   }
 
   handleForegroundNotification(RemoteMessage message) async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     if (message.data['type'] == 2 || message.data['type'] == "2") {
-      //print("new order");
       pendingList.clear();
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
       Map data = {"notaryId": userInfo['notary']['_id'], "pageNumber": "0"};
-      var response = await dio.post(
-          "https://my-notary-app.herokuapp.com/notary/getInvites/",
-          data: data);
+      var response = await dio
+          .post(NotaryServices().baseUrl + "notary/getInvites/", data: data);
       for (var item in response.data["orders"]) {
         pendingList.add(
           {
@@ -108,7 +106,6 @@ class _HomePageState extends State<HomePage>
         ),
       );
     } else if (message.data['type'] == 0 || message.data['type'] == "0") {
-      //print("type 0 action is triggered");
       String orderId = message.data['orderId'];
       String notaryId = message.data['notaryId'];
 
@@ -192,9 +189,8 @@ class _HomePageState extends State<HomePage>
             DateTime.now().day.toString() +
             " 00:00:00 GMT+0530"
       };
-      var response = await dio.post(
-          "https://my-notary-app.herokuapp.com/notary/getDashboard",
-          data: body);
+      var response = await dio
+          .post(NotaryServices().baseUrl + "notary/getDashboard", data: body);
       for (var i in response.data['appointments']) {
         appointmentList.add({
           "id": i['appointment']['_id'],
@@ -210,7 +206,6 @@ class _HomePageState extends State<HomePage>
         setState(() {});
       }
     } catch (e) {
-      //print(e);
       Fluttertoast.showToast(
           msg: "Something went wrong..",
           backgroundColor: blueColor,
@@ -233,9 +228,8 @@ class _HomePageState extends State<HomePage>
         "notaryId": userInfo['notary']['_id'],
         "pageNumber": pageNumber
       };
-      var response = await dio.post(
-          "https://my-notary-app.herokuapp.com/notary/getInvites/",
-          data: data);
+      var response = await dio
+          .post(NotaryServices().baseUrl + "notary/getInvites/", data: data);
       if (response.data['pageNumber'] == response.data['pageCount']) {
         hasData = true;
       } else
@@ -263,7 +257,6 @@ class _HomePageState extends State<HomePage>
     setState(() {
       isloading = true;
     });
-    //print(pendingList);
   }
 
   fetchMoreData() async {
@@ -274,12 +267,10 @@ class _HomePageState extends State<HomePage>
         "notaryId": userInfo['notary']['_id'],
         "pageNumber": pageNumber
       };
-      var response = await dio.post(
-          "https://my-notary-app.herokuapp.com/notary/getInvites/",
-          data: data);
+      var response = await dio
+          .post(NotaryServices().baseUrl + "notary/getInvites/", data: data);
       if (response.data['pageNumber'] == response.data['pageCount']) {
         hasData = true;
-        //print("-------------------Page Ended--------------");
       } else
         pageNumber += 1;
       for (var item in response.data["orders"]) {
@@ -293,17 +284,13 @@ class _HomePageState extends State<HomePage>
           },
         );
       }
-    } catch (e) {
-      //print(e);
-    }
+    } catch (e) {}
     setState(() {
       isloading = true;
     });
-    //print(pendingList);
   }
 
   @override
-  // ignore: must_call_super
   Widget build(BuildContext context) {
     String greeting() {
       var hour = DateTime.now().hour;
@@ -475,7 +462,6 @@ class _HomePageState extends State<HomePage>
                                                           ? 0.0
                                                           : 1.0,
                                                       child: Cards(
-                                                        // place: userInfo[],
                                                         notaryId:
                                                             userInfo['notary']
                                                                 ['_id'],

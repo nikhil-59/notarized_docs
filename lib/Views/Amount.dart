@@ -260,6 +260,9 @@ class _AmountScreenState extends State<AmountScreen>
                                                               ['paid']
                                                           ? MaterialButton(
                                                               elevation: 0,
+                                                              hoverElevation: 0,
+                                                              highlightElevation:
+                                                                  0,
                                                               shape:
                                                                   RoundedRectangleBorder(
                                                                 borderRadius:
@@ -285,6 +288,9 @@ class _AmountScreenState extends State<AmountScreen>
                                                             )
                                                           : MaterialButton(
                                                               elevation: 0,
+                                                              hoverElevation: 0,
+                                                              highlightElevation:
+                                                                  0,
                                                               shape:
                                                                   RoundedRectangleBorder(
                                                                 borderRadius:

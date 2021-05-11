@@ -102,6 +102,8 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                       MaterialButton(
                         elevation: 0,
+                        hoverElevation: 0,
+                        highlightElevation: 0,
                         hoverColor: Colors.transparent,
                         focusColor: Colors.transparent,
                         splashColor: Colors.transparent,
@@ -196,6 +198,8 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                       MaterialButton(
                         elevation: 0,
+                        hoverElevation: 0,
+                        highlightElevation: 0,
                         hoverColor: Colors.transparent,
                         focusColor: Colors.transparent,
                         splashColor: Colors.transparent,
@@ -212,7 +216,6 @@ class _AuthScreenState extends State<AuthScreen> {
                                 maskType: EasyLoadingMaskType.clear);
                             Map result =
                                 await authService.signInWithGmail(context);
-                            //print(result);
                             if (result["status"] == 1 &&
                                 result["isloggedSuccessful"] &&
                                 result['isapproved'] &&
@@ -259,10 +262,10 @@ class _AuthScreenState extends State<AuthScreen> {
                                   ),
                                 ),
                               );
-                              //print("something went wrong");
                               return;
                             }
                           } catch (e) {
+                            print(e);
                             EasyLoading.dismiss();
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(

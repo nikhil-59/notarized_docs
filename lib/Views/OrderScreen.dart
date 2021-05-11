@@ -13,6 +13,7 @@ import 'package:myknott/Views/ChatScreen.dart';
 import 'package:myknott/Views/DocumentScreen.dart';
 import 'package:myknott/Views/MapScreen.dart';
 import 'package:myknott/Services/Services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timelines/timelines.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -54,7 +55,6 @@ class _OrderScreenState extends State<OrderScreen>
 
   @override
   void initState() {
-    print(widget.orderId);
     NotaryServices().getToken();
     tabController = TabController(
         length: 4, vsync: this, initialIndex: widget.messageTrigger ? 1 : 0);
@@ -68,9 +68,8 @@ class _OrderScreenState extends State<OrderScreen>
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
       var body = {"notaryId": widget.notaryId, "orderId": widget.orderId};
-      var response = await dio.post(
-          "https://my-notary-app.herokuapp.com/notary/getOrderDetails/",
-          data: body);
+      var response = await dio
+          .post(notaryServices.baseUrl + "notary/getOrderDetails/", data: body);
       orders.clear();
       docsByNotary.clear();
       orders.addAll(response.data);
@@ -300,7 +299,7 @@ class _OrderScreenState extends State<OrderScreen>
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                changeStatus(context),
+                                changeStatus(context, ispending),
                               ],
                             ),
                             SizedBox(
@@ -687,7 +686,7 @@ class _OrderScreenState extends State<OrderScreen>
                             ),
                             uploadedByNotary(context),
                             SizedBox(height: 10),
-                            uploadDocs(context),
+                            uploadDocs(context, ispending),
                             SizedBox(height: 10),
                             orderInfo(context),
                             SizedBox(
@@ -911,7 +910,7 @@ class _OrderScreenState extends State<OrderScreen>
     );
   }
 
-  Widget uploadDocs(BuildContext context) {
+  Widget uploadDocs(BuildContext context, bool isPending) {
     return MaterialButton(
       elevation: 0,
       color: blueColor,
@@ -923,8 +922,8 @@ class _OrderScreenState extends State<OrderScreen>
             children: [
               (isuploading)
                   ? SizedBox(
-                      height: 20,
-                      width: 20,
+                      height: 15,
+                      width: 15,
                       child: Center(
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
@@ -956,7 +955,7 @@ class _OrderScreenState extends State<OrderScreen>
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       onPressed: () {
-        if (!widget.isPending) {
+        if (!isPending) {
           showModalBottomSheet(
             context: context,
             backgroundColor: Colors.white,
@@ -993,34 +992,42 @@ class _OrderScreenState extends State<OrderScreen>
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         onTap: () async {
-                          final picker = ImagePicker();
-                          File _image;
-                          final pickedFile =
-                              await picker.getImage(source: ImageSource.camera);
-                          Navigator.of(context).pop();
+                          PermissionStatus permissionStatus =
+                              await Permission.camera.request();
+                          if (permissionStatus.isGranted) {
+                            final picker = ImagePicker();
+                            File _image;
+                            final pickedFile = await picker.getImage(
+                                source: ImageSource.camera);
+                            Navigator.of(context).pop();
 
-                          setState(() {
-                            isuploading = true;
-                            if (pickedFile != null) {
-                              _image = File(pickedFile.path);
-                            } else {
-                              //print('No image selected.');
-                            }
-                          });
-                          try {
-                            await NotaryServices().uploadImageToAPI(
-                                _image, widget.notaryId, widget.orderId);
-                            await getData();
-                            Fluttertoast.showToast(
-                                msg: "Documents uploaded Successfully.",
-                                backgroundColor: blueColor,
-                                fontSize: 16,
-                                textColor: Colors.white,
-                                gravity: ToastGravity.SNACKBAR);
-                          } catch (e) {}
-                          setState(() {
-                            isuploading = false;
-                          });
+                            setState(() {
+                              isuploading = true;
+                              if (pickedFile != null) {
+                                _image = File(pickedFile.path);
+                              } else {
+                                //print('No image selected.');
+                              }
+                            });
+                            try {
+                              await NotaryServices().uploadImageToAPI(
+                                  _image, widget.notaryId, widget.orderId);
+                              await getData();
+                              Fluttertoast.showToast(
+                                  msg: "Documents uploaded Successfully.",
+                                  backgroundColor: blueColor,
+                                  fontSize: 16,
+                                  textColor: Colors.white,
+                                  gravity: ToastGravity.SNACKBAR);
+                            } catch (e) {}
+                            setState(() {
+                              isuploading = false;
+                            });
+                          } else if (permissionStatus.isPermanentlyDenied) {
+                            openAppSettings();
+                          } else {
+                            await Permission.camera.request();
+                          }
                         },
                       ),
                       ListTile(
@@ -1659,7 +1666,7 @@ class _OrderScreenState extends State<OrderScreen>
     );
   }
 
-  Widget changeStatus(context) {
+  Widget changeStatus(context, bool isPending) {
     return MaterialButton(
       elevation: 0,
       color: blueColor,
@@ -1668,7 +1675,7 @@ class _OrderScreenState extends State<OrderScreen>
         borderRadius: BorderRadius.circular(5),
       ),
       onPressed: () {
-        if (!widget.isPending) {
+        if (!isPending) {
           return showModalBottomSheet(
               backgroundColor: Colors.white,
               isScrollControlled: true,

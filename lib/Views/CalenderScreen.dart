@@ -24,7 +24,6 @@ class _CalenderScreenState extends State<CalenderScreen>
   final NotaryServices services = NotaryServices();
 
   @override
-  // ignore: must_call_super
   initState() {
     NotaryServices().getToken();
     getAppointment(DateTime.now());
@@ -41,11 +40,9 @@ class _CalenderScreenState extends State<CalenderScreen>
     setState(() {
       isloading = false;
     });
-    //print(data);
   }
 
   @override
-  // ignore: must_call_super
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -75,7 +72,6 @@ class _CalenderScreenState extends State<CalenderScreen>
                     formatButtonVisible: false),
                 calendarController: calendarController,
                 onDaySelected: (day, events, holidays) {
-                  //print(day);
                   getAppointment(day);
                 },
               ),
