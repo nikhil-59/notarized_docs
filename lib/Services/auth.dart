@@ -70,10 +70,10 @@ class AuthService {
     print({
       "uid": uid,
       "email": email,
-      "emailVerified": true,
-      "photoURL": user.photoURL.toString(),
+      "emailVerified": false,
+      "photoURL": user.photoURL ?? "",
       "displayName": user.displayName,
-      "phoneNumber": user.phoneNumber.toString(),
+      "phoneNumber": user.phoneNumber ?? "",
       "loginThroughMobile": "hgckgvVKUGDVUVlhbvishfbvkihfbkusf",
       "pushToken": await firebaseMessaging.getToken(),
       "pushTokenDeviceType": "android"
