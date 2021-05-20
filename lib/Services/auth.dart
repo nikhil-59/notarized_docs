@@ -81,18 +81,20 @@ class AuthService {
     print(jwt);
     dio.options.headers['Authorization'] = jwt;
     try {
-      var response =
-          await dio.post(NotaryServices().baseUrl + 'notary/login/', data: {
-        "uid": uid,
-        "email": email,
-        "emailVerified": false,
-        "photoURL": user.photoURL.toString(),
-        "displayName": user.displayName,
-        "phoneNumber": user.phoneNumber.toString(),
-        "loginThroughMobile": "hgckgvVKUGDVUVlhbvishfbvkihfbkusf",
-        "pushToken": await firebaseMessaging.getToken(),
-        "pushTokenDeviceType": "android"
-      });
+      var response = await dio.post(
+        NotaryServices().baseUrl + 'notary/login/',
+        data: {
+          "uid": uid,
+          "email": email,
+          "emailVerified": false,
+          "photoURL": user.photoURL.toString(),
+          "displayName": user.displayName,
+          "phoneNumber": user.phoneNumber.toString(),
+          "loginThroughMobile": "hgckgvVKUGDVUVlhbvishfbvkihfbkusf",
+          "pushToken": await firebaseMessaging.getToken(),
+          "pushTokenDeviceType": "android"
+        },
+      );
 
       EasyLoading.dismiss();
       if (response.data['status'] == 1 &&

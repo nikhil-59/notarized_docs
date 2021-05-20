@@ -73,7 +73,10 @@ class _HomePageState extends State<HomePage>
             "amount": item["amount"],
             "name": item["appointment"]["signerFullName"],
             "address": item["appointment"]["propertyAddress"],
-            "logo": item["customer"]["userImageURL"]
+            "appointmentPlace": item["appointment"]["place"],
+            "time": item["appointment"]['time'],
+            "logo": item["customer"]["userImageURL"],
+            "closingType": item['orderClosingType'],
           },
         );
       }
@@ -222,14 +225,17 @@ class _HomePageState extends State<HomePage>
     });
     try {
       String jwt = await storage.read(key: 'jwt');
+      print(jwt);
       dio.options.headers['Authorization'] = jwt;
       pendingList.clear();
       Map data = {
         "notaryId": userInfo['notary']['_id'],
         "pageNumber": pageNumber
       };
+      print(json.encode(data));
       var response = await dio
           .post(NotaryServices().baseUrl + "notary/getInvites/", data: data);
+      print(response.data['orders'][0]['appointment']);
       if (response.data['pageNumber'] == response.data['pageCount']) {
         hasData = true;
       } else
@@ -241,7 +247,10 @@ class _HomePageState extends State<HomePage>
             "amount": item["amount"],
             "name": item["appointment"]["signerFullName"],
             "address": item["appointment"]["propertyAddress"],
-            "logo": item["customer"]["userImageURL"]
+            "appointmentPlace": item["appointment"]["place"],
+            "time": item["appointment"]['time'],
+            "logo": item["customer"]["userImageURL"],
+            "closingType": item['orderClosingType'],
           },
         );
         updatePending(response.data['inviteCount']);
@@ -280,7 +289,10 @@ class _HomePageState extends State<HomePage>
             "amount": item["amount"],
             "name": item["appointment"]["signerFullName"],
             "address": item["appointment"]["propertyAddress"],
-            "logo": item["customer"]["userImageURL"]
+            "appointmentPlace": item["appointment"]["place"],
+            "time": item["appointment"]['time'],
+            "logo": item["customer"]["userImageURL"],
+            "closingType": item['orderClosingType'],
           },
         );
       }
@@ -608,6 +620,9 @@ class _HomePageState extends State<HomePage>
                                                 imageUrl: userInfo['notary']
                                                     ['userImageURL'],
                                                 refresh: getPending,
+                                                place: item["appointmentPlace"],
+                                                time: item['time'],
+                                                closeType: item['closingType'],
                                               ),
                                             ),
                                         ],

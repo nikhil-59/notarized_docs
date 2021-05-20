@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:myknott/Config/CustomColors.dart';
 import 'package:myknott/Services/Services.dart';
@@ -60,7 +61,6 @@ class _AmountScreenState extends State<AmountScreen>
   }
 
   @override
-  // ignore: must_call_super
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -89,12 +89,11 @@ class _AmountScreenState extends State<AmountScreen>
                             physics: NeverScrollableScrollPhysics(),
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(4.0),
                                 child: Card(
                                   elevation: 0,
                                   child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 10.0, right: 10.0),
+                                    padding: const EdgeInsets.all(8),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
@@ -181,7 +180,8 @@ class _AmountScreenState extends State<AmountScreen>
                                 itemCount: map["payoutCount"],
                                 itemBuilder: (context, index) {
                                   return Padding(
-                                    padding: const EdgeInsets.all(2.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0, vertical: 2),
                                     child: InkWell(
                                       hoverColor: Colors.transparent,
                                       focusColor: Colors.transparent,
@@ -201,9 +201,12 @@ class _AmountScreenState extends State<AmountScreen>
                                         ),
                                       ),
                                       child: Card(
-                                        elevation: 0.1,
+                                        elevation: 2,
                                         child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10.0,
+                                            vertical: 2,
+                                          ),
                                           child: ListTile(
                                             leading: ClipRRect(
                                               borderRadius:
@@ -222,104 +225,146 @@ class _AmountScreenState extends State<AmountScreen>
                                                       width: 0,
                                                     ),
                                             ),
+                                            isThreeLine: true,
                                             title: Text(
-                                              "Refinance of ${map['payouts'][index]['appointment']['signerFullName']}",
+                                              map['payouts'][index]['order']
+                                                          ['orderClosingType']
+                                                      .toString()[0]
+                                                      .toUpperCase() +
+                                                  map['payouts'][index]['order']
+                                                          ['orderClosingType']
+                                                      .toString()
+                                                      .substring(1) +
+                                                  " Closing",
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w700),
                                             ),
+                                            contentPadding: EdgeInsets.only(
+                                                left: 0.0, right: 0.0),
+                                            trailing: map['payouts'][index]
+                                                    ['paid']
+                                                ? MaterialButton(
+                                                    elevation: 0,
+                                                    hoverElevation: 0,
+                                                    highlightElevation: 0,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              50),
+                                                    ),
+                                                    color: blueColor,
+                                                    onPressed: () {},
+                                                    child: Container(
+                                                      child: Text(
+                                                        "Paid",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 16.5,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w700),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : MaterialButton(
+                                                    minWidth: 0,
+                                                    elevation: 0,
+                                                    hoverElevation: 0,
+                                                    highlightElevation: 0,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              50),
+                                                    ),
+                                                    color: Color(0xffFde50E),
+                                                    onPressed: () {},
+                                                    child: Container(
+                                                      child: Text(
+                                                        "Pending",
+                                                        style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                              1,
+                                                            ),
+                                                            fontSize: 16.5,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w700),
+                                                      ),
+                                                    ),
+                                                  ),
                                             subtitle: Padding(
                                               padding: const EdgeInsets.only(
-                                                  top: 8.0),
+                                                  top: 5.0),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "Escrow Number ${map['payouts'][index]['appointment']['escrowNumber']}",
-                                                    style:
-                                                        TextStyle(fontSize: 16),
+                                                    "#${map['payouts'][index]['appointment']['escrowNumber']}",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.black,
+                                                    ),
                                                   ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        "\$ ${map['payouts'][index]['amount']}",
-                                                        style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.8),
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w700),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    "Property Address",
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.black,
+                                                      fontStyle:
+                                                          FontStyle.italic,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    map['payouts'][index]
+                                                            ['appointment']
+                                                        ['propertyAddress'],
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  FittedBox(
+                                                    child: Text(
+                                                      "Appointment Completed",
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.black,
                                                       ),
-                                                      map['payouts'][index]
-                                                              ['paid']
-                                                          ? MaterialButton(
-                                                              elevation: 0,
-                                                              hoverElevation: 0,
-                                                              highlightElevation:
-                                                                  0,
-                                                              shape:
-                                                                  RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            50),
-                                                              ),
-                                                              color: blueColor,
-                                                              onPressed: () {},
-                                                              child: Container(
-                                                                child: Text(
-                                                                  "Paid",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          16.5,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w700),
-                                                                ),
-                                                              ),
-                                                            )
-                                                          : MaterialButton(
-                                                              elevation: 0,
-                                                              hoverElevation: 0,
-                                                              highlightElevation:
-                                                                  0,
-                                                              shape:
-                                                                  RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            50),
-                                                              ),
-                                                              color: Color(
-                                                                  0xffFde50E),
-                                                              onPressed: () {},
-                                                              child: Container(
-                                                                child: Text(
-                                                                  "Pending",
-                                                                  style:
-                                                                      TextStyle(
-                                                                          color: Colors
-                                                                              .black
-                                                                              .withOpacity(
-                                                                            1,
-                                                                          ),
-                                                                          fontSize:
-                                                                              16.5,
-                                                                          fontWeight:
-                                                                              FontWeight.w700),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                    ],
+                                                    ),
                                                   ),
+                                                  SizedBox(height: 5),
+                                                  Text(
+                                                    DateFormat("MM/dd/yyyy")
+                                                        .format(
+                                                      DateTime.parse(
+                                                        map['payouts'][index]
+                                                            ['updatedAt'],
+                                                      ).toLocal(),
+                                                    ),
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  )
                                                 ],
                                               ),
                                             ),

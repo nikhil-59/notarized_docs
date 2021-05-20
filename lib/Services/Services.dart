@@ -107,6 +107,7 @@ class NotaryServices {
     try {
       print(pageNumber);
       String jwt = await storage.read(key: 'jwt');
+      print(jwt);
       dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(baseUrl + "notary/getInProgressOrders",
           data: {"notaryId": notaryId, "pageNumber": pageNumber});
@@ -134,6 +135,7 @@ class NotaryServices {
   getAppointments(DateTime dateTime, String notaryId) async {
     try {
       String jwt = await storage.read(key: 'jwt');
+      print(jwt);
       dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(baseUrl + "notary/getDashboard", data: {
         "notaryId": notaryId,

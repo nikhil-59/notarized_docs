@@ -227,7 +227,7 @@ class _OrderScreenState extends State<OrderScreen>
                                         ),
                                         color: Colors.yellow,
                                         child: Text(
-                                          "Decline",
+                                          "Reject",
                                           style: TextStyle(
                                               color:
                                                   Colors.black.withOpacity(1),
@@ -306,8 +306,9 @@ class _OrderScreenState extends State<OrderScreen>
                               height: 30,
                             ),
                             Container(
-                              // color: Colors.black,
-                              height: 120,
+                              height: orders['order']['confirmedAt'] != null
+                                  ? 120
+                                  : 80,
                               child: Center(
                                 child: ListView(
                                   shrinkWrap: true,
@@ -618,84 +619,16 @@ class _OrderScreenState extends State<OrderScreen>
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Escrow Number :",
-                                        style: TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(
-                                        height: 2,
-                                      ),
-                                      Text(
-                                        "#" +
-                                            orders["order"]["appointment"]
-                                                    ["escrowNumber"]
-                                                .toString(),
-                                        style: TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Amount",
-                                        style: TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(
-                                        height: 2,
-                                      ),
-                                      Text(
-                                        "\$ ${orders["order"]["amount"]}",
-                                        style: TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
                             sigingLocation(context),
-                            SizedBox(
-                              height: 10,
-                            ),
+                            SizedBox(height: 10),
+                            sigerDetails(context),
+                            SizedBox(height: 10),
                             uploadedByNotary(context),
                             SizedBox(height: 10),
                             uploadDocs(context, ispending),
                             SizedBox(height: 10),
                             orderInfo(context),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            sigerDetails(context),
-                            SizedBox(
-                              height: 10,
-                            ),
+                            SizedBox(height: 10),
                             companyDetails(context),
                           ],
                         ),

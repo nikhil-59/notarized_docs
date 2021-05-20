@@ -1,7 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:myknott/Config/CustomColors.dart';
 import 'package:myknott/Services/Services.dart';
+import 'package:myknott/Views/AuthScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfile extends StatefulWidget {
   final String notaryId;
@@ -28,7 +32,6 @@ class _UserProfileState extends State<UserProfile>
   }
 
   @override
-  // ignore: must_call_super
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -89,12 +92,6 @@ class _UserProfileState extends State<UserProfile>
                               style: TextStyle(
                                   fontSize: 25, fontWeight: FontWeight.bold),
                             ),
-                            // Text(
-                            //   "A Short Description of ${userInfo['notary']["firstName"]}",
-                            //   style: TextStyle(
-                            //       fontSize: 17,
-                            //       color: Colors.black.withOpacity(0.8)),
-                            // ),
                           ],
                         ),
                       ),
@@ -162,7 +159,46 @@ class _UserProfileState extends State<UserProfile>
                               initialValue: userInfo['notary']['email'],
                             ),
                             SizedBox(
-                              height: 30,
+                              height: 5,
+                            ),
+                            MaterialButton(
+                              height: 40,
+                              hoverElevation: 0,
+                              focusElevation: 0,
+                              highlightElevation: 0,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              onPressed: () async {
+                                SharedPreferences res =
+                                    await SharedPreferences.getInstance();
+                                res.clear();
+                                await FlutterSecureStorage().deleteAll();
+                                FirebaseAuth.instance.signOut();
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionDuration: Duration(seconds: 0),
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        AuthScreen(),
+                                  ),
+                                );
+                              },
+                              color: Colors.yellow,
+                              child: Center(
+                                child: Text(
+                                  "Logout",
+                                  style: TextStyle(
+                                    fontSize: 16.5,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
                             ),
                             Text(
                               "Note: To edit other details, Please log in from your webbrowser. visit www.notarizeddocs.com/notary",
