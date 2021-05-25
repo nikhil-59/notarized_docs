@@ -190,7 +190,7 @@ class _HomePageState extends State<HomePage>
             DateTime.now().month.toString() +
             "-" +
             DateTime.now().day.toString() +
-            " 00:00:00 GMT+0530"
+            " 00:00:00 GMT${NotaryServices.getTimezoneOffsetString(DateTime.now())}"
       };
       var response = await dio
           .post(NotaryServices().baseUrl + "notary/getDashboard", data: body);

@@ -10,6 +10,14 @@ class NotaryServices {
   final Dio dio = Dio();
   final storage = FlutterSecureStorage();
 
+  static String getTimezoneOffsetString(DateTime date) {
+    var duration = date.timeZoneOffset;
+    if (duration.isNegative)
+      return ("-${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes - (duration.inHours * 60)).toString().padLeft(2, '0')}");
+    else
+      return ("+${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes - (duration.inHours * 60)).toString().padLeft(2, '0')}");
+  }
+
   acceptNotary(String notaryId, String orderId) async {
     try {
       String jwt = await storage.read(key: 'jwt');
@@ -144,7 +152,7 @@ class NotaryServices {
             dateTime.month.toString() +
             "-" +
             dateTime.day.toString() +
-            " 00:00:00 GMT+0530"
+            " 00:00:00 GMT${getTimezoneOffsetString(DateTime.now())}"
       });
       return response.data;
     } catch (e) {
