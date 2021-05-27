@@ -225,17 +225,14 @@ class _HomePageState extends State<HomePage>
     });
     try {
       String jwt = await storage.read(key: 'jwt');
-      print(jwt);
       dio.options.headers['Authorization'] = jwt;
       pendingList.clear();
       Map data = {
         "notaryId": userInfo['notary']['_id'],
         "pageNumber": pageNumber
       };
-      print(json.encode(data));
       var response = await dio
           .post(NotaryServices().baseUrl + "notary/getInvites/", data: data);
-      print(response.data['orders'][0]['appointment']);
       if (response.data['pageNumber'] == response.data['pageCount']) {
         hasData = true;
       } else
@@ -599,7 +596,6 @@ class _HomePageState extends State<HomePage>
                                                     ),
                                                   ),
                                                 );
-                                                print(isDone);
                                                 try {
                                                   if (!isDone) {
                                                     pendingList.remove(item);

@@ -63,7 +63,6 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
 
   @override
   Widget build(BuildContext context) {
-    print(orders);
     return orders.isNotEmpty
         ? LazyLoadScrollView(
             onEndOfPage: getMoreData,

@@ -36,7 +36,6 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
       widget.updateCompleted(response['orderCount']);
       if (response['pageNumber'] == response['pageCount']) {
         hasData = true;
-        //////print("-----------end of list----------");
       } else {
         pageNumber += 1;
       }
@@ -51,10 +50,8 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
       var response = await NotaryServices()
           .getCompletedOrders(widget.notaryId, pageNumber);
       orders['orders'].addAll(response['orders']);
-      //////print(response['orders']);
       if (response['pageNumber'] == response['pageCount']) {
         hasData = true;
-        //////print("-----------end of list----------");
       } else {
         pageNumber += 1;
       }

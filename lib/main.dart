@@ -14,7 +14,6 @@ import 'Config/CustomColors.dart';
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('recieved Message in background!!!!');
   if (message.data['type'] == 1 || message.data['type'] == '1') {
     if (message.data['action'] == 'revoked') {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -35,9 +34,7 @@ Future<void> main() async {
     await Firebase.initializeApp();
     try {
       await NotaryServices().getToken();
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     var messaging = FirebaseMessaging.instance;
     NotificationSettings settings = await messaging.requestPermission(
@@ -50,10 +47,7 @@ Future<void> main() async {
       sound: true,
     );
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      if (message.notification != null) {
-        print(message.data);
-      }
+      if (message.notification != null) {}
     });
   }
 

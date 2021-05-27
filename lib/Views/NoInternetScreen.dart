@@ -30,9 +30,7 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
     });
     try {
       await NotaryServices().getToken();
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(

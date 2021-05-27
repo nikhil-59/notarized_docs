@@ -938,9 +938,7 @@ class _OrderScreenState extends State<OrderScreen>
                               isuploading = true;
                               if (pickedFile != null) {
                                 _image = File(pickedFile.path);
-                              } else {
-                                //print('No image selected.');
-                              }
+                              } else {}
                             });
                             try {
                               await NotaryServices().uploadImageToAPI(
@@ -1538,7 +1536,6 @@ class _OrderScreenState extends State<OrderScreen>
               itemCount: docsByNotary.length == 0 ? 1 : docsByNotary.length,
               itemBuilder: (context, index) {
                 if (docsByNotary.length == 0) {
-                  //print("yes");
                   return ListTile(
                     title: Text(
                       "No Documents Uploaded...",

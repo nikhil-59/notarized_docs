@@ -23,11 +23,9 @@ class NotaryServices {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderId": orderId, "notaryId": notaryId};
       dio.options.headers['Authorization'] = jwt;
-      var response = await dio.post(baseUrl + "notary/acceptOrder", data: body);
-      print(response.data);
+      await dio.post(baseUrl + "notary/acceptOrder", data: body);
       return true;
     } catch (e) {
-      print(e);
       return false;
     }
   }
@@ -37,9 +35,7 @@ class NotaryServices {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderIdToDecline": orderId, "notaryId": notaryId};
       dio.options.headers['Authorization'] = jwt;
-      var response =
-          await dio.post(baseUrl + "notary/declineOrder", data: body);
-      print(response.data);
+      await dio.post(baseUrl + "notary/declineOrder", data: body);
       return true;
     } catch (e) {
       return false;
@@ -51,12 +47,8 @@ class NotaryServices {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderId": orderId, "notaryId": notaryId};
       dio.options.headers['Authorization'] = jwt;
-      var response = await dio.post(baseUrl + "notary/markDocumentsDownloaded",
-          data: body);
-      print(response.data);
-    } catch (e) {
-      print(e);
-    }
+      await dio.post(baseUrl + "notary/markDocumentsDownloaded", data: body);
+    } catch (e) {}
   }
 
   markOrderInProgress(String notaryId, String orderId) async {
@@ -64,12 +56,8 @@ class NotaryServices {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderId": orderId, "notaryId": notaryId};
       dio.options.headers['Authorization'] = jwt;
-      var response =
-          await dio.post(baseUrl + "notary/markOrderInProgress", data: body);
-      print(response.data);
-    } catch (e) {
-      print(e);
-    }
+      await dio.post(baseUrl + "notary/markOrderInProgress", data: body);
+    } catch (e) {}
   }
 
   markSigningCompleted(String notaryId, String orderId) async {
@@ -77,12 +65,8 @@ class NotaryServices {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderId": orderId, "notaryId": notaryId};
       dio.options.headers['Authorization'] = jwt;
-      var response =
-          await dio.post(baseUrl + "notary/markSigningCompleted", data: body);
-      print(response.data);
-    } catch (e) {
-      print(e);
-    }
+      await dio.post(baseUrl + "notary/markSigningCompleted", data: body);
+    } catch (e) {}
   }
 
   markOrderAsConfirmed(String notaryId, String orderId) async {
@@ -90,12 +74,8 @@ class NotaryServices {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderId": orderId, "notaryId": notaryId};
       dio.options.headers['Authorization'] = jwt;
-      var response =
-          await dio.post(baseUrl + "notary/markOrderAsConfirmed", data: body);
-      print(response.data);
-    } catch (e) {
-      print(e);
-    }
+      await dio.post(baseUrl + "notary/markOrderAsConfirmed", data: body);
+    } catch (e) {}
   }
 
   markOrderAsDelivered(String notaryId, String orderId) async {
@@ -103,39 +83,30 @@ class NotaryServices {
       String jwt = await storage.read(key: 'jwt');
       Map body = {"orderId": orderId, "notaryId": notaryId};
       dio.options.headers['Authorization'] = jwt;
-      var response =
-          await dio.post(baseUrl + "notary/markOrderAsDelivered", data: body);
-      print(response.data);
-    } catch (e) {
-      print(e);
-    }
+      await dio.post(baseUrl + "notary/markOrderAsDelivered", data: body);
+    } catch (e) {}
   }
 
   getInProgressOrders(String notaryId, int pageNumber) async {
     try {
-      print(pageNumber);
       String jwt = await storage.read(key: 'jwt');
-      print(jwt);
       dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(baseUrl + "notary/getInProgressOrders",
           data: {"notaryId": notaryId, "pageNumber": pageNumber});
       return response.data;
     } catch (e) {
-      print(e);
       return {};
     }
   }
 
   getCompletedOrders(String notaryId, int pageNumber) async {
     try {
-      print(pageNumber);
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(baseUrl + "notary/getCompletedOrders",
           data: {"notaryId": notaryId, "pageNumber": pageNumber});
       return response.data;
     } catch (e) {
-      print(e);
       return {};
     }
   }
@@ -143,7 +114,6 @@ class NotaryServices {
   getAppointments(DateTime dateTime, String notaryId) async {
     try {
       String jwt = await storage.read(key: 'jwt');
-      print(jwt);
       dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(baseUrl + "notary/getDashboard", data: {
         "notaryId": notaryId,
@@ -156,7 +126,6 @@ class NotaryServices {
       });
       return response.data;
     } catch (e) {
-      print(e);
       return {};
     }
   }
@@ -176,7 +145,6 @@ class NotaryServices {
   }
 
   getEarnings(String notaryId, int pageNumber) async {
-    print("current page Number $pageNumber");
     String jwt = await storage.read(key: 'jwt');
     dio.options.headers['Authorization'] = jwt;
     var response = await dio.post(
@@ -228,7 +196,6 @@ class NotaryServices {
   uploadImageToAPI(File _image, String notaryId, String orderId) async {
     String fileName = _image.path.split('/').last;
     String name = "n/$notaryId/o/$orderId/$fileName";
-    print(name);
     String uploadedImageUrl = await AmazonS3Cognito.upload(
         _image.path,
         "notarized-docs-2",

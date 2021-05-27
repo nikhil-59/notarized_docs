@@ -265,7 +265,6 @@ class _AuthScreenState extends State<AuthScreen> {
                               return;
                             }
                           } catch (e) {
-                            print(e);
                             EasyLoading.dismiss();
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -557,7 +556,6 @@ class _AuthScreenState extends State<AuthScreen> {
                               ),
                             ),
                           );
-                          //print("something went wrong");
                           return;
                         }
                       } catch (e) {

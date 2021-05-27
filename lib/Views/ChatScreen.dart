@@ -64,19 +64,15 @@ class _ChatScreenState extends State<ChatScreen>
         ),
       ),
     );
-    //print(messageList.length);
     pageNumber = pageNumber + 1;
     setState(() {
       isloading = false;
-      // pageNumber += 1;
     });
   }
 
   loadmoreMessage() async {
-    //print(pageNumber);
     var messages = await notaryServices.getAllMessages(
         widget.notaryId, pageNumber, widget.chatRoom);
-    //print("Page Count " + messages['pageNumber'].toString());
     if (messages['chatMessageCount'] == messageList.length) {
       setState(() {
         hasData = true;
@@ -95,14 +91,10 @@ class _ChatScreenState extends State<ChatScreen>
     setState(() {
       pageNumber = pageNumber + 1;
     });
-
-    //print(messageList.length);
   }
 
   setNewMessageToList(message) {
     var newData = json.decode(message['sentBy']);
-    //print(message);
-    //print("new message type type 3");
     messageList.insert(0, {
       "sentAt": message['sentAt'],
       "_id": message['_id'],
@@ -148,12 +140,9 @@ class _ChatScreenState extends State<ChatScreen>
   }
 
   handleNotificationClick(RemoteMessage message) async {
-    // For handling new message notification
     if (message.data['type'] == "3" || message.data['type'] == "0") {
-      //print("new message");
       if (message.data['chatroom'] == widget.chatRoom) {
         setNewMessageToList(message.data);
-        //print("new message");
       }
     }
   }
@@ -162,7 +151,6 @@ class _ChatScreenState extends State<ChatScreen>
   void initState() {
     NotaryServices().getToken();
     FirebaseMessaging.onMessage.any((element) {
-      //print("new message");
       handleNotificationClick(element);
       return false;
     });
@@ -298,7 +286,6 @@ class _ChatScreenState extends State<ChatScreen>
                           buttonMode: ButtonMode.CUPERTINO),
                       onEmojiSelected: (emoji, category) {
                         messageController.text += category.emoji;
-                        //print(emoji);
                       },
                     ),
                   )

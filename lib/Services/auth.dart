@@ -31,7 +31,6 @@ class AuthService {
           userCredential.user.email, userCredential.user.providerData.first);
     } catch (e) {
       EasyLoading.dismiss();
-      print(e);
       if (e.toString().contains("password")) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -67,18 +66,6 @@ class AuthService {
   Future<Map> getUserInfo(String uid, String email, UserInfo user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String jwt = await storage.read(key: "jwt");
-    print({
-      "uid": uid,
-      "email": email,
-      "emailVerified": false,
-      "photoURL": user.photoURL ?? "",
-      "displayName": user.displayName,
-      "phoneNumber": user.phoneNumber ?? "",
-      "loginThroughMobile": "hgckgvVKUGDVUVlhbvishfbvkihfbkusf",
-      "pushToken": await firebaseMessaging.getToken(),
-      "pushTokenDeviceType": "android"
-    });
-    print(jwt);
     dio.options.headers['Authorization'] = jwt;
     try {
       var response = await dio.post(
@@ -122,7 +109,6 @@ class AuthService {
         };
       } else if (response.data['status'] == 1 &&
           response.data['registered'] < 3) {
-        print(response.data);
         String userInfo = jsonEncode(response.data);
         await prefs.setString("userInfo", userInfo);
         return {
@@ -132,7 +118,6 @@ class AuthService {
           "isapproved": false,
         };
       } else {
-        print("hello");
         return {
           "status": 10,
           "isloggedSuccessful": false,
@@ -141,7 +126,6 @@ class AuthService {
         };
       }
     } catch (e) {
-      print(e);
       return {
         "status": 10,
         "isloggedSuccessful": false,
@@ -179,7 +163,6 @@ class AuthService {
   }
 
   updateToken(token) async {
-    print("updated token $token");
     String jwt = await storage.read(key: "jwt");
     dio.options.headers['Authorization'] = jwt;
     try {
@@ -191,10 +174,7 @@ class AuthService {
         "pushToken": token,
         "pushTokenDeviceType": "android"
       });
-      print(response);
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   Future<Map> signInWithGmail(context) async {
@@ -208,7 +188,6 @@ class AuthService {
       );
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
-      print(userCredential.user.providerData);
       await NotaryServices().getToken();
       return await getUserInfo(userCredential.user.uid,
           userCredential.user.email, userCredential.user.providerData.first);
@@ -266,7 +245,6 @@ class AuthService {
                   "@facebook.com",
           userCredential.user.providerData.first);
     } catch (e) {
-      print(e.toString());
       if (e.toString() ==
           "[firebase_auth/account-exists-with-different-credential] An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.") {
         ScaffoldMessenger.of(context).showSnackBar(
