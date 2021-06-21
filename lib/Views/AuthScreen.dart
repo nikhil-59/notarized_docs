@@ -18,7 +18,8 @@ class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final AuthService authService = AuthService();
-
+  Color backgroundColor = Colors.blue[900];
+  // Color colors = Color(0xff143791);
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(
@@ -46,10 +47,11 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: SingleChildScrollView(
         child: SafeArea(
           child: Container(
+            color: backgroundColor,
             height: MediaQuery.of(context).size.height - 30,
             // color: Colors.black,
             child: Column(
@@ -63,8 +65,22 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Image.asset(
-                        "assets/logo.png",
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                          border: Border.all(width: 4, color: Colors.white),
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: backgroundColor,
+                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                            // border: Border.all(width: 4, color: Colors.white),
+                          ),
+                          child: Image.asset(
+                            "assets/logo.png",
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -73,9 +89,10 @@ class _AuthScreenState extends State<AuthScreen> {
                     Text(
                       "Login",
                       style: TextStyle(
-                          fontSize: 40,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600),
+                        fontSize: 40,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     SizedBox(
                       height: 20,
@@ -84,7 +101,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       "Access account",
                       style: TextStyle(
                           fontSize: 20,
-                          color: Colors.black.withOpacity(0.8),
+                          color: Colors.white.withOpacity(0.8),
                           fontWeight: FontWeight.w700),
                     ),
                   ],
@@ -111,7 +128,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(7),
                         ),
-                        color: Colors.grey.shade200,
+                        color: Color(0xffFDE52C),
                         onPressed: () async {
                           // EasyLoading.instance.
                           try {
@@ -192,7 +209,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           padding: const EdgeInsets.all(10.0),
                           child: Icon(
                             FontAwesomeIcons.facebookF,
-                            color: Colors.grey,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -206,7 +223,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         highlightColor: Colors.transparent,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(7)),
-                        color: Colors.grey.shade200,
+                        color: Color(0xffFDE52C),
                         onPressed: () async {
                           // EasyLoading.instance.
                           try {
@@ -286,7 +303,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           padding: const EdgeInsets.all(10.0),
                           child: Icon(
                             FontAwesomeIcons.google,
-                            color: Colors.grey,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -301,7 +318,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: Colors.black.withOpacity(0.6),
+                    color: Colors.white.withOpacity(0.6),
                   ),
                 ),
                 Padding(
@@ -310,37 +327,64 @@ class _AuthScreenState extends State<AuthScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Email",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black.withOpacity(0.9),
-                            fontWeight: FontWeight.w600),
-                      ),
+                      // Text(
+                      //   "Email",
+                      //   style: TextStyle(
+                      //       fontSize: 18,
+                      //       color: Colors.black.withOpacity(0.9),
+                      //       fontWeight: FontWeight.w600),
+                      // ),
                       SizedBox(
                         height: 5,
                       ),
-                      TextField(
-                        cursorColor: Colors.black,
-                        controller: emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        style: TextStyle(
-                            fontSize: 16.5, fontWeight: FontWeight.w700),
-                        decoration: InputDecoration(
-                          fillColor: Colors.grey.shade50,
-                          filled: true,
-                          hintText: "Enter email Id",
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.transparent),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.transparent),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.transparent),
-                            borderRadius: BorderRadius.circular(10),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          border: Border.all(width: 2, color: Colors.white),
+                        ),
+                        child: TextField(
+                          cursorColor: Colors.black,
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          style: TextStyle(
+                              fontSize: 16.5, fontWeight: FontWeight.w700),
+                          decoration: InputDecoration(
+                            fillColor: backgroundColor,
+                            suffixIcon: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: CircleAvatar(
+                                radius: 24,
+                                child: CircleAvatar(
+                                  radius: 22,
+                                  backgroundColor: backgroundColor,
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.mail,
+                                    ),
+                                    onPressed: () {},
+                                  ),
+                                ),
+                              ),
+                            ),
+                            filled: true,
+                            hintText: "Email",
+                            hintStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                         ),
                       ),
@@ -353,63 +397,69 @@ class _AuthScreenState extends State<AuthScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Password",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black.withOpacity(0.9),
-                            fontWeight: FontWeight.w600),
-                      ),
+                      // Text(
+                      //   "Password",
+                      //   style: TextStyle(
+                      //       fontSize: 18,
+                      //       color: Colors.black.withOpacity(0.9),
+                      //       fontWeight: FontWeight.w600),
+                      // ),
                       SizedBox(
                         height: 5,
                       ),
-                      TextField(
-                        style: TextStyle(
-                            fontSize: 16.5, fontWeight: FontWeight.w700),
-                        obscureText: !showPassword,
-                        controller: passwordController,
-                        cursorColor: Colors.black,
-                        keyboardType: TextInputType.visiblePassword,
-                        decoration: InputDecoration(
-                          fillColor: Colors.grey.shade50,
-                          suffixIcon: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Container(
-                                color: Colors.white,
-                                width: 50,
-                                height: 50,
-                                child: TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      showPassword = !showPassword;
-                                    });
-                                  },
-                                  child: Text(
-                                    "?",
-                                    style: TextStyle(
-                                        color: Colors.black.withOpacity(0.7),
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.bold),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          border: Border.all(width: 2, color: Colors.white),
+                        ),
+                        child: TextField(
+                          style: TextStyle(
+                              fontSize: 16.5, fontWeight: FontWeight.w700),
+                          obscureText: !showPassword,
+                          controller: passwordController,
+                          cursorColor: Colors.black,
+                          keyboardType: TextInputType.visiblePassword,
+                          decoration: InputDecoration(
+                            fillColor: backgroundColor,
+                            suffixIcon: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: CircleAvatar(
+                                radius: 24,
+                                child: CircleAvatar(
+                                  radius: 22,
+                                  backgroundColor: backgroundColor,
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.lock,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        showPassword = !showPassword;
+                                      });
+                                    },
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          filled: true,
-                          hintText: "Enter Password",
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.transparent),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.transparent),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.transparent),
-                            borderRadius: BorderRadius.circular(10),
+                            filled: true,
+                            hintText: "Password",
+                            hintStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                         ),
                       ),
@@ -418,25 +468,26 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
                 SizedBox(height: 10),
                 MaterialButton(
-                  color: CustomColor().loginColor,
+                  color: Color(0xffFDE52C),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(10),
                     ),
                   ),
                   child: Container(
-                    height: 55,
-                    width: MediaQuery.of(context).size.width - 100,
+                    height: 75,
+                    width: MediaQuery.of(context).size.width - 75,
                     child: Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            !isloading ? "Sign in" : "Please Wait",
+                            !isloading ? "Login" : "Please Wait",
                             style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
+                              fontSize: 42,
+                              fontWeight: FontWeight.w900,
+                              color: backgroundColor,
+                            ),
                           ),
                           (isloading) ? SizedBox(width: 10) : Container(),
                           (isloading)
@@ -452,6 +503,22 @@ class _AuthScreenState extends State<AuthScreen> {
                                   ),
                                 )
                               : Container(),
+                          (isloading)
+                              ? Container()
+                              : Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: CircleAvatar(
+                                    radius: 32,
+                                    child: CircleAvatar(
+                                      radius: 26,
+                                      backgroundColor: Color(0xffFDE52C),
+                                      child: Icon(
+                                        Icons.done,
+                                        size: 44,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                         ],
                       ),
                     ),
