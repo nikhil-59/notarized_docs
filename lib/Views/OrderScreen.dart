@@ -720,7 +720,7 @@ class _OrderScreenState extends State<OrderScreen>
             Row(
               children: [
                 Text(
-                  "CA First Name",
+                  "First Name",
                   style: TextStyle(
                       color: Colors.black.withOpacity(0.8), fontSize: 17),
                 ),
@@ -743,7 +743,7 @@ class _OrderScreenState extends State<OrderScreen>
             Row(
               children: [
                 Text(
-                  "CA Last Name",
+                  "Last Name",
                   style: TextStyle(
                       color: Colors.black.withOpacity(0.8), fontSize: 17),
                 ),
@@ -766,7 +766,7 @@ class _OrderScreenState extends State<OrderScreen>
             Row(
               children: [
                 Text(
-                  "CA Phone Number",
+                  "Phone Number",
                   style: TextStyle(
                       color: Colors.black.withOpacity(0.8), fontSize: 17),
                 ),
@@ -789,7 +789,7 @@ class _OrderScreenState extends State<OrderScreen>
             Row(
               children: [
                 Text(
-                  "CA Email",
+                  "Email",
                   style: TextStyle(
                       color: Colors.black.withOpacity(0.8), fontSize: 17),
                 ),
@@ -1197,7 +1197,7 @@ class _OrderScreenState extends State<OrderScreen>
                   width: 15,
                 ),
                 Text(
-                  "\$ ${orders['order']['amount']}",
+                  "\$ ${orders['order']['payAmnt']}",
                   style: TextStyle(
                     color: Colors.black,
                     // fontWeight: FontWeight.w400,

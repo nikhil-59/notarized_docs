@@ -392,6 +392,7 @@ class _HomePageState extends State<HomePage>
                           child: Container(
                             child: ListView(
                               shrinkWrap: true,
+                              scrollDirection: Axis.vertical,
                               physics: BouncingScrollPhysics(),
                               children: [
                                 SizedBox(height: 10),
@@ -421,7 +422,7 @@ class _HomePageState extends State<HomePage>
                                     Text(
                                       "Today's Appointment $totalAppointment",
                                       style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 24,
                                           fontWeight: FontWeight.bold),
                                     ),
                                     GestureDetector(
@@ -450,104 +451,84 @@ class _HomePageState extends State<HomePage>
                                 SizedBox(
                                   height: 10,
                                 ),
-                                appointmentList.isNotEmpty
-                                    ? AnimatedSize(
-                                        duration: Duration(milliseconds: 500),
-                                        curve: Curves.ease,
-                                        vsync: this,
-                                        child: Container(
-                                          height:
-                                              appointmentList.isEmpty ? 0 : 150,
-                                          child: (appointmentList.isEmpty)
-                                              ? Container()
-                                              : ListView.builder(
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return AnimatedOpacity(
-                                                      duration: Duration(
-                                                          milliseconds: 4000),
-                                                      opacity: appointmentList
-                                                              .isEmpty
-                                                          ? 0.0
-                                                          : 1.0,
-                                                      child: Cards(
-                                                        notaryId:
-                                                            userInfo['notary']
-                                                                ['_id'],
-                                                        orderId:
-                                                            appointmentList[
-                                                                    index]
-                                                                ['orderId'],
-                                                        name: appointmentList[
-                                                            index]['name'],
-                                                        place: appointmentList[
-                                                            index]['place'],
-                                                        time:
-                                                            DateFormat("h:mm a")
-                                                                .format(
-                                                          DateTime.parse(
-                                                            appointmentList[
-                                                                index]['date'],
-                                                          ).toLocal(),
-                                                        ),
-                                                        phone: appointmentList[
-                                                            index]['phone'],
-                                                        imageUrl:
-                                                            appointmentList[
-                                                                index]["logo"],
-                                                      ),
-                                                    );
-                                                  },
-                                                  shrinkWrap: true,
-                                                  physics:
-                                                      BouncingScrollPhysics(),
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  itemCount:
-                                                      appointmentList.length,
-                                                ),
-                                        ),
-                                      )
-                                    : Container(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              height: 30,
-                                            ),
-                                            Image.asset(
-                                              "assets/appointment.png",
-                                              height: 100,
-                                              width: 100,
-                                            ),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                            Padding(
+                                Container(
+                                  child: (appointmentList.isNotEmpty)
+                                      ? ListView.builder(
+                                          itemBuilder: (context, index) {
+                                            return Padding(
                                               padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 30.0),
-                                              child: Text(
-                                                "You don't have any appointments for today.",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.black
-                                                        .withOpacity(0.8),
-                                                    fontWeight:
-                                                        FontWeight.w700),
+                                                  const EdgeInsets.all(8.0),
+                                              child: Cards(
+                                                notaryId: userInfo['notary']
+                                                    ['_id'],
+                                                orderId: appointmentList[index]
+                                                    ['orderId'],
+                                                name: appointmentList[index]
+                                                    ['name'],
+                                                place: appointmentList[index]
+                                                    ['place'],
+                                                time:
+                                                    DateFormat("h:mm a").format(
+                                                  DateTime.parse(
+                                                    appointmentList[index]
+                                                        ['date'],
+                                                  ).toLocal(),
+                                                ),
+                                                phone: appointmentList[index]
+                                                    ['phone'],
+                                                imageUrl: appointmentList[index]
+                                                    ["logo"],
                                               ),
+                                            );
+                                          },
+                                          shrinkWrap: true,
+                                          physics: BouncingScrollPhysics(),
+                                          scrollDirection: Axis.vertical,
+                                          itemCount: appointmentList.length,
+                                        )
+                                      : Container(
+                                          child: Container(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.max,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                Image.asset(
+                                                  "assets/appointment.png",
+                                                  height: 100,
+                                                  width: 100,
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 30.0),
+                                                  child: Text(
+                                                    "You don't have any appointments for today.",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.black
+                                                            .withOpacity(0.8),
+                                                        fontWeight:
+                                                            FontWeight.w700),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                              ],
                                             ),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
+                                ),
                                 SizedBox(
                                   height: 20,
                                 ),
@@ -609,7 +590,7 @@ class _HomePageState extends State<HomePage>
                                                 address: item["address"],
                                                 name: item["name"],
                                                 price:
-                                                    item["amount"].toString(),
+                                                    item["payAmnt"].toString(),
                                                 notaryId: userInfo['notary']
                                                     ['_id'],
                                                 orderId: item["id"],
@@ -728,3 +709,86 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
 }
+
+// appointmentList.isNotEmpty
+//                                     ? Container(
+//                                         height:
+//                                             appointmentList.isEmpty ? 0 : 150,
+//                                         child: (appointmentList.isEmpty)
+//                                             ? Container()
+//                                             : ListView.builder(
+//                                                 itemBuilder: (context, index) {
+//                                                   return Cards(
+//                                                     notaryId: userInfo['notary']
+//                                                         ['_id'],
+//                                                     orderId:
+//                                                         appointmentList[index]
+//                                                             ['orderId'],
+//                                                     name: appointmentList[index]
+//                                                         ['name'],
+//                                                     place:
+//                                                         appointmentList[index]
+//                                                             ['place'],
+//                                                     time: DateFormat("h:mm a")
+//                                                         .format(
+//                                                       DateTime.parse(
+//                                                         appointmentList[index]
+//                                                             ['date'],
+//                                                       ).toLocal(),
+//                                                     ),
+//                                                     phone:
+//                                                         appointmentList[index]
+//                                                             ['phone'],
+//                                                     imageUrl:
+//                                                         appointmentList[index]
+//                                                             ["logo"],
+//                                                   );
+//                                                 },
+//                                                 shrinkWrap: true,
+//                                                 physics:
+//                                                     BouncingScrollPhysics(),
+//                                                 scrollDirection: Axis.vertical,
+//                                                 itemCount:
+//                                                     appointmentList.length,
+//                                               ),
+//                                       )
+//                                     : Container(
+//                                         child: Column(
+//                                           mainAxisSize: MainAxisSize.max,
+//                                           crossAxisAlignment:
+//                                               CrossAxisAlignment.center,
+//                                           mainAxisAlignment:
+//                                               MainAxisAlignment.center,
+//                                           children: [
+//                                             SizedBox(
+//                                               height: 30,
+//                                             ),
+//                                             Image.asset(
+//                                               "assets/appointment.png",
+//                                               height: 100,
+//                                               width: 100,
+//                                             ),
+//                                             SizedBox(
+//                                               height: 20,
+//                                             ),
+//                                             Padding(
+//                                               padding:
+//                                                   const EdgeInsets.symmetric(
+//                                                       horizontal: 30.0),
+//                                               child: Text(
+//                                                 "You don't have any appointments for today.",
+//                                                 textAlign: TextAlign.center,
+//                                                 style: TextStyle(
+//                                                     fontSize: 16,
+//                                                     color: Colors.black
+//                                                         .withOpacity(0.8),
+//                                                     fontWeight:
+//                                                         FontWeight.w700),
+//                                               ),
+//                                             ),
+//                                             SizedBox(
+//                                               height: 20,
+//                                             ),
+//                                           ],
+//                                         ),
+//                                       ),
