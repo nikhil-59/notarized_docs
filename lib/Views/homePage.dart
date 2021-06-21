@@ -590,7 +590,7 @@ class _HomePageState extends State<HomePage>
                                                 address: item["address"],
                                                 name: item["name"],
                                                 price:
-                                                    item["amount"].toString(),
+                                                    item["payAmnt"].toString(),
                                                 notaryId: userInfo['notary']
                                                     ['_id'],
                                                 orderId: item["id"],
