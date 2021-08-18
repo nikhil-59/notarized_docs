@@ -131,7 +131,7 @@ class _AmountScreenState extends State<AmountScreen>
                                                   width: 42,
                                                 ),
                                                 Text(
-                                                  ":  \$ ${map['paidAmount']}",
+                                                  ":  \$ ${map['totalAmount']}",
                                                   style: TextStyle(
                                                       fontSize: 17,
                                                       fontWeight:

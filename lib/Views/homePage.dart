@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage>
         pendingList.add(
           {
             "id": item["_id"],
-            "amount": item["amount"],
+            "payAmnt": item["payAmnt"],
             "name": item["appointment"]["signerFullName"],
             "address": item["appointment"]["propertyAddress"],
             "appointmentPlace": item["appointment"]["place"],
@@ -241,7 +241,7 @@ class _HomePageState extends State<HomePage>
         pendingList.add(
           {
             "id": item["_id"],
-            "amount": item["amount"],
+            "payAmnt": item["payAmnt"],
             "name": item["appointment"]["signerFullName"],
             "address": item["appointment"]["propertyAddress"],
             "appointmentPlace": item["appointment"]["place"],
@@ -283,7 +283,7 @@ class _HomePageState extends State<HomePage>
         pendingList.add(
           {
             "id": item["_id"],
-            "amount": item["amount"],
+            "payAmnt": item["payAmnt"],
             "name": item["appointment"]["signerFullName"],
             "address": item["appointment"]["propertyAddress"],
             "appointmentPlace": item["appointment"]["place"],
