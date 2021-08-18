@@ -87,12 +87,13 @@ class _AuthScreenState extends State<AuthScreen> {
                       height: 10,
                     ),
                     Text(
-                      "Login",
+                      "Welcome Notary Partner",
                       style: TextStyle(
                         fontSize: 40,
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                     SizedBox(
                       height: 20,
@@ -348,7 +349,10 @@ class _AuthScreenState extends State<AuthScreen> {
                           controller: emailController,
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(
-                              fontSize: 16.5, fontWeight: FontWeight.w700),
+                            fontSize: 16.5,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
                           decoration: InputDecoration(
                             fillColor: backgroundColor,
                             suffixIcon: Padding(
@@ -415,7 +419,10 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                         child: TextField(
                           style: TextStyle(
-                              fontSize: 16.5, fontWeight: FontWeight.w700),
+                            fontSize: 16.5,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
                           obscureText: !showPassword,
                           controller: passwordController,
                           cursorColor: Colors.black,

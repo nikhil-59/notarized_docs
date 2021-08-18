@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:date_format/date_format.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -390,219 +392,266 @@ class _HomePageState extends State<HomePage>
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Container(
-                            child: ListView(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              physics: BouncingScrollPhysics(),
+                            child: Column(
                               children: [
-                                SizedBox(height: 10),
-                                Text(
-                                  "Good " + greeting(),
-                                  style: TextStyle(fontSize: 17),
-                                ),
-                                SizedBox(
-                                  height: 12,
-                                ),
-                                Text(
-                                  userInfo['notary']['firstName'] +
-                                      " " +
-                                      userInfo['notary']['lastName'],
-                                  style: TextStyle(
-                                      fontSize: 16.5,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                ListView(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  physics: BouncingScrollPhysics(),
                                   children: [
+                                    SizedBox(height: 10),
                                     Text(
-                                      "Today's Appointment $totalAppointment",
+                                      "Good " + greeting(),
+                                      style: TextStyle(fontSize: 17),
+                                    ),
+                                    SizedBox(
+                                      height: 12,
+                                    ),
+                                    Text(
+                                      userInfo['notary']['firstName'] +
+                                          " " +
+                                          userInfo['notary']['lastName'],
                                       style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold),
+                                          fontSize: 16.5,
+                                          fontWeight: FontWeight.w700),
                                     ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                          PageRouteBuilder(
-                                            transitionDuration:
-                                                Duration(seconds: 0),
-                                            pageBuilder: (context, animation1,
-                                                    animation2) =>
-                                                CalenderScreen(
-                                                    notaryId: userInfo['notary']
-                                                        ['_id']),
-                                          ),
-                                        );
-                                      },
-                                      child: Text(
-                                        "View All",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
+                                    SizedBox(
+                                      height: 10,
                                     ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  child: (appointmentList.isNotEmpty)
-                                      ? ListView.builder(
-                                          itemBuilder: (context, index) {
-                                            return Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Cards(
-                                                notaryId: userInfo['notary']
-                                                    ['_id'],
-                                                orderId: appointmentList[index]
-                                                    ['orderId'],
-                                                name: appointmentList[index]
-                                                    ['name'],
-                                                place: appointmentList[index]
-                                                    ['place'],
-                                                time:
-                                                    DateFormat("h:mm a").format(
-                                                  DateTime.parse(
-                                                    appointmentList[index]
-                                                        ['date'],
-                                                  ).toLocal(),
-                                                ),
-                                                phone: appointmentList[index]
-                                                    ['phone'],
-                                                imageUrl: appointmentList[index]
-                                                    ["logo"],
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Today's Appointment $totalAppointment",
+                                          style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).push(
+                                              PageRouteBuilder(
+                                                transitionDuration:
+                                                    Duration(seconds: 0),
+                                                pageBuilder: (context,
+                                                        animation1,
+                                                        animation2) =>
+                                                    CalenderScreen(
+                                                        notaryId:
+                                                            userInfo['notary']
+                                                                ['_id']),
                                               ),
                                             );
                                           },
-                                          shrinkWrap: true,
-                                          physics: BouncingScrollPhysics(),
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: appointmentList.length,
-                                        )
-                                      : Container(
-                                          child: Container(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.max,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                SizedBox(
-                                                  height: 30,
-                                                ),
-                                                Image.asset(
-                                                  "assets/appointment.png",
-                                                  height: 100,
-                                                  width: 100,
-                                                ),
-                                                SizedBox(
-                                                  height: 20,
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 30.0),
-                                                  child: Text(
-                                                    "You don't have any appointments for today.",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Colors.black
-                                                            .withOpacity(0.8),
-                                                        fontWeight:
-                                                            FontWeight.w700),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 20,
-                                                ),
-                                              ],
-                                            ),
+                                          child: Text(
+                                            "View All",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Text(
-                                  "Pending Requests",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                    "Accept the order as soon it comes. Order are assigned on first accepted basis.",
-                                    style: TextStyle(
-                                        fontSize: 15.5,
-                                        color: Colors.black.withOpacity(0.7)),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                pendingList.isNotEmpty
-                                    ? ListView(
-                                        shrinkWrap: true,
-                                        physics: NeverScrollableScrollPhysics(),
-                                        children: [
-                                          for (var item in pendingList)
-                                            GestureDetector(
-                                              onTap: () async {
-                                                bool isDone =
-                                                    await Navigator.of(context)
-                                                        .push(
-                                                  PageRouteBuilder(
-                                                    transitionDuration:
-                                                        Duration(seconds: 0),
-                                                    pageBuilder: (_, __, ___) =>
-                                                        OrderScreen(
-                                                      notaryId:
-                                                          userInfo['notary']
-                                                              ['_id'],
-                                                      orderId: item["id"],
-                                                      isPending: true,
-                                                    ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      child: (appointmentList.isNotEmpty)
+                                          ? ListView.builder(
+                                              itemBuilder: (context, index) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Cards(
+                                                    notaryId: userInfo['notary']
+                                                        ['_id'],
+                                                    orderId:
+                                                        appointmentList[index]
+                                                            ['orderId'],
+                                                    name: appointmentList[index]
+                                                        ['name'],
+                                                    place:
+                                                        appointmentList[index]
+                                                            ['place'],
+                                                    time: formatDate(
+                                                        DateTime.parse(
+                                                          appointmentList[index]
+                                                              ['date'],
+                                                        ).toLocal(),
+                                                        [
+                                                          'mm',
+                                                          '/',
+                                                          'dd',
+                                                          '/',
+                                                          'yyyy',
+                                                          ' ',
+                                                          '@',
+                                                          ' ',
+                                                          'hh',
+                                                          ':',
+                                                          'mm',
+                                                          ' ',
+                                                          'am'
+                                                        ]),
+                                                    phone:
+                                                        appointmentList[index]
+                                                            ['phone'],
+                                                    imageUrl:
+                                                        appointmentList[index]
+                                                            ["logo"],
                                                   ),
                                                 );
-                                                try {
-                                                  if (!isDone) {
-                                                    pendingList.remove(item);
-                                                    updatePending(
-                                                        pendingList.length);
-                                                    setState(() {});
-                                                  }
-                                                } catch (e) {}
                                               },
-                                              child: ConfirmCards(
-                                                address: item["address"],
-                                                name: item["name"],
-                                                price:
-                                                    item["payAmnt"].toString(),
-                                                notaryId: userInfo['notary']
-                                                    ['_id'],
-                                                orderId: item["id"],
-                                                imageUrl: userInfo['notary']
-                                                    ['userImageURL'],
-                                                refresh: getPending,
-                                                place: item["appointmentPlace"],
-                                                time: item['time'],
-                                                closeType: item['closingType'],
+                                              shrinkWrap: true,
+                                              physics: BouncingScrollPhysics(),
+                                              scrollDirection: Axis.vertical,
+                                              itemCount: appointmentList.length,
+                                            )
+                                          : Container(
+                                              child: Container(
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 30,
+                                                    ),
+                                                    Image.asset(
+                                                      "assets/appointment.png",
+                                                      height: 100,
+                                                      width: 100,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 30.0),
+                                                      child: Text(
+                                                        "You don't have any appointments for today.",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.8),
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w700),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                        ],
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Text(
+                                      "Pending Requests",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Text(
+                                        "Accept the order as soon it comes. Order are assigned on first accepted basis.",
+                                        style: TextStyle(
+                                            fontSize: 15.5,
+                                            color:
+                                                Colors.black.withOpacity(0.7)),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                  ],
+                                ),
+                                pendingList.isNotEmpty
+                                    ? CarouselSlider(
+                                        options: CarouselOptions(
+                                          autoPlayAnimationDuration:
+                                              Duration(seconds: 1),
+                                          autoPlay: true,
+                                          enableInfiniteScroll: false,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              3.5,
+                                        ),
+                                        items: pendingList
+                                            .map(
+                                              (item) => GestureDetector(
+                                                onTap: () async {
+                                                  bool isDone =
+                                                      await Navigator.of(
+                                                              context)
+                                                          .push(
+                                                    PageRouteBuilder(
+                                                      transitionDuration:
+                                                          Duration(seconds: 0),
+                                                      pageBuilder:
+                                                          (_, __, ___) =>
+                                                              OrderScreen(
+                                                        notaryId:
+                                                            userInfo['notary']
+                                                                ['_id'],
+                                                        orderId: item["id"],
+                                                        isPending: true,
+                                                      ),
+                                                    ),
+                                                  );
+                                                  try {
+                                                    if (!isDone) {
+                                                      pendingList.remove(item);
+                                                      updatePending(
+                                                          pendingList.length);
+                                                      setState(() {});
+                                                    }
+                                                  } catch (e) {}
+                                                },
+                                                child: ConfirmCards(
+                                                  address: item["address"],
+                                                  name: item["name"],
+                                                  price: item["payAmnt"] == null
+                                                      ? '0'
+                                                      : item["payAmnt"]
+                                                          .toString(),
+                                                  notaryId: userInfo['notary']
+                                                      ['_id'],
+                                                  orderId: item["id"],
+                                                  imageUrl: userInfo['notary']
+                                                      ['userImageURL'],
+                                                  refresh: getPending,
+                                                  place:
+                                                      item["appointmentPlace"],
+                                                  time: item['time'],
+                                                  closeType:
+                                                      item['closingType'],
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
                                       )
                                     : Container(
                                         child: Column(
@@ -657,9 +706,6 @@ class _HomePageState extends State<HomePage>
                                           ],
                                         ),
                                       ),
-                                SizedBox(
-                                  height: 5,
-                                ),
                               ],
                             ),
                           ),
