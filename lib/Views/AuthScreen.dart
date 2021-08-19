@@ -67,19 +67,12 @@ class _AuthScreenState extends State<AuthScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: backgroundColor,
                           borderRadius: BorderRadius.all(Radius.circular(16)),
-                          border: Border.all(width: 4, color: Colors.white),
+                          // border: Border.all(width: 4, color: Colors.white),
                         ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: backgroundColor,
-                            borderRadius: BorderRadius.all(Radius.circular(16)),
-                            // border: Border.all(width: 4, color: Colors.white),
-                          ),
-                          child: Image.asset(
-                            "assets/logo.png",
-                          ),
+                        child: Image.asset(
+                          "assets/logo.png",
                         ),
                       ),
                     ),
