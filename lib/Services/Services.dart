@@ -1,12 +1,14 @@
 import 'dart:io';
-import 'package:amazon_s3_cognito/amazon_s3_cognito.dart';
-import 'package:amazon_s3_cognito/aws_region.dart';
+// import 'package:amazon_s3_cognito/amazon_s3_cognito.dart';
+// import 'package:amazon_s3_cognito/aws_region.dart';
+import '../library/amazon_s3_congnito.dart';
+import '../library/aws_region.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class NotaryServices {
-  final String baseUrl = "https://api.notarizeddocs.com/";
+  final String baseUrl = "https://api-notarize.herokuapp.com/";
   final Dio dio = Dio();
   final storage = FlutterSecureStorage();
 
