@@ -42,6 +42,7 @@ class _AmountScreenState extends State<AmountScreen>
       hasMore = true;
     }
     i += 1;
+
     setState(() {
       totalpage = map['pageNumber'];
       isloading = false;
@@ -50,8 +51,11 @@ class _AmountScreenState extends State<AmountScreen>
 
   getmoreData() async {
     var response = await NotaryServices().getEarnings(widget.notaryId, i);
-    map['payouts'].addAll(response['payouts']);
-    map['customers'].addAll(response['customers']);
+    print("Inside getMore Data");
+    if (map['payouts'] != null && map['customers'] != null) {
+      map['payouts'].addAll(response['payouts']);
+      map['customers'].addAll(response['customers']);
+    }
     if (response['pageCount'] == response['pageNumber']) {
       hasMore = true;
     } else {
