@@ -1128,11 +1128,12 @@ class _OrderScreenState extends State<OrderScreen>
               height: 20,
             ),
             orders['order']['appointment']['closingInstructions'] != null
-                ? Row(
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Closing Instructions",
+                        "Closing Instructions : ",
                         style: TextStyle(
                             color: Colors.black.withOpacity(0.8), fontSize: 17),
                       ),
@@ -1141,7 +1142,7 @@ class _OrderScreenState extends State<OrderScreen>
                       ),
                       Flexible(
                         child: Text(
-                          ": ${orders['order']['appointment']['closingInstructions'].toString().replaceRange(0, 1, orders['order']['appointment']['closingInstructions'][0].toString().toUpperCase())}",
+                          "${orders['order']['appointment']['closingInstructions'].toString().replaceRange(0, 1, orders['order']['appointment']['closingInstructions'][0].toString().toUpperCase())}",
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -1160,7 +1161,9 @@ class _OrderScreenState extends State<OrderScreen>
                   )
                 : Container(),
             orders['order']['appointment']['instructFlag'] != null
-                ? Row(
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         "Closing Alert(s) : ",
