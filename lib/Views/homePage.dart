@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:date_format/date_format.dart';
 import 'package:dio/dio.dart';
@@ -393,176 +394,280 @@ class _HomePageState extends State<HomePage>
                           child: Container(
                             child: Column(
                               children: [
-                                ListView(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.vertical,
-                                  physics: BouncingScrollPhysics(),
+                                Row(
                                   children: [
-                                    SizedBox(height: 10),
-                                    Text(
-                                      "Good " + greeting(),
-                                      style: TextStyle(fontSize: 17),
-                                    ),
-                                    SizedBox(
-                                      height: 8,
-                                    ),
-                                    Text(
-                                      userInfo['notary']['firstName'] +
-                                          " " +
-                                          userInfo['notary']['lastName'],
-                                      style: TextStyle(
-                                          fontSize: 16.5,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Text(
-                                      "Pending Requests",
-                                      style: TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: Text(
-                                        "Accept the order as soon it comes. Order are assigned on first accepted basis.",
-                                        style: TextStyle(
-                                            fontSize: 15.5,
-                                            color:
-                                                Colors.black.withOpacity(0.7)),
+                                    Container(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(50),
+                                        child: userInfo['notary']
+                                                    ['userImageURL'] !=
+                                                null
+                                            ? CachedNetworkImage(
+                                                imageUrl: userInfo['notary']
+                                                    ['userImageURL'],
+                                                height: 80,
+                                                width: 80,
+                                              )
+                                            : Container(
+                                                color: blueColor,
+                                                height: 80,
+                                                width: 80,
+                                                child: CircleAvatar(
+                                                  radius: 20,
+                                                  backgroundColor: blueColor,
+                                                  child: Text(
+                                                    userInfo['notary']["firstName"]
+                                                                    [0]
+                                                                .toUpperCase() +
+                                                            " " +
+                                                            userInfo['notary']
+                                                                    ["lastName"]
+                                                                [0] ??
+                                                        "".toUpperCase(),
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              ),
                                       ),
                                     ),
                                     SizedBox(
-                                      height: 10,
+                                      width: 5,
                                     ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(height: 10),
+                                        Text(
+                                          "Good " + greeting(),
+                                          style: TextStyle(fontSize: 17),
+                                        ),
+                                        SizedBox(
+                                          height: 8,
+                                        ),
+                                        Text(
+                                          userInfo['notary']['firstName'] +
+                                              " " +
+                                              userInfo['notary']['lastName'],
+                                          style: TextStyle(
+                                              fontSize: 16.5,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ],
+                                    )
                                   ],
                                 ),
-                                pendingList.isNotEmpty
-                                    ? CarouselSlider(
-                                        options: CarouselOptions(
-                                          autoPlayAnimationDuration:
-                                              Duration(seconds: 1),
-                                          autoPlay: true,
-                                          enableInfiniteScroll: false,
-                                          height: 220,
-                                        ),
-                                        items: pendingList
-                                            .map(
-                                              (item) => GestureDetector(
-                                                onTap: () async {
-                                                  bool isDone =
-                                                      await Navigator.of(
-                                                              context)
-                                                          .push(
-                                                    PageRouteBuilder(
-                                                      transitionDuration:
-                                                          Duration(seconds: 0),
-                                                      pageBuilder:
-                                                          (_, __, ___) =>
-                                                              OrderScreen(
-                                                        notaryId:
-                                                            userInfo['notary']
-                                                                ['_id'],
-                                                        orderId: item["id"],
-                                                        isPending: true,
-                                                      ),
-                                                    ),
-                                                  );
-                                                  try {
-                                                    if (!isDone) {
-                                                      pendingList.remove(item);
-                                                      updatePending(
-                                                          pendingList.length);
-                                                      setState(() {});
-                                                    }
-                                                  } catch (e) {}
-                                                },
-                                                child: ConfirmCards(
-                                                  address: item["address"],
-                                                  name: item["name"],
-                                                  price: item["payAmnt"] == null
-                                                      ? '0'
-                                                      : item["payAmnt"]
-                                                          .toString(),
-                                                  notaryId: userInfo['notary']
-                                                      ['_id'],
-                                                  orderId: item["id"],
-                                                  imageUrl: userInfo['notary']
-                                                      ['userImageURL'],
-                                                  refresh: getPending,
-                                                  place:
-                                                      item["appointmentPlace"],
-                                                  time: item['time'],
-                                                  closeType:
-                                                      item['closingType'],
-                                                ),
-                                              ),
-                                            )
-                                            .toList(),
-                                      )
-                                    : Container(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              height: 30,
-                                            ),
-                                            Image.asset(
-                                              "assets/pendingorder.png",
-                                              height: 100,
-                                              width: 100,
-                                            ),
+                                // ListView(
+                                //     shrinkWrap: true,
+                                //     scrollDirection: Axis.vertical,
+                                //     physics: BouncingScrollPhysics(),
+                                //     children: [
+                                //       SizedBox(height: 10),
+                                //       Text(
+                                //         "Good " + greeting(),
+                                //         style: TextStyle(fontSize: 17),
+                                //       ),
+                                //       SizedBox(
+                                //         height: 8,
+                                //       ),
+                                //       Text(
+                                //         userInfo['notary']['firstName'] +
+                                //             " " +
+                                //             userInfo['notary']['lastName'],
+                                //         style: TextStyle(
+                                //             fontSize: 16.5,
+                                //             fontWeight: FontWeight.w700),
+                                //       ),
+                                //     ]),
+                                pendingList.isEmpty
+                                    ? Container()
+                                    : Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
                                             SizedBox(
                                               height: 20,
                                             ),
+                                            Text(
+                                              "Pending Requests",
+                                              style: TextStyle(
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 20.0),
+                                              padding: const EdgeInsets.only(
+                                                  top: 8.0),
                                               child: Text(
-                                                "You don't have any pending requests",
-                                                textAlign: TextAlign.center,
+                                                "Accept the order as soon it comes. Order are assigned on first accepted basis.",
                                                 style: TextStyle(
-                                                    fontSize: 16,
+                                                    fontSize: 15.5,
                                                     color: Colors.black
-                                                        .withOpacity(0.8),
-                                                    fontWeight:
-                                                        FontWeight.w700),
+                                                        .withOpacity(0.7)),
                                               ),
                                             ),
                                             SizedBox(
                                               height: 10,
                                             ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 40.0),
-                                              child: Text(
-                                                "Tip: Accept Appointments as soon you receive message",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    fontSize: 15.5,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
+                                            pendingList.isNotEmpty
+                                                ? CarouselSlider(
+                                                    options: CarouselOptions(
+                                                      autoPlayAnimationDuration:
+                                                          Duration(seconds: 1),
+                                                      autoPlay: true,
+                                                      enableInfiniteScroll:
+                                                          false,
+                                                      height: 220,
+                                                    ),
+                                                    items: pendingList
+                                                        .map(
+                                                          (item) =>
+                                                              GestureDetector(
+                                                            onTap: () async {
+                                                              bool isDone =
+                                                                  await Navigator.of(
+                                                                          context)
+                                                                      .push(
+                                                                PageRouteBuilder(
+                                                                  transitionDuration:
+                                                                      Duration(
+                                                                          seconds:
+                                                                              0),
+                                                                  pageBuilder: (_,
+                                                                          __,
+                                                                          ___) =>
+                                                                      OrderScreen(
+                                                                    notaryId: userInfo[
+                                                                            'notary']
+                                                                        ['_id'],
+                                                                    orderId: item[
+                                                                        "id"],
+                                                                    isPending:
+                                                                        true,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                              try {
+                                                                if (!isDone) {
+                                                                  pendingList
+                                                                      .remove(
+                                                                          item);
+                                                                  updatePending(
+                                                                      pendingList
+                                                                          .length);
+                                                                  setState(
+                                                                      () {});
+                                                                }
+                                                              } catch (e) {}
+                                                            },
+                                                            child: ConfirmCards(
+                                                              address: item[
+                                                                  "address"],
+                                                              name:
+                                                                  item["name"],
+                                                              price: item["payAmnt"] ==
+                                                                      null
+                                                                  ? '0'
+                                                                  : item["payAmnt"]
+                                                                      .toString(),
+                                                              notaryId: userInfo[
+                                                                      'notary']
+                                                                  ['_id'],
+                                                              orderId:
+                                                                  item["id"],
+                                                              imageUrl: userInfo[
+                                                                      'notary'][
+                                                                  'userImageURL'],
+                                                              refresh:
+                                                                  getPending,
+                                                              place: item[
+                                                                  "appointmentPlace"],
+                                                              time:
+                                                                  item['time'],
+                                                              closeType: item[
+                                                                  'closingType'],
+                                                            ),
+                                                          ),
+                                                        )
+                                                        .toList(),
+                                                  )
+                                                : Container(
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 30,
+                                                        ),
+                                                        Image.asset(
+                                                          "assets/pendingorder.png",
+                                                          height: 100,
+                                                          width: 100,
+                                                        ),
+                                                        SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      20.0),
+                                                          child: Text(
+                                                            "You don't have any pending requests",
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      40.0),
+                                                          child: Text(
+                                                            "Tip: Accept Appointments as soon you receive message",
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                fontSize: 15.5,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                            SizedBox(
+                                              height: 20,
                                             ),
-                                          ],
-                                        ),
-                                      ),
-                                SizedBox(
-                                  height: 20,
-                                ),
+                                          ]),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
