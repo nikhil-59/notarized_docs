@@ -1084,7 +1084,7 @@ class _OrderScreenState extends State<OrderScreen>
             Row(
               children: [
                 Text(
-                  "Escrow for this file",
+                  "Escrow #",
                   style: TextStyle(
                       color: Colors.black.withOpacity(0.8), fontSize: 17),
                 ),
@@ -1163,19 +1163,21 @@ class _OrderScreenState extends State<OrderScreen>
                 ? Row(
                     children: [
                       Text(
-                        "Instruct Flag",
+                        "Closing Alert(s) : ",
                         style: TextStyle(
                             color: Colors.black.withOpacity(0.8), fontSize: 17),
                       ),
                       SizedBox(
-                        width: 15,
+                        width: 10,
                       ),
-                      Text(
-                        ": ${orders['order']['appointment']['instructFlag'].toString().replaceRange(0, 1, orders['order']['appointment']['instructFlag'][0].toString().toUpperCase())}",
-                        style: TextStyle(
-                          color: Colors.black,
-                          // fontWeight: FontWeight.w400,
-                          fontSize: 17.5,
+                      Flexible(
+                        child: Text(
+                          "${orders['order']['appointment']['instructFlag'].toString().replaceRange(0, 1, orders['order']['appointment']['instructFlag'][0].toString().toUpperCase())}",
+                          style: TextStyle(
+                            color: Colors.black,
+                            // fontWeight: FontWeight.w400,
+                            fontSize: 17.5,
+                          ),
                         ),
                       )
                     ],
@@ -1295,51 +1297,72 @@ class _OrderScreenState extends State<OrderScreen>
             SizedBox(
               height: 10,
             ),
-            Stack(
-              alignment: AlignmentDirectional.center,
+            Row(
               children: [
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Signer Phone Number",
+                      "Signer Phone Number :",
                       style: TextStyle(
                           color: Colors.black.withOpacity(0.8), fontSize: 17),
                     ),
                     SizedBox(
                       width: 15,
                     ),
-                    Text(
-                      ": ${orders['order']['appointment']['signerPhoneNumber']}",
-                      style: TextStyle(
-                        color: Colors.black,
-                        // fontWeight: FontWeight.w400,
-                        fontSize: 17.5,
-                      ),
-                    ),
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    await launch(
-                        "tel:${orders['order']['appointment']['signerPhoneNumber']}");
-                  },
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: CircleAvatar(
-                        radius: 17,
-                        backgroundColor: blueColor,
-                        child: Icon(
-                          Icons.phone,
-                          size: 22,
-                          color: Colors.white,
+                    Row(children: [
+                      Text(
+                        "${orders['order']['appointment']['signerPhoneNumber']}",
+                        style: TextStyle(
+                          color: Colors.black,
+                          // fontWeight: FontWeight.w400,
+                          fontSize: 17.5,
                         ),
                       ),
-                    ),
-                  ),
+                      SizedBox(
+                        width: 200,
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          await launch(
+                              "tel:${orders['order']['appointment']['signerPhoneNumber']}");
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: CircleAvatar(
+                            radius: 17,
+                            backgroundColor: blueColor,
+                            child: Icon(
+                              Icons.phone,
+                              size: 22,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          await launch(
+                              "tel:${orders['order']['appointment']['signerPhoneNumber']}");
+                        },
+                        child: Image.asset(
+                          "assets/chat.png",
+                          height: 36,
+                        ),
+                      )
+                    ]),
+                  ],
                 ),
+                SizedBox(
+                  width: 10,
+                )
               ],
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Row(
+              children: [],
             ),
             SizedBox(
               height: 10,
@@ -1936,7 +1959,7 @@ class _OrderScreenState extends State<OrderScreen>
                                   child: Container(
                                     child: Center(
                                       child: Text(
-                                        "No",
+                                        "Back",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 17),
@@ -2020,7 +2043,7 @@ class _OrderScreenState extends State<OrderScreen>
                                               ),
                                             )
                                           : Text(
-                                              "Yes Please",
+                                              "Update",
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
