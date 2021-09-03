@@ -134,7 +134,7 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                                             Text(
                                               "\$ " +
                                                   orders['orders'][index]
-                                                          ['amount']
+                                                          ['payAmnt']
                                                       .toString(),
                                               style: TextStyle(
                                                   fontSize: 16,
