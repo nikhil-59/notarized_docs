@@ -302,6 +302,7 @@ class _HomePageState extends State<HomePage>
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     String greeting() {
       var hour = DateTime.now().hour;
@@ -402,11 +403,16 @@ class _HomePageState extends State<HomePage>
                                         child: userInfo['notary']
                                                     ['userImageURL'] !=
                                                 null
-                                            ? CachedNetworkImage(
-                                                imageUrl: userInfo['notary']
-                                                    ['userImageURL'],
-                                                height: 80,
+                                            ? Container(
                                                 width: 80,
+                                                height: 80,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle),
+                                                child: CachedNetworkImage(
+                                                  fit: BoxFit.cover,
+                                                  imageUrl: userInfo['notary']
+                                                      ['userImageURL'],
+                                                ),
                                               )
                                             : Container(
                                                 color: blueColor,
