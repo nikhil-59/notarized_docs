@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class NotaryServices {
-  final String baseUrl = "https://api-notarize.herokuapp.com/";
+  final String baseUrl = "https://api.notarizeddocs.com/";
   final Dio dio = Dio();
   final storage = FlutterSecureStorage();
 
