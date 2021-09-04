@@ -51,7 +51,9 @@ class _AmountScreenState extends State<AmountScreen>
 
   getmoreData() async {
     var response = await NotaryServices().getEarnings(widget.notaryId, i);
-    print("Inside getMore Data");
+    // print("Inside getMore Data");
+    // List payouts = map['payouts'];
+    // print(payouts);
     if (map['payouts'] != null && map['customers'] != null) {
       map['payouts'].addAll(response['payouts']);
       map['customers'].addAll(response['customers']);
@@ -65,6 +67,7 @@ class _AmountScreenState extends State<AmountScreen>
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -181,7 +184,7 @@ class _AmountScreenState extends State<AmountScreen>
                               ListView.builder(
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
-                                itemCount: map["payoutCount"],
+                                itemCount: map['payouts'].length,
                                 itemBuilder: (context, index) {
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
