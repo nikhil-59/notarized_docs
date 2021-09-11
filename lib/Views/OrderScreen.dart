@@ -941,7 +941,7 @@ class _OrderScreenState extends State<OrderScreen>
                               } else {}
                             });
                             try {
-                              await NotaryServices().uploadImageToAPI(
+                              await NotaryServices().uploadImageToAPINew(
                                   _image, widget.notaryId, widget.orderId);
                               await getData();
                               Fluttertoast.showToast(
@@ -985,7 +985,7 @@ class _OrderScreenState extends State<OrderScreen>
                           } else {}
                           Navigator.of(context).pop();
                           try {
-                            await NotaryServices().uploadImageToAPI(
+                            await NotaryServices().uploadImageToAPINew(
                                 _image, widget.notaryId, widget.orderId);
                             await getData();
                             Fluttertoast.showToast(
@@ -1800,7 +1800,7 @@ class _OrderScreenState extends State<OrderScreen>
                                         ? true
                                         : false,
                                 title: Text(
-                                  "Arrived to appointment",
+                                  "Arrived to Appointment",
                                   style: TextStyle(
                                     fontSize: 16.5,
                                     fontWeight: orders['order']

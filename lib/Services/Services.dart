@@ -6,6 +6,9 @@ import '../library/aws_region.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
+
 
 class NotaryServices {
   final String baseUrl = "https://api.notarizeddocs.com/";
@@ -220,4 +223,40 @@ class NotaryServices {
     var response = await dio
         .post(baseUrl + "notary/uploadMultipleDocumentsForOrder", data: body);
   }
+
+  uploadImageToAPINew(File _image, String notaryId, String orderId) async {
+    String fileName = _image.path.split('/').last;
+    String name = "n/$notaryId/o/$orderId/$fileName";
+    String uploadedImageUrl = '';
+    try {
+      final destination = 'docs/$orderId/notaryUploads/$fileName';
+      final ref = FirebaseStorage.instance.ref(destination);
+      await ref.putFile(_image);
+      uploadedImageUrl = await ref.getDownloadURL();
+    } on FirebaseException catch (e) {
+          // your default error handling
+          // NABHAN: please show Toast as Error in Uploading
+    }
+
+    if(uploadedImageUrl!= null || uploadedImageUrl !='') {
+
+        Map body = {
+          "documentArray": [
+            {
+              "documentName": fileName,
+              "documentURL": uploadedImageUrl,
+            }
+          ],
+          "orderId": orderId,
+          "notaryId": notaryId
+        };
+        String jwt = await storage.read(key: 'jwt');
+        dio.options.headers['Authorization'] = jwt;
+        var response = await dio
+            .post(baseUrl + "notary/uploadMultipleDocumentsForOrder", data: body);
+    } else {
+       // NABHAN: please show Toast as Error in Uploading
+    }
+  }
 }
+
