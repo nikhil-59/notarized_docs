@@ -68,6 +68,8 @@
 	<string>Need to access camera to click photos in order to scan documents</string>
 	<key>NSContactsUsageDescription</key>
 	<string>contacts</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Please provide location access in order to display directions and map view</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>microphone</string>
 	<key>NSMotionUsageDescription</key>

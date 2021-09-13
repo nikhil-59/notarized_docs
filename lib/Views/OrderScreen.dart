@@ -1323,7 +1323,7 @@ class _OrderScreenState extends State<OrderScreen>
                         ),
                       ),
                       SizedBox(
-                        width: 200,
+                        width: 150,
                       ),
                       GestureDetector(
                         onTap: () async {

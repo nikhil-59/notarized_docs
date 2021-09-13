@@ -82,7 +82,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     Text(
                       "Welcome Notary Partner",
                       style: TextStyle(
-                        fontSize: 40,
+                        fontSize: 30,
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
                       ),
@@ -92,7 +92,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       height: 20,
                     ),
                     Text(
-                      "Access account",
+                      "Access Portal",
                       style: TextStyle(
                           fontSize: 20,
                           color: Colors.white.withOpacity(0.8),
@@ -103,214 +103,214 @@ class _AuthScreenState extends State<AuthScreen> {
                 SizedBox(
                   height: 5,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: 5,
-                      ),
-                      MaterialButton(
-                        elevation: 0,
-                        hoverElevation: 0,
-                        highlightElevation: 0,
-                        hoverColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(7),
-                        ),
-                        color: Color(0xffFDE52C),
-                        onPressed: () async {
-                          // EasyLoading.instance.
-                          try {
-                            EasyLoading.show(
-                                status: 'Please wait...',
-                                dismissOnTap: false,
-                                maskType: EasyLoadingMaskType.clear);
-                            Map result =
-                                await authService.signInWithFacebook(context);
-                            if (result["status"] == 1 &&
-                                result["isloggedSuccessful"] &&
-                                result['isapproved'] &&
-                                result['isregister']) {
-                              Navigator.of(context).pushReplacement(
-                                PageRouteBuilder(
-                                  transitionDuration: Duration(seconds: 0),
-                                  pageBuilder: (_, __, ___) => HomePage(),
-                                ),
-                              );
-                            } else if (!result['isregister'] &&
-                                result["isloggedSuccessful"]) {
-                              Navigator.of(context).pushReplacement(
-                                PageRouteBuilder(
-                                  transitionDuration: Duration(seconds: 0),
-                                  pageBuilder: (_, __, ___) => WaitingScreen(
-                                    isRegister: false,
-                                  ),
-                                ),
-                              );
-                            } else if (!result['isapproved'] &&
-                                result["isloggedSuccessful"]) {
-                              Navigator.of(context).pushReplacement(
-                                PageRouteBuilder(
-                                  transitionDuration: Duration(seconds: 0),
-                                  pageBuilder: (_, __, ___) => WaitingScreen(
-                                    isRegister: true,
-                                  ),
-                                ),
-                              );
-                            } else {
-                              EasyLoading.dismiss();
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       SizedBox(
+                //         width: 5,
+                //       ),
+                //       MaterialButton(
+                //         elevation: 0,
+                //         hoverElevation: 0,
+                //         highlightElevation: 0,
+                //         hoverColor: Colors.transparent,
+                //         focusColor: Colors.transparent,
+                //         splashColor: Colors.transparent,
+                //         highlightColor: Colors.transparent,
+                //         shape: RoundedRectangleBorder(
+                //           borderRadius: BorderRadius.circular(7),
+                //         ),
+                //         color: Color(0xffFDE52C),
+                //         onPressed: () async {
+                //           // EasyLoading.instance.
+                //           try {
+                //             EasyLoading.show(
+                //                 status: 'Please wait...',
+                //                 dismissOnTap: false,
+                //                 maskType: EasyLoadingMaskType.clear);
+                //             Map result =
+                //                 await authService.signInWithFacebook(context);
+                //             if (result["status"] == 1 &&
+                //                 result["isloggedSuccessful"] &&
+                //                 result['isapproved'] &&
+                //                 result['isregister']) {
+                //               Navigator.of(context).pushReplacement(
+                //                 PageRouteBuilder(
+                //                   transitionDuration: Duration(seconds: 0),
+                //                   pageBuilder: (_, __, ___) => HomePage(),
+                //                 ),
+                //               );
+                //             } else if (!result['isregister'] &&
+                //                 result["isloggedSuccessful"]) {
+                //               Navigator.of(context).pushReplacement(
+                //                 PageRouteBuilder(
+                //                   transitionDuration: Duration(seconds: 0),
+                //                   pageBuilder: (_, __, ___) => WaitingScreen(
+                //                     isRegister: false,
+                //                   ),
+                //                 ),
+                //               );
+                //             } else if (!result['isapproved'] &&
+                //                 result["isloggedSuccessful"]) {
+                //               Navigator.of(context).pushReplacement(
+                //                 PageRouteBuilder(
+                //                   transitionDuration: Duration(seconds: 0),
+                //                   pageBuilder: (_, __, ___) => WaitingScreen(
+                //                     isRegister: true,
+                //                   ),
+                //                 ),
+                //               );
+                //             } else {
+                //               EasyLoading.dismiss();
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  behavior: SnackBarBehavior.floating,
-                                  backgroundColor: Colors.black,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(7)),
-                                  content: Text(
-                                    "Something went wrong...",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              );
-                              return;
-                            }
-                          } catch (e) {
-                            EasyLoading.dismiss();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                behavior: SnackBarBehavior.floating,
-                                backgroundColor: Colors.black,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(7)),
-                                content: Text(
-                                  "Something went wrong...",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Icon(
-                            FontAwesomeIcons.facebookF,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      MaterialButton(
-                        elevation: 0,
-                        hoverElevation: 0,
-                        highlightElevation: 0,
-                        hoverColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(7)),
-                        color: Color(0xffFDE52C),
-                        onPressed: () async {
-                          // EasyLoading.instance.
-                          try {
-                            EasyLoading.show(
-                                status: 'Please wait...',
-                                dismissOnTap: false,
-                                maskType: EasyLoadingMaskType.clear);
-                            Map result =
-                                await authService.signInWithGmail(context);
-                            if (result["status"] == 1 &&
-                                result["isloggedSuccessful"] &&
-                                result['isapproved'] &&
-                                result['isregister']) {
-                              Navigator.of(context).pushReplacement(
-                                PageRouteBuilder(
-                                  transitionDuration: Duration(seconds: 0),
-                                  pageBuilder: (_, __, ___) => HomePage(),
-                                ),
-                              );
-                            } else if (!result['isregister'] &&
-                                result["isloggedSuccessful"]) {
-                              Navigator.of(context).pushReplacement(
-                                PageRouteBuilder(
-                                  transitionDuration: Duration(seconds: 0),
-                                  pageBuilder: (_, __, ___) => WaitingScreen(
-                                    isRegister: false,
-                                  ),
-                                ),
-                              );
-                            } else if (!result['isapproved'] &&
-                                result["isloggedSuccessful"]) {
-                              Navigator.of(context).pushReplacement(
-                                PageRouteBuilder(
-                                  transitionDuration: Duration(seconds: 0),
-                                  pageBuilder: (_, __, ___) => WaitingScreen(
-                                    isRegister: true,
-                                  ),
-                                ),
-                              );
-                            } else {
-                              EasyLoading.dismiss();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  behavior: SnackBarBehavior.floating,
-                                  backgroundColor: Colors.black,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(7)),
-                                  content: Text(
-                                    "Something went wrong...",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              );
-                              return;
-                            }
-                          } catch (e) {
-                            EasyLoading.dismiss();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                behavior: SnackBarBehavior.floating,
-                                backgroundColor: Colors.black,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(7)),
-                                content: Text(
-                                  "Something went wrong...",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Icon(
-                            FontAwesomeIcons.google,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                    ],
-                  ),
-                ),
+                //               ScaffoldMessenger.of(context).showSnackBar(
+                //                 SnackBar(
+                //                   behavior: SnackBarBehavior.floating,
+                //                   backgroundColor: Colors.black,
+                //                   shape: RoundedRectangleBorder(
+                //                       borderRadius: BorderRadius.circular(7)),
+                //                   content: Text(
+                //                     "Something went wrong...",
+                //                     style: TextStyle(
+                //                       fontSize: 16,
+                //                     ),
+                //                   ),
+                //                 ),
+                //               );
+                //               return;
+                //             }
+                //           } catch (e) {
+                //             EasyLoading.dismiss();
+                //             ScaffoldMessenger.of(context).showSnackBar(
+                //               SnackBar(
+                //                 behavior: SnackBarBehavior.floating,
+                //                 backgroundColor: Colors.black,
+                //                 shape: RoundedRectangleBorder(
+                //                     borderRadius: BorderRadius.circular(7)),
+                //                 content: Text(
+                //                   "Something went wrong...",
+                //                   style: TextStyle(
+                //                     fontSize: 16,
+                //                   ),
+                //                 ),
+                //               ),
+                //             );
+                //           }
+                //         },
+                //         child: Padding(
+                //           padding: const EdgeInsets.all(10.0),
+                //           child: Icon(
+                //             FontAwesomeIcons.facebookF,
+                //             color: Colors.white,
+                //           ),
+                //         ),
+                //       ),
+                //       MaterialButton(
+                //         elevation: 0,
+                //         hoverElevation: 0,
+                //         highlightElevation: 0,
+                //         hoverColor: Colors.transparent,
+                //         focusColor: Colors.transparent,
+                //         splashColor: Colors.transparent,
+                //         highlightColor: Colors.transparent,
+                //         shape: RoundedRectangleBorder(
+                //             borderRadius: BorderRadius.circular(7)),
+                //         color: Color(0xffFDE52C),
+                //         onPressed: () async {
+                //           // EasyLoading.instance.
+                //           try {
+                //             EasyLoading.show(
+                //                 status: 'Please wait...',
+                //                 dismissOnTap: false,
+                //                 maskType: EasyLoadingMaskType.clear);
+                //             Map result =
+                //                 await authService.signInWithGmail(context);
+                //             if (result["status"] == 1 &&
+                //                 result["isloggedSuccessful"] &&
+                //                 result['isapproved'] &&
+                //                 result['isregister']) {
+                //               Navigator.of(context).pushReplacement(
+                //                 PageRouteBuilder(
+                //                   transitionDuration: Duration(seconds: 0),
+                //                   pageBuilder: (_, __, ___) => HomePage(),
+                //                 ),
+                //               );
+                //             } else if (!result['isregister'] &&
+                //                 result["isloggedSuccessful"]) {
+                //               Navigator.of(context).pushReplacement(
+                //                 PageRouteBuilder(
+                //                   transitionDuration: Duration(seconds: 0),
+                //                   pageBuilder: (_, __, ___) => WaitingScreen(
+                //                     isRegister: false,
+                //                   ),
+                //                 ),
+                //               );
+                //             } else if (!result['isapproved'] &&
+                //                 result["isloggedSuccessful"]) {
+                //               Navigator.of(context).pushReplacement(
+                //                 PageRouteBuilder(
+                //                   transitionDuration: Duration(seconds: 0),
+                //                   pageBuilder: (_, __, ___) => WaitingScreen(
+                //                     isRegister: true,
+                //                   ),
+                //                 ),
+                //               );
+                //             } else {
+                //               EasyLoading.dismiss();
+                //               ScaffoldMessenger.of(context).showSnackBar(
+                //                 SnackBar(
+                //                   behavior: SnackBarBehavior.floating,
+                //                   backgroundColor: Colors.black,
+                //                   shape: RoundedRectangleBorder(
+                //                       borderRadius: BorderRadius.circular(7)),
+                //                   content: Text(
+                //                     "Something went wrong...",
+                //                     style: TextStyle(
+                //                       fontSize: 16,
+                //                     ),
+                //                   ),
+                //                 ),
+                //               );
+                //               return;
+                //             }
+                //           } catch (e) {
+                //             EasyLoading.dismiss();
+                //             ScaffoldMessenger.of(context).showSnackBar(
+                //               SnackBar(
+                //                 behavior: SnackBarBehavior.floating,
+                //                 backgroundColor: Colors.black,
+                //                 shape: RoundedRectangleBorder(
+                //                     borderRadius: BorderRadius.circular(7)),
+                //                 content: Text(
+                //                   "Something went wrong...",
+                //                   style: TextStyle(
+                //                     fontSize: 16,
+                //                   ),
+                //                 ),
+                //               ),
+                //             );
+                //           }
+                //         },
+                //         child: Padding(
+                //           padding: const EdgeInsets.all(10.0),
+                //           child: Icon(
+                //             FontAwesomeIcons.google,
+                //             color: Colors.white,
+                //           ),
+                //         ),
+                //       ),
+                //       SizedBox(
+                //         width: 5,
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 Text(
-                  "or Login with Email",
+                  "Login with Email",
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 25,
                     fontWeight: FontWeight.w700,
                     color: Colors.white.withOpacity(0.6),
                   ),
