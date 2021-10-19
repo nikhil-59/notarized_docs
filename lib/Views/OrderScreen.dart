@@ -1115,7 +1115,7 @@ class _OrderScreenState extends State<OrderScreen>
                   width: 15,
                 ),
                 Text(
-                  ": ${orders['order']['orderInvoiceType'].toString().replaceRange(0, 1, orders['order']['orderInvoiceType'][0].toString().toUpperCase())}",
+                  ": ${orders['order']['orderInvoiceType'].toString().replaceRange(0, 1, orders['order']['orderInvoiceType'][0].toString().toUpperCase())}"==": Inhouse"? ": In-office": ": ${orders['order']['orderInvoiceType'].toString().replaceRange(0, 1, orders['order']['orderInvoiceType'][0].toString().toUpperCase())}",
                   style: TextStyle(
                     color: Colors.black,
                     // fontWeight: FontWeight.w400,

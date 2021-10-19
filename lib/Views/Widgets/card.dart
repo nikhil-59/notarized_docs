@@ -1,3 +1,4 @@
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:myknott/Config/CustomColors.dart';
 import 'package:myknott/Views/OrderScreen.dart';
@@ -11,6 +12,7 @@ class Cards extends StatelessWidget {
   final String orderId;
   final String imageUrl;
   final String place;
+  final String notaryName;
   const Cards(
       {Key key,
       this.name,
@@ -18,6 +20,7 @@ class Cards extends StatelessWidget {
       this.time,
       this.notaryId,
       this.orderId,
+        this.notaryName,
       @required this.imageUrl,
       this.phone})
       : super(key: key);
@@ -70,7 +73,10 @@ class Cards extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () async {
-                          await launch('sms:$phone');
+
+                          String body =
+                              "Hello signer $name,\n\nMy name is $notaryName. I have been assigned as your signing agent for your upcoming closing.\n\nSigning Date:  $time \n\nSigning Location : $place \n\nPlease remember to have two valid forms of identification.\n\nPlease Reply Back to Confirm, or Call 702.530.2495\n\nThank you have a great day";
+                          await launch('sms:$phone?body=$body');
                         },
                         child: Image.asset(
                           'assets/chat.png',
