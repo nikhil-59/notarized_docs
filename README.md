@@ -1,16 +1,9 @@
-# myknott
+A Notary App written in flutter
 
-A new Flutter project.
+to Run the App 
+1. clone the App
+2. run flutter clean and flutter pub get
+3. Get  your SHA key generated and add it in firebase 
+https://stackoverflow.com/questions/39144629/how-to-add-sha-1-to-android-application
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+4. Run, build,deploy the App. 
