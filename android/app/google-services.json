@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "687854716203",
+    "project_id": "our-bebop-307814",
+    "storage_bucket": "our-bebop-307814.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687854716203:android:2a33c57781fea08288f16e",
+        "android_client_info": {
+          "package_name": "com.notarizedDocs.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "687854716203-5lmea70e3r08vof4c5h3tf3pnatoukcr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.notarizedDocs.app",
+            "certificate_hash": "07f4c1b130dbb3104af2d0cfe4f60bf435e4fcfc"
+          }
+        },
+        {
+          "client_id": "687854716203-7al0ktrqtk3agnq5o7cmohoq6t9sieq9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.notarizedDocs.app",
+            "certificate_hash": "d27407114a0964fb25d4bf098785bf9df3d45491"
+          }
+        },
+        {
+          "client_id": "687854716203-5lothkqn30eh11rigtg8l9s6djda7g2r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsWCig_xpXEVaI6Uoybg7lQ-1y4lrsEQA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "687854716203-5lothkqn30eh11rigtg8l9s6djda7g2r.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "687854716203-v4fb6ekc1p30n3ci5omd8pd2de28c3t5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.notarizeddocs.app",
+                "app_store_id": "1566708476"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

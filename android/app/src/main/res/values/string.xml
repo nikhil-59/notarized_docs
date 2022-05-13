@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_notification_channel_id" translatable="false">Action notifications</string>
+    <string name="app_name">NotarizedDocsApp</string>
+    <string name="facebook_app_id">265972248360668</string>
+    <string name="fb_login_protocol_scheme">fb265972248360668</string>
+</resources>
