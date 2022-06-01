@@ -7,6 +7,64 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:convert';
+
+RequestToApi requestToApiFromJson(String str) =>
+    RequestToApi.fromJson(json.decode(str));
+
+String requestToApiToJson(RequestToApi data) => json.encode(data.toJson());
+
+class RequestToApi {
+  RequestToApi({
+    this.firstName,
+    this.lastName,
+    this.username,
+    this.uid,
+    this.email,
+    this.phoneNumber,
+    this.phoneCountryCode,
+    this.mailingAddress,
+    this.mailingZipcode,
+    this.identityProvider,
+  });
+
+  String firstName;
+  String lastName;
+  String username;
+  String uid;
+  String email;
+  String phoneNumber;
+  String phoneCountryCode;
+  String mailingAddress;
+  String mailingZipcode;
+  String identityProvider;
+
+  factory RequestToApi.fromJson(Map<String, dynamic> json) => RequestToApi(
+        firstName: json["firstName"],
+        lastName: json["lastName"],
+        username: json["username"],
+        uid: json["uid"],
+        email: json["email"],
+        phoneNumber: json["phoneNumber"],
+        phoneCountryCode: json["phoneCountryCode"],
+        mailingAddress: json["mailingAddress"],
+        mailingZipcode: json["mailingZipcode"],
+        identityProvider: json["identityProvider"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "firstName": firstName,
+        "lastName": lastName,
+        "username": username,
+        "uid": uid,
+        "email": email,
+        "phoneNumber": phoneNumber,
+        "phoneCountryCode": phoneCountryCode,
+        "mailingAddress": mailingAddress,
+        "mailingZipcode": mailingZipcode,
+        "identityProvider": identityProvider,
+      };
+}
 
 class NotaryServices {
   final String baseUrl = "https://api.notarizeddocs.com/";

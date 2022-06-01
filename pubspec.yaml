@@ -18,8 +18,8 @@ dependencies:
   dio: ^4.0.0-prev2
   firebase_auth: ^1.0.1
   salomon_bottom_bar: ^3.0.0
-  firebase_storage: ^10.0.5
-  firebase_core: ^1.0.1
+  firebase_storage: 
+  firebase_core: ^1.17.1
   timelines:
   timeline_tile:
   flutter_secure_storage:
@@ -30,15 +30,16 @@ dependencies:
   table_calendar:
   cached_network_image:
   cupertino_icons: ^1.0.2
-  firebase_messaging: ^10.0.8
-  url_launcher: ^6.0.2
+  firebase_messaging: 
+  url_launcher: 
   image_picker: ^0.7.4
   fluttertoast: ^8.0.4
   lazy_load_scrollview: ^1.3.0
+  http:
   bubble: ^1.2.1
   emoji_picker_flutter: any
   permission_handler: ^7.0.0
-  google_sign_in: ^5.0.1
+  google_sign_in: 
   flutter_easyloading: ^3.0.0
   flutter_facebook_auth: ^3.2.0
   flutter_svg: ^0.21.0-nullsafety.0

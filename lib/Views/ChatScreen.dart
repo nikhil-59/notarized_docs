@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:emoji_picker_flutter/category_icons.dart';
-import 'package:emoji_picker_flutter/config.dart';
+// import 'package:emoji_picker_flutter/category_icons.dart';
+// import 'package:emoji_picker_flutter/config.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:bubble/bubble.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -280,9 +280,9 @@ class _ChatScreenState extends State<ChatScreen>
                               travelIcon: Icons.location_pin),
                           horizontalSpacing: 0,
                           verticalSpacing: 0,
-                          noRecentsText: "No Recents",
-                          noRecentsStyle: const TextStyle(
-                              fontSize: 20, color: Colors.black26),
+                          // noRecentsText: "No Recents",
+                          // noRecentsStyle: const TextStyle(
+                          //     fontSize: 20, color: Colors.black26),
                           buttonMode: ButtonMode.CUPERTINO),
                       onEmojiSelected: (emoji, category) {
                         messageController.text += category.emoji;

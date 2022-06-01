@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:myknott/Config/CustomColors.dart';
+import 'package:myknott/Services/Services.dart';
 import 'package:myknott/Services/auth.dart';
 import 'package:myknott/Views/WaitingScreen.dart';
 import 'package:myknott/Views/homePage.dart';
@@ -498,7 +499,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
                                       valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
+                                          Colors.white12),
                                     ),
                                   ),
                                 )
@@ -571,10 +572,16 @@ class _AuthScreenState extends State<AuthScreen> {
                         isloading = true;
                       });
                       try {
+                        // final result = await NotaryServices().getToken();
                         Map result = await authService.signWithEmail(
                             emailController.text,
                             passwordController.text,
                             context);
+
+                        //printing result
+                        print("\n---------------580 :\n------------" +
+                            result.toString());
+
                         if (result["status"] == 1 &&
                             result["isloggedSuccessful"] &&
                             result['isapproved'] &&
@@ -629,6 +636,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         setState(() {
                           isloading = false;
                         });
+                        print(" 635 Errrro :" + e.toString());
                       }
                       emailController.clear();
                       passwordController.clear();

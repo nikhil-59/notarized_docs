@@ -20,7 +20,7 @@ class _CalenderScreenState extends State<CalenderScreen>
   final Color blueColor = CustomColor().blueColor;
   bool isloading = false;
   DateTime dateTime;
-  final CalendarController calendarController = CalendarController();
+  // final CalendarController calendarController = CalendarController();
   final NotaryServices services = NotaryServices();
 
   @override
@@ -44,6 +44,8 @@ class _CalenderScreenState extends State<CalenderScreen>
 
   @override
   Widget build(BuildContext context) {
+    var _selectedDay = DateTime.now();
+    var _focusedDay = DateTime.now();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -62,18 +64,37 @@ class _CalenderScreenState extends State<CalenderScreen>
             Container(
               child: TableCalendar(
                 calendarStyle: CalendarStyle(
-                  selectedColor: Colors.blue.shade900,
-                  highlightToday: false,
+                  selectedDecoration: BoxDecoration(
+                    color: Colors.blue.shade900
+                  ),
+                  isTodayHighlighted: false,
                 ),
                 headerStyle: HeaderStyle(
                     titleTextStyle:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 16.5),
-                    centerHeaderTitle: true,
+                    titleCentered:true,
                     formatButtonVisible: false),
-                calendarController: calendarController,
-                onDaySelected: (day, events, holidays) {
-                  getAppointment(day);
+                // calendarController: calendarController,
+                selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);
                 },
+                onDaySelected: (day, events) {
+                  getAppointment(day);
+                  if (!isSameDay(_selectedDay, day)) {
+                    setState(() {
+                      _selectedDay = day;
+                      _focusedDay = events;
+                    });
+                  }
+                },
+                firstDay: DateTime(1991),
+                focusedDay: DateTime.now(),
+                lastDay: DateTime(2055),
+
+                onPageChanged: (focusedDay) {
+                  _focusedDay = focusedDay;
+                },
+               
               ),
             ),
             Expanded(

@@ -13,14 +13,18 @@ import 'Config/CustomColors.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  if (message.data['type'] == 1 || message.data['type'] == '1') {
-    if (message.data['action'] == 'revoked') {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.clear();
-      FirebaseAuth.instance.signOut();
-    }
-  }
+// Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   if (message.data['type'] == 1 || message.data['type'] == '1') {
+//     if (message.data['action'] == 'revoked') {
+//       final SharedPreferences prefs = await SharedPreferences.getInstance();
+//       prefs.clear();
+//       FirebaseAuth.instance.signOut();
+//     }
+//   }
+//   return Future<void>.value();
+// }
+
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage m) {
   return Future<void>.value();
 }
 
@@ -37,15 +41,19 @@ Future<void> main() async {
     } catch (e) {}
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     var messaging = FirebaseMessaging.instance;
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: true,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
+    try {
+      NotificationSettings settings = await messaging.requestPermission(
+        alert: true,
+        announcement: true,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
+    } catch (e) {
+      print("errror Meseg :" + e.toString());
+    }
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {}
     });
