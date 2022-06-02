@@ -1,5 +1,9 @@
 import 'dart:io';
 // import 'package:amazon_s3_cognito/amazon_s3_cognito.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+import 'dart:async';
+import 'dart:io';
 // import 'package:amazon_s3_cognito/aws_region.dart';
 import '../library/amazon_s3_congnito.dart';
 import '../library/aws_region.dart';
@@ -9,37 +13,42 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:convert';
 
-RequestToApi requestToApiFromJson(String str) =>
-    RequestToApi.fromJson(json.decode(str));
+//Api
+
+RequestToApi requestToApiFromJson(String str) => RequestToApi.fromJson(json.decode(str));
 
 String requestToApiToJson(RequestToApi data) => json.encode(data.toJson());
 
 class RequestToApi {
-  RequestToApi({
-    this.firstName,
-    this.lastName,
-    this.username,
-    this.uid,
-    this.email,
-    this.phoneNumber,
-    this.phoneCountryCode,
-    this.mailingAddress,
-    this.mailingZipcode,
-    this.identityProvider,
-  });
+    RequestToApi({
+        this.firstName,
+        this.lastName,
+        this.username,
+        this.uid,
+        this.email,
+        this.phoneNumber,
+        this.phoneCountryCode,
+        this.mailingAddress,
+        this.mailingZipcode,
+        this.identityProvider,
+        this.platform,
+        this.pushToken,
+    });
 
-  String firstName;
-  String lastName;
-  String username;
-  String uid;
-  String email;
-  String phoneNumber;
-  String phoneCountryCode;
-  String mailingAddress;
-  String mailingZipcode;
-  String identityProvider;
+    String firstName;
+    String lastName;
+    String username;
+    String uid;
+    String email;
+    String phoneNumber;
+    String phoneCountryCode;
+    String mailingAddress;
+    String mailingZipcode;
+    String identityProvider;
+    String platform;
+    String pushToken;
 
-  factory RequestToApi.fromJson(Map<String, dynamic> json) => RequestToApi(
+    factory RequestToApi.fromJson(Map<String, dynamic> json) => RequestToApi(
         firstName: json["firstName"],
         lastName: json["lastName"],
         username: json["username"],
@@ -50,9 +59,11 @@ class RequestToApi {
         mailingAddress: json["mailingAddress"],
         mailingZipcode: json["mailingZipcode"],
         identityProvider: json["identityProvider"],
-      );
+        platform: json["platform "],
+        pushToken: json["pushToken"],
+    );
 
-  Map<String, dynamic> toJson() => {
+    Map<String, dynamic> toJson() => {
         "firstName": firstName,
         "lastName": lastName,
         "username": username,
@@ -63,13 +74,26 @@ class RequestToApi {
         "mailingAddress": mailingAddress,
         "mailingZipcode": mailingZipcode,
         "identityProvider": identityProvider,
-      };
+        "platform ": platform,
+        "pushToken": pushToken,
+    };
 }
 
+
+//Notary Service class Below
+
 class NotaryServices {
-  final String baseUrl = "https://api.notarizeddocs.com/";
+  final String baseUrl = "https://notaryapi1.herokuapp.com/ ";
   final Dio dio = Dio();
   final storage = FlutterSecureStorage();
+
+
+ // Calling Our Api
+  Future<dynamic> getpost() async {
+    final response = await http.get(Uri.parse('$baseUrl/1'));
+    print(" line 94 :" + response.body);
+    return requestToApiFromJson(response.body);
+  }
 
   static String getTimezoneOffsetString(DateTime date) {
     var duration = date.timeZoneOffset;

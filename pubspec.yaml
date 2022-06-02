@@ -24,6 +24,7 @@ dependencies:
   timeline_tile:
   flutter_secure_storage:
   intl:
+  
   sliding_up_panel: ^1.0.2
   google_maps_flutter:
   shared_preferences:

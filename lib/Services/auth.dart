@@ -31,6 +31,8 @@ class AuthService {
           userCredential.user.email, userCredential.user.providerData.first);
     } catch (e) {
       EasyLoading.dismiss();
+      print("e at 34");
+      print(e);
       if (e.toString().contains("password")) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -82,6 +84,8 @@ class AuthService {
           "pushTokenDeviceType": "android"
         },
       );
+      //printing response
+      print(" response---------\n " + response.data.toString());
 
       EasyLoading.dismiss();
       if (response.data['status'] == 1 &&
@@ -123,9 +127,15 @@ class AuthService {
           "isloggedSuccessful": false,
           "isregister": false,
           "isapproved": false,
+
+          
         };
       }
     } catch (e) {
+
+      print("\nWhen try was failed from GetUserInfo in auth.dart :\n");
+      print(e);
+
       return {
         "status": 10,
         "isloggedSuccessful": false,

@@ -525,6 +525,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                   ),
                   onPressed: () async {
+                    // NotaryServices().getpost();
                     if (emailController.text.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -579,7 +580,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             context);
 
                         //printing result
-                        print("\n---------------580 :\n------------" +
+                        print("\n---------------line 583 :\n------------" +
                             result.toString());
 
                         if (result["status"] == 1 &&
