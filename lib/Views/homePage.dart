@@ -197,7 +197,6 @@ class _HomePageState extends State<HomePage>
       var response = await dio
           .post(NotaryServices().baseUrl + "notary/getDashboard", data: body);
       for (var i in response.data['appointments']) {
-
         appointmentList.add({
           "id": i['appointment']['_id'],
           "date": i['appointment']['time'],
@@ -719,14 +718,19 @@ class _HomePageState extends State<HomePage>
                                   child: (appointmentList.isNotEmpty)
                                       ? ListView.builder(
                                           itemBuilder: (context, index) {
-                                            print(DateTime.parse(appointmentList[index]['date']).toLocal());
+                                            print(DateTime.parse(
+                                                    appointmentList[index]
+                                                        ['date'])
+                                                .toLocal());
                                             return Padding(
                                               padding:
                                                   const EdgeInsets.all(8.0),
                                               child: Cards(
-                                                notaryName: userInfo['notary']['firstName'] +
+                                                notaryName: userInfo['notary']
+                                                        ['firstName'] +
                                                     " " +
-                                                    userInfo['notary']['lastName'],
+                                                    userInfo['notary']
+                                                        ['lastName'],
                                                 notaryId: userInfo['notary']
                                                     ['_id'],
                                                 orderId: appointmentList[index]

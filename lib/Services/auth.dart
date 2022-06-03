@@ -71,7 +71,7 @@ class AuthService {
     dio.options.headers['Authorization'] = jwt;
     try {
       var response = await dio.post(
-        NotaryServices().baseUrl + 'notary/login/',
+        NotaryServices().baseUrl + 'customer/login/',
         data: {
           "uid": uid,
           "email": email,
@@ -127,12 +127,9 @@ class AuthService {
           "isloggedSuccessful": false,
           "isregister": false,
           "isapproved": false,
-
-          
         };
       }
     } catch (e) {
-
       print("\nWhen try was failed from GetUserInfo in auth.dart :\n");
       print(e);
 
@@ -177,7 +174,7 @@ class AuthService {
     dio.options.headers['Authorization'] = jwt;
     try {
       var response =
-          await dio.post(NotaryServices().baseUrl + 'notary/login/', data: {
+          await dio.post(NotaryServices().baseUrl + 'customer/login/', data: {
         "uid": FirebaseAuth.instance.currentUser.uid,
         "email": FirebaseAuth.instance.currentUser.email,
         "loginThroughMobile": "hgckgvVKUGDVUVlhbvishfbvkihfbkusf",
