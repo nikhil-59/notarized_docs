@@ -83,7 +83,7 @@ class RequestToApi {
 //Notary Service class Below
 
 class NotaryServices {
-  final String baseUrl = "https://notaryapi1.herokuapp.com/ ";
+  final String baseUrl = "https://notaryapi1.herokuapp.com/";
   final Dio dio = Dio();
   final storage = FlutterSecureStorage();
 

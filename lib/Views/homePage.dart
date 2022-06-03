@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage>
       pendingList.clear();
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
-      Map data = {"notaryId": userInfo['notary']['_id'], "pageNumber": "0"};
+      Map data = {"notaryId": userInfo['_id'], "pageNumber": "0"};
       var response = await dio
           .post(NotaryServices().baseUrl + "notary/getInvites/", data: data);
       for (var item in response.data["orders"]) {
@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage>
         .any((element) => AuthService().updateToken(element));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String encodedUserinfo = prefs.getString("userInfo");
-    userInfo = await jsonDecode(encodedUserinfo);
+    userInfo = await json.decode(encodedUserinfo);
     setState(() {});
   }
 
@@ -186,7 +186,7 @@ class _HomePageState extends State<HomePage>
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
       var body = {
-        "notaryId": userInfo['notary']['_id'],
+        "notaryId": userInfo['_id'],
         "today12am": DateTime.now().year.toString() +
             "-" +
             DateTime.now().month.toString() +
@@ -229,10 +229,7 @@ class _HomePageState extends State<HomePage>
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
       pendingList.clear();
-      Map data = {
-        "notaryId": userInfo['notary']['_id'],
-        "pageNumber": pageNumber
-      };
+      Map data = {"notaryId": userInfo['_id'], "pageNumber": pageNumber};
       var response = await dio
           .post(NotaryServices().baseUrl + "notary/getInvites/", data: data);
       if (response.data['pageNumber'] == response.data['pageCount']) {
@@ -271,10 +268,7 @@ class _HomePageState extends State<HomePage>
     try {
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
-      Map data = {
-        "notaryId": userInfo['notary']['_id'],
-        "pageNumber": pageNumber
-      };
+      Map data = {"notaryId": userInfo['_id'], "pageNumber": pageNumber};
       var response = await dio
           .post(NotaryServices().baseUrl + "notary/getInvites/", data: data);
       if (response.data['pageNumber'] == response.data['pageCount']) {
@@ -314,6 +308,9 @@ class _HomePageState extends State<HomePage>
       }
       return 'Evening';
     }
+    String notaryFirstName = userInfo["firstName"]==null? "firstName":userInfo["firstName"]+" ";
+    String notaryLastName = userInfo["lastName"]==null? "lastName":userInfo["lastName"];
+    String fullName =  notaryFirstName+notaryLastName ;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -400,9 +397,7 @@ class _HomePageState extends State<HomePage>
                                     Container(
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(50),
-                                        child: userInfo['notary']
-                                                    ['userImageURL'] !=
-                                                null
+                                        child: userInfo['photoURL'] != null
                                             ? Container(
                                                 width: 80,
                                                 height: 80,
@@ -410,8 +405,8 @@ class _HomePageState extends State<HomePage>
                                                     shape: BoxShape.circle),
                                                 child: CachedNetworkImage(
                                                   fit: BoxFit.cover,
-                                                  imageUrl: userInfo['notary']
-                                                      ['userImageURL'],
+                                                  imageUrl:
+                                                      userInfo['photoURL'],
                                                 ),
                                               )
                                             : Container(
@@ -422,12 +417,10 @@ class _HomePageState extends State<HomePage>
                                                   radius: 20,
                                                   backgroundColor: blueColor,
                                                   child: Text(
-                                                    userInfo['notary']["firstName"]
-                                                                    [0]
+                                                    userInfo["firstName"][0]
                                                                 .toUpperCase() +
                                                             " " +
-                                                            userInfo['notary']
-                                                                    ["lastName"]
+                                                            userInfo["lastName"]
                                                                 [0] ??
                                                         "".toUpperCase(),
                                                     textAlign: TextAlign.center,
@@ -457,9 +450,7 @@ class _HomePageState extends State<HomePage>
                                           height: 8,
                                         ),
                                         Text(
-                                          userInfo['notary']['firstName'] +
-                                              " " +
-                                              userInfo['notary']['lastName'],
+                                        fullName,
                                           style: TextStyle(
                                               fontSize: 16.5,
                                               fontWeight: FontWeight.w700),
@@ -482,9 +473,9 @@ class _HomePageState extends State<HomePage>
                                 //         height: 8,
                                 //       ),
                                 //       Text(
-                                //         userInfo['notary']['firstName'] +
+                                //         userInfo['firstName'] +
                                 //             " " +
-                                //             userInfo['notary']['lastName'],
+                                //             userInfo['lastName'],
                                 //         style: TextStyle(
                                 //             fontSize: 16.5,
                                 //             fontWeight: FontWeight.w700),
@@ -550,9 +541,9 @@ class _HomePageState extends State<HomePage>
                                                                           __,
                                                                           ___) =>
                                                                       OrderScreen(
-                                                                    notaryId: userInfo[
-                                                                            'notary']
-                                                                        ['_id'],
+                                                                    notaryId:
+                                                                        userInfo[
+                                                                            '_id'],
                                                                     orderId: item[
                                                                         "id"],
                                                                     isPending:
@@ -583,14 +574,13 @@ class _HomePageState extends State<HomePage>
                                                                   ? '0'
                                                                   : item["payAmnt"]
                                                                       .toString(),
-                                                              notaryId: userInfo[
-                                                                      'notary']
-                                                                  ['_id'],
+                                                              notaryId:
+                                                                  userInfo[
+                                                                      '_id'],
                                                               orderId:
                                                                   item["id"],
                                                               imageUrl: userInfo[
-                                                                      'notary'][
-                                                                  'userImageURL'],
+                                                                  'photoURL'],
                                                               refresh:
                                                                   getPending,
                                                               place: item[
@@ -697,8 +687,7 @@ class _HomePageState extends State<HomePage>
                                             pageBuilder: (context, animation1,
                                                     animation2) =>
                                                 CalenderScreen(
-                                                    notaryId: userInfo['notary']
-                                                        ['_id']),
+                                                    notaryId: userInfo['_id']),
                                           ),
                                         );
                                       },
@@ -726,13 +715,9 @@ class _HomePageState extends State<HomePage>
                                               padding:
                                                   const EdgeInsets.all(8.0),
                                               child: Cards(
-                                                notaryName: userInfo['notary']
-                                                        ['firstName'] +
-                                                    " " +
-                                                    userInfo['notary']
-                                                        ['lastName'],
-                                                notaryId: userInfo['notary']
-                                                    ['_id'],
+                                                notaryName:
+                                                    fullName,
+                                                notaryId: userInfo['_id'],
                                                 orderId: appointmentList[index]
                                                     ['orderId'],
                                                 name: appointmentList[index]
@@ -847,13 +832,13 @@ class _HomePageState extends State<HomePage>
             ),
           ),
           ProgressScreen(
-            notaryId: userInfo.isNotEmpty ? userInfo['notary']['_id'] : "",
+            notaryId: userInfo.isNotEmpty ? userInfo['_id'] : "",
           ),
           AmountScreen(
-            notaryId: userInfo.isNotEmpty ? userInfo['notary']['_id'] : "",
+            notaryId: userInfo.isNotEmpty ? userInfo['_id'] : "",
           ),
           UserProfile(
-            notaryId: userInfo.isNotEmpty ? userInfo['notary']['_id'] : "",
+            notaryId: userInfo.isNotEmpty ? userInfo['_id'] : "",
           )
         ],
       ),

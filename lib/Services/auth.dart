@@ -26,13 +26,15 @@ class AuthService {
         email: email.trim(),
         password: password.trim(),
       );
-      // userCredential has an error message "auth/user-record-not-found" 
+      await userCredential.user.updateDisplayName("AsusDell");
+      print(userCredential.user.displayName);
+      // userCredential has an error message "auth/user-record-not-found"
       await NotaryServices().getToken();
       return await getUserInfo(userCredential.user.uid,
           userCredential.user.email, userCredential.user.providerData.first);
     } catch (e) {
       EasyLoading.dismiss();
-      print("e at 34");
+      print("e at 34 auth.dart");
       print(e);
       if (e.toString().contains("password")) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -61,41 +63,71 @@ class AuthService {
             ),
           ),
         );
+      } else {
+        print("something went wring");
       }
-      return {"status": 10, "isloggedSuccessful": false};
+      return {"status": 0, "isloggedSuccessful": false};
     }
   }
 
-  Future<Map> getUserInfo(String uid, String email, UserInfo user) async {
+  Future getUserInfo(String uid, String email, UserInfo user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String jwt = await storage.read(key: "jwt");
     dio.options.headers['Authorization'] = jwt;
+    print(" auth.dart getuserinfo : uid " +
+        uid.toString() +
+        " email" +
+        email.toString());
+
     try {
-      var response = await dio.post(
+      print(NotaryServices().baseUrl + 'customer/login/');
+      final response = await dio.post(
         NotaryServices().baseUrl + 'customer/login/',
         data: {
           "uid": uid,
           "email": email,
-          "emailVerified": false,
-          "photoURL": user.photoURL.toString(),
-          "displayName": user.displayName,
-          "phoneNumber": user.phoneNumber.toString(),
-          "loginThroughMobile": "hgckgvVKUGDVUVlhbvishfbvkihfbkusf",
-          "pushToken": await firebaseMessaging.getToken(),
-          "pushTokenDeviceType": "android",
-          "platform": "mobile"
+          "firstName": "test",
+          "lastName": "customer",
+          "username": "test",
+          "phoneNumber": "1234561234",
+          "phoneCountryCode": "+91",
+          "mailingAddress": "street12, oxford Colony",
+          "mailingZipcode": "123456",
+          "identityProvider": "sfgerngverog",
+          "platform ": "mobile",
+          "pushToken": "asdfasdfasdf"
         },
       );
       //printing response
       print(" response---------\n " + response.data.toString());
 
       EasyLoading.dismiss();
-      if (response.data['status'] == 1 && 
-          // String notaryId = await storage.read(key: "_id");
-        // status: 1> Dont do 
-        // status: 2 > save customer object and _id to store and proceed to Dashboard Page 
-        // status- 3> Redirect to Another Page 
-        // status: 0> Error Occured, parse error message and show as Toast 
+      if (response.data['status'] == 2) {
+        if (response.data.isNotEmpty) {
+          print(" -------------Customer \n");
+          print(response.data["customer"]);
+          print("\n----end of customer detail--");
+          getsharedprefe(Map<String, dynamic>.from(response.data["customer"]));
+        } else {
+          getsharedprefe({"data": 12});
+        }
+
+        return {"status": 2};
+      } else if (response.data['status'] == 3) {
+        return {"status": 3};
+      } else if (response.data['status'] == 0) {
+        return {"status": 0};
+      } else {
+        return {"status": 0};
+      }
+      // String notaryId = await storage.read(key: "_id");
+      // status: 1> Dont do
+      // status: 2 > save customer object and _id to store and proceed to Dashboard Page
+      // status- 3> Redirect to Another Page
+      // status: 0> Error Occured, parse error message and show as Toast
+    } catch (e) {
+      return {"status ": e.toString()};
+    }
   }
 
   Future<bool> check() async {
@@ -169,7 +201,7 @@ class AuthService {
             ),
           ),
         );
-        return {"status": 10, "isloggedSuccessful": false};
+        return {"status": 0, "isloggedSuccessful": false};
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -183,7 +215,7 @@ class AuthService {
             ),
           ),
         );
-        return {"status": 10, "isloggedSuccessful": false};
+        return {"status": 0, "isloggedSuccessful": false};
       }
     }
   }
@@ -222,7 +254,7 @@ class AuthService {
             ),
           ),
         );
-        return {"status": 10, "isloggedSuccessful": false};
+        return {"status": 0, "isloggedSuccessful": false};
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -236,8 +268,14 @@ class AuthService {
             ),
           ),
         );
-        return {"status": 10, "isloggedSuccessful": false};
+        return {"status": 0, "isloggedSuccessful": false};
       }
     }
+  }
+
+  getsharedprefe(Map data) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    
+    preferences.setString("userInfo",  json.encode(data));
   }
 }

@@ -7,6 +7,7 @@ import 'package:myknott/Services/Services.dart';
 import 'package:myknott/Services/auth.dart';
 import 'package:myknott/Views/WaitingScreen.dart';
 import 'package:myknott/Views/homePage.dart';
+import 'package:myknott/Views/noUserRegister.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -583,51 +584,35 @@ class _AuthScreenState extends State<AuthScreen> {
                         print("\n---------------line 583 :\n------------" +
                             result.toString());
 
-                        if (result["status"] == 1 &&
-                            result["isloggedSuccessful"] &&
-                            result['isapproved'] &&
-                            result['isregister']) {
+                        if (result["status"] == 2) {
                           Navigator.of(context).pushReplacement(
                             PageRouteBuilder(
                               transitionDuration: Duration(seconds: 0),
                               pageBuilder: (_, __, ___) => HomePage(),
                             ),
                           );
-                        } else if (!result['isregister'] &&
-                            result["isloggedSuccessful"]) {
-                          Navigator.of(context).pushReplacement(
-                            PageRouteBuilder(
-                              transitionDuration: Duration(seconds: 0),
-                              pageBuilder: (_, __, ___) => WaitingScreen(
-                                isRegister: false,
-                              ),
-                            ),
-                          );
+                        } else if (result["status"] == 3) {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => NoUserExist()));
                           //comment
-                        } else if (!result['isapproved'] &&
-                            result["isloggedSuccessful"]) {
-                          Navigator.of(context).pushReplacement(
-                            PageRouteBuilder(
-                              transitionDuration: Duration(seconds: 0),
-                              pageBuilder: (_, __, ___) => WaitingScreen(
-                                isRegister: true,
-                              ),
-                            ),
-                          );
+                        } else if (result["status"] == 0) {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: ((context) => NoUserExist())));
                         } else {
                           setState(() {
                             isloading = false;
                           });
+                          print("605 status "+result["status"]);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               behavior: SnackBarBehavior.floating,
                               backgroundColor: Colors.black,
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(7)),
+                                  borderRadius: BorderRadius.circular(2)),
                               content: Text(
-                                "Something went wrong...",
+                                "Something went wrong" + result["status"],
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 8,
                                 ),
                               ),
                             ),
@@ -638,7 +623,9 @@ class _AuthScreenState extends State<AuthScreen> {
                         setState(() {
                           isloading = false;
                         });
-                        print(" 635 Errrro :" + e.toString());
+                        print(" 625 Errrro ---:" +
+                            e.toString() +
+                            "----${emailController.text}--${passwordController.text}----");
                       }
                       emailController.clear();
                       passwordController.clear();
