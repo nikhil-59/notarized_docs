@@ -26,6 +26,7 @@ class AuthService {
         email: email.trim(),
         password: password.trim(),
       );
+      // userCredential has an error message "auth/user-record-not-found" 
       await NotaryServices().getToken();
       return await getUserInfo(userCredential.user.uid,
           userCredential.user.email, userCredential.user.providerData.first);
@@ -81,65 +82,20 @@ class AuthService {
           "phoneNumber": user.phoneNumber.toString(),
           "loginThroughMobile": "hgckgvVKUGDVUVlhbvishfbvkihfbkusf",
           "pushToken": await firebaseMessaging.getToken(),
-          "pushTokenDeviceType": "android"
+          "pushTokenDeviceType": "android",
+          "platform": "mobile"
         },
       );
       //printing response
       print(" response---------\n " + response.data.toString());
 
       EasyLoading.dismiss();
-      if (response.data['status'] == 1 &&
-          response.data['notary']['isApproved'] &&
-          response.data["registered"] == 3) {
-        String userInfo = jsonEncode(response.data);
-        await prefs.setString("userInfo", userInfo);
-        await prefs.setBool("isloggedIn", true);
-        return {
-          "status": 1,
-          "isloggedSuccessful": true,
-          "isregister": true,
-          "isapproved": true
-        };
-      } else if (response.data['status'] == 1 &&
-          response.data['registered'] == 3 &&
-          response.data['notary']['isApproved'] == false) {
-        String userInfo = jsonEncode(response.data);
-        await prefs.setString("userInfo", userInfo);
-        return {
-          "status": response.data['status'],
-          "isloggedSuccessful": true,
-          "isregister": true,
-          "isapproved": false,
-        };
-      } else if (response.data['status'] == 1 &&
-          response.data['registered'] < 3) {
-        String userInfo = jsonEncode(response.data);
-        await prefs.setString("userInfo", userInfo);
-        return {
-          "status": response.data['status'],
-          "isloggedSuccessful": true,
-          "isregister": false,
-          "isapproved": false,
-        };
-      } else {
-        return {
-          "status": 10,
-          "isloggedSuccessful": false,
-          "isregister": false,
-          "isapproved": false,
-        };
-      }
-    } catch (e) {
-      print("\nWhen try was failed from GetUserInfo in auth.dart :\n");
-      print(e);
-
-      return {
-        "status": 10,
-        "isloggedSuccessful": false,
-        "isregister": false,
-        "isapproved": false,
-      };
-    }
+      if (response.data['status'] == 1 && 
+          // String notaryId = await storage.read(key: "_id");
+        // status: 1> Dont do 
+        // status: 2 > save customer object and _id to store and proceed to Dashboard Page 
+        // status- 3> Redirect to Another Page 
+        // status: 0> Error Occured, parse error message and show as Toast 
   }
 
   Future<bool> check() async {
