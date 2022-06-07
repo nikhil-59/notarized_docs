@@ -184,6 +184,8 @@ class AuthService {
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
       await NotaryServices().getToken();
+      
+      notaryUserObj = userCredential.user;
       return await getUserInfo(userCredential.user.uid,
           userCredential.user.email, userCredential.user.providerData.first);
     } catch (e) {
@@ -275,7 +277,7 @@ class AuthService {
 
   getsharedprefe(Map data) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    
-    preferences.setString("userInfo",  json.encode(data));
+
+    preferences.setString("userInfo", json.encode(data));
   }
 }

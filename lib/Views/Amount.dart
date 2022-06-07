@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -23,6 +25,8 @@ class _AmountScreenState extends State<AmountScreen>
   int totalpage = 0;
   bool hasMore = false;
   bool isloading = true;
+  var isUpcoming = true;
+
   @override
   void initState() {
     NotaryServices().getToken();
@@ -37,7 +41,11 @@ class _AmountScreenState extends State<AmountScreen>
       isloading = true;
       hasMore = false;
     });
-    map = await NotaryServices().getEarnings(widget.notaryId, i);
+    map = await NotaryServices().getLeads(widget.notaryId, i);
+    print("map 41 amount.dart:");
+    print(map.keys);
+
+    // print("oooooo"+ map["leads"][0]);
     if (i == map['pageNumber']) {
       hasMore = true;
     }
@@ -50,13 +58,14 @@ class _AmountScreenState extends State<AmountScreen>
   }
 
   getmoreData() async {
-    var response = await NotaryServices().getEarnings(widget.notaryId, i);
+    var response = await NotaryServices().getLeads(widget.notaryId, i);
     // print("Inside getMore Data");
     // List payouts = map['payouts'];
     // print(payouts);
-    if (map['payouts'] != null && map['customers'] != null) {
-      map['payouts'].addAll(response['payouts']);
-      map['customers'].addAll(response['customers']);
+    if (map['leads'] != null) {
+      response['lead'] != null
+          ? map['leads'].addAll(response['lead'])
+          : map['leads'];
     }
     if (response['pageCount'] == response['pageNumber']) {
       hasMore = true;
@@ -70,16 +79,17 @@ class _AmountScreenState extends State<AmountScreen>
   // ignore: must_call_super
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        title: Text(
-          "Notary Pay",
-          style: TextStyle(
-              fontWeight: FontWeight.bold, color: Colors.black, fontSize: 18),
-        ),
-      ),
+      // backgroundColor: Color.fromARGB(100, 255, 255, 255),
+      // backgroundColor:
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   title: Text(
+      //     "Leads",
+      //     style: TextStyle(
+      //         fontWeight: FontWeight.bold, color: Colors.black, fontSize: 18),
+      //   ),
+      //   backgroundColor: Colors.white,
+      // ),
       body: !isloading
           ? LazyLoadScrollView(
               onEndOfPage: getmoreData,
@@ -90,300 +100,146 @@ class _AmountScreenState extends State<AmountScreen>
                 child: SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
                   child: SafeArea(
-                    child: map['payouts'].isNotEmpty
-                        ? ListView(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                    child: map['leads'].isNotEmpty
+                        ? Stack(
+                        children :[
+                          Container(
+                            height: MediaQuery.of(context).size.height,
+                            width: MediaQuery.of(context).size.width,
+                            color: Colors.white24,
+                          ),
+
+                          Positioned(
+
+                          child :Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // shrinkWrap: true,
+                            // physics: NeverScrollableScrollPhysics(),
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Card(
-                                  elevation: 0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Image.asset(
-                                          'assets/wallet.png',
-                                          width: 90,
-                                          height: 90,
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Center(
+                                child:Card(
+                                  color: Colors.grey,
+                                  child: Container(
+                                    height: 110,
+                                    width: 190,
+                                    color: Colors.white,
+                                    child: Stack(
+                                      children:[
+                                        // Image.asset("assets/brown.jpg",height: 110,width: 190,fit: BoxFit.fill,),
+
                                         Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "Total Earnings ",
-                                                  style: TextStyle(
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                SizedBox(
-                                                  width: 42,
-                                                ),
-                                                Text(
-                                                  ":  \$ ${map['totalAmount']}",
-                                                  style: TextStyle(
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 5,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Pending Earnings ",
-                                                  style: TextStyle(
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                SizedBox(
-                                                  width: 20,
-                                                ),
-                                                Text(
-                                                  ":  \$ ${map['dueAmount']}",
-                                                  style: TextStyle(
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ],
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Center(child: Text("Total Contacts",style: TextStyle(fontSize: 26,color: Colors.black,fontWeight: FontWeight.w500,))),
+                                          Text((map['leadCount']).toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 31),)
+                                        ]
+                                      ),],
                                     ),
                                   ),
-                                ),
+                                )
                               ),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: map['payouts'].length,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0, vertical: 2),
-                                    child: InkWell(
-                                      hoverColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () => Navigator.of(context).push(
-                                        PageRouteBuilder(
-                                          transitionDuration:
-                                              Duration(seconds: 0),
-                                          pageBuilder: (_, __, ___) =>
-                                              OrderScreen(
-                                            isPending: false,
-                                            notaryId: widget.notaryId,
-                                            orderId: map['payouts'][index]
-                                                ['order']['_id'],
+                              SizedBox(height: 15,),
+
+                              Container(
+                                height: 550,
+                                padding: EdgeInsets.all(15),
+                                child:
+                              SingleChildScrollView(
+                                physics: BouncingScrollPhysics(),
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: map['leads'].length,
+                                  itemBuilder: (context, index) {
+                                    // print(map['leads'][index]['name']);
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0,
+                                      ),
+                                      child: InkWell(
+                                        hoverColor: Colors.transparent,
+                                        focusColor: Colors.transparent,
+                                        splashColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        onTap: () => Navigator.of(context).push(
+                                          PageRouteBuilder(
+                                            transitionDuration:
+                                                Duration(seconds: 0),
+                                            pageBuilder: (_, __, ___) =>
+                                                OrderScreen(
+                                              isPending: false,
+                                              notaryId: widget.notaryId,
+                                              orderId: map['leads'][index]
+                                                  ['order']['_id'],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      child: Card(
-                                        elevation: 2,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 10.0,
-                                            vertical: 2,
-                                          ),
-                                          child: ListTile(
-                                            leading: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(50),
-                                              child: map['customers'][index]
-                                                          ['userImageURL'] !=
-                                                      null
-                                                  ? CachedNetworkImage(
-                                                      imageUrl:
-                                                          "${map['customers'][index]['userImageURL']}",
-                                                      height: 45,
-                                                      width: 45,
-                                                    )
-                                                  : Container(
-                                                      height: 0,
-                                                      width: 0,
-                                                    ),
-                                            ),
-                                            isThreeLine: true,
-                                            title: Text(
-                                              map['payouts'][index]['order']
-                                                          ['orderClosingType']
-                                                      .toString()[0]
-                                                      .toUpperCase() +
-                                                  map['payouts'][index]['order']
-                                                          ['orderClosingType']
-                                                      .toString()
-                                                      .substring(1) +
-                                                  " Closing",
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w700),
-                                            ),
-                                            contentPadding: EdgeInsets.only(
-                                                left: 0.0, right: 0.0),
-                                            trailing: map['payouts'][index]
-                                                    ['paid']
-                                                ? MaterialButton(
-                                                    elevation: 0,
-                                                    hoverElevation: 0,
-                                                    highlightElevation: 0,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              50),
-                                                    ),
-                                                    color: blueColor,
-                                                    onPressed: () {},
-                                                    child: Container(
-                                                      child: Text(
-                                                        "Paid",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 16.5,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w700),
-                                                      ),
-                                                    ),
-                                                  )
-                                                : MaterialButton(
-                                                    minWidth: 0,
-                                                    elevation: 0,
-                                                    hoverElevation: 0,
-                                                    highlightElevation: 0,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              50),
-                                                    ),
-                                                    color: Color(0xffFde50E),
-                                                    onPressed: () {},
-                                                    child: Container(
-                                                      child: Text(
-                                                        "Pending",
-                                                        style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                              1,
-                                                            ),
-                                                            fontSize: 16.5,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w700),
-                                                      ),
-                                                    ),
-                                                  ),
-                                            subtitle: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 5.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "#${map['payouts'][index]['appointment']['escrowNumber']}",
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  Text(
-                                                    "Property Address",
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Colors.black,
-                                                      fontStyle:
-                                                          FontStyle.italic,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  Text(
-                                                    map['payouts'][index]
-                                                            ['appointment']
-                                                        ['propertyAddress'],
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  FittedBox(
-                                                    child: Text(
-                                                      "Appointment Completed",
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 5),
-                                                  Text(
-                                                    DateFormat("MM/dd/yyyy")
-                                                        .format(
-                                                      DateTime.parse(
-                                                        map['payouts'][index]
-                                                            ['updatedAt'],
-                                                      ).toLocal(),
-                                                    ),
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5,
-                                                  )
-                                                ],
-                                              ),
+                                        child: Card(
+                                          elevation: 2.5,
+                                          // color: Colors.black54,
+                                          shadowColor:Colors.blueGrey,
+                                              // Color.fromARGB(255, 188, 188, 188),
+                                          child: Container(
+                                            height: 100,
+                                            width: MediaQuery.of(context).size.width-50,
+                                            decoration: BoxDecoration(
+                                                color:
+                                                    Colors.white,
+                                                // border: Border.all(
+                                                //     color: Colors.black),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(3))),
+                                            child: Stack(
+                                              children: [
+                                                  Positioned(
+                                                      left: 75,
+                                                      child:
+                                                      Column(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        SizedBox(height: 8,),
+                                                        Text(map['leads'][index]['name'],style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22),),
+                                                        SizedBox(height:12),
+                                                        Text(map['leads'][index]['PhoneNumber'].toString(),style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16),),
+                                                        SizedBox(height:8),
+
+                                                        Text(map['leads'][index]['email'],style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16),),
+
+                                                    ],
+                                                  )),
+                                                Positioned(
+                                                  top: 35,
+                                                  left: 2,
+                                                  child: Image.asset("assets/userr.png",height: 60,width: 65,),
+                                                ),
+                                                // Positioned(
+                                                //
+                                                //   right: 10,
+                                                //   child: Chip(
+                                                //     backgroundColor: Color.fromARGB(100, 169, 109, 190),
+                                                //     label: Text(map['leads'][index]['type'],style: TextStyle(fontWeight: FontWeight.bold,color: Colors.deepPurple),),
+                                                //   ),
+                                                // ),
+                                                Positioned(
+                                                  top: 30,
+                                                  right:1,
+                                                  child: IconButton(splashColor: Colors.lightBlueAccent,onPressed: (){},icon:Icon(Icons.call,size: 18),color: Colors.blueAccent,),
+                                                )
+                                              ],
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              )
+                                    );
+                                  },
+                                ),
+                              )),
                             ],
-                          )
+                          ))])
                         : Container(
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height -
@@ -416,7 +272,7 @@ class _AmountScreenState extends State<AmountScreen>
                               ],
                             ),
                           ),
-                  ),
+                 ),
                 ),
               ))
           : Center(

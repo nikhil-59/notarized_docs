@@ -1,0 +1,452 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
+import 'package:myknott/Config/CustomColors.dart';
+import 'package:myknott/Services/Services.dart';
+import 'package:myknott/Views/OrderScreen.dart';
+
+class AmountScreen extends StatefulWidget {
+  final String notaryId;
+
+  const AmountScreen({Key key, this.notaryId}) : super(key: key);
+  @override
+  _AmountScreenState createState() => _AmountScreenState();
+}
+
+class _AmountScreenState extends State<AmountScreen>
+    with AutomaticKeepAliveClientMixin<AmountScreen> {
+  final Color blueColor = CustomColor().blueColor;
+  Map map = {};
+  int i = 0;
+  int totalpage = 0;
+  bool hasMore = false;
+  bool isloading = true;
+  var isUpcoming = true;
+
+  @override
+  void initState() {
+    NotaryServices().getToken();
+    getData();
+    super.initState();
+  }
+
+  getData() async {
+    map.clear();
+    setState(() {
+      i = 0;
+      isloading = true;
+      hasMore = false;
+    });
+    map = await NotaryServices().getLeads(widget.notaryId, i);
+    print("map 41 amount.dart:");
+    print(map["leads"][0].keys);
+
+    print(map["leads"][0]);
+    if (i == map['pageNumber']) {
+      hasMore = true;
+    }
+    i += 1;
+
+    setState(() {
+      totalpage = map['pageNumber'];
+      isloading = false;
+    });
+  }
+
+  getmoreData() async {
+    var response = await NotaryServices().getLeads(widget.notaryId, i);
+    // print("Inside getMore Data");
+    // List payouts = map['payouts'];
+    // print(payouts);
+    if (map['leads'] != null) {
+      response['lead'] != null
+          ? map['leads'].addAll(response['lead'])
+          : map['leads'];
+    }
+    if (response['pageCount'] == response['pageNumber']) {
+      hasMore = true;
+    } else {
+      i = i + 1;
+    }
+    setState(() {});
+  }
+
+  @override
+  // ignore: must_call_super
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Text(
+          "Notary Pay",
+          style: TextStyle(
+              fontWeight: FontWeight.bold, color: Colors.black, fontSize: 18),
+        ),
+      ),
+      body: !isloading
+          ? LazyLoadScrollView(
+              onEndOfPage: getmoreData,
+              isLoading: hasMore,
+              child: RefreshIndicator(
+                color: Colors.black,
+                onRefresh: () => getData(),
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: SafeArea(
+                    child: map['leads'].isNotEmpty
+                        ? Column(
+                            // shrinkWrap: true,
+                            // physics: NeverScrollableScrollPhysics(),
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Card(
+                                  elevation: 0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            print("up $isUpcoming");
+                                            setState(() {
+                                              isUpcoming = true;
+                                            });
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                color: isUpcoming
+                                                    ? Colors.pinkAccent
+                                                    : Colors.white,
+                                                border: Border.all(
+                                                    color: Colors.black54)),
+                                            width: 120,
+                                            height: 35,
+                                            child: Center(
+                                              child: Text(
+                                                "Upcoming",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            print("past $isUpcoming");
+
+                                            setState(() {
+                                              isUpcoming = false;
+                                            });
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                color: isUpcoming
+                                                    ? Colors.white
+                                                    : Colors.pinkAccent,
+                                                border: Border.all(
+                                                    color: Colors.black54)),
+                                            width: 120,
+                                            height: 35,
+                                            child: Center(
+                                              child: Text(
+                                                "Past",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: map['leads'].length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0, vertical: 2),
+                                    child: InkWell(
+                                      hoverColor: Colors.transparent,
+                                      focusColor: Colors.transparent,
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      onTap: () => Navigator.of(context).push(
+                                        PageRouteBuilder(
+                                          transitionDuration:
+                                              Duration(seconds: 0),
+                                          pageBuilder: (_, __, ___) =>
+                                              OrderScreen(
+                                            isPending: false,
+                                            notaryId: widget.notaryId,
+                                            orderId: map['leads'][index]
+                                                ['order']['_id'],
+                                          ),
+                                        ),
+                                      ),
+                                      child: Card(
+                                        elevation: 4,
+
+                                        // contentPadding: EdgeInsets.only(
+                                        //     left: 0.0, right: 0.0),
+                                        // trailing: map['leads'][index]
+                                        //         ['paid']
+                                        //     ? MaterialButton(
+                                        //         elevation: 0,
+                                        //         hoverElevation: 0,
+                                        //         highlightElevation: 0,
+                                        //         shape:
+                                        //             RoundedRectangleBorder(
+                                        //           borderRadius:
+                                        //               BorderRadius.circular(
+                                        //                   50),
+                                        //         ),
+                                        //         color: blueColor,
+                                        //         onPressed: () {},
+                                        //         child: Container(
+                                        //           child: Text(
+                                        //             "Paid",
+                                        //             style: TextStyle(
+                                        //                 color: Colors.white,
+                                        //                 fontSize: 16.5,
+                                        //                 fontWeight:
+                                        //                     FontWeight
+                                        //                         .w700),
+                                        //           ),
+                                        //         ),
+                                        //       )
+                                        //     : MaterialButton(
+                                        //         minWidth: 0,
+                                        //         elevation: 0,
+                                        //         hoverElevation: 0,
+                                        //         highlightElevation: 0,
+                                        //         shape:
+                                        //             RoundedRectangleBorder(
+                                        //           borderRadius:
+                                        //               BorderRadius.circular(
+                                        //                   50),
+                                        //         ),
+                                        //         color: Color(0xffFde50E),
+                                        //         onPressed: () {},
+                                        //         child: Container(
+                                        //           child: Text(
+                                        //             "Pending",
+                                        //             style: TextStyle(
+                                        //                 color: Colors.black
+                                        //                     .withOpacity(
+                                        //                   1,
+                                        //                 ),
+                                        //                 fontSize: 16.5,
+                                        //                 fontWeight:
+                                        //                     FontWeight
+                                        //                         .w700),
+                                        //           ),
+                                        //         ),
+                                        //       ),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all()),
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 5.0),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.person,
+                                                  size: 50,
+                                                ),
+                                                SizedBox(
+                                                  width: 15,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      map['leads'][index]
+                                                          ['name'],
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w800),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    Text(
+                                                      "by ${map['leads'][index]['companyName']} ",
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        fontWeight: FontWeight.w700,
+                                                        color: Colors.black,
+                                                        fontStyle:
+                                                            FontStyle.italic,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    // SizedBox(height: 5),
+                                                    Text(
+                                                      "Date  ${DateFormat("MM/dd/yyyy").format(DateTime.parse(
+                                                        map['leads'][index]
+                                                            ['createdOn'],
+                                                      ).toLocal())}  @${DateFormat("hh:mm").format(DateTime.parse(
+                                                        map['leads'][index]
+                                                            ['createdOn'],
+                                                      ).toLocal())}",
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        GestureDetector(
+                                                          onTap: () {},
+                                                          child: Container(
+                                                            height: 30,
+                                                            width: 90,
+                                                            decoration: BoxDecoration(
+                                                                border: Border.all(
+                                                                    color: Colors
+                                                                        .black54)),
+                                                            child: Center(
+                                                                child: Text(
+                                                                    "Call ${map['leads'][index]['name']}",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w800,
+                                                                    ))),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 35,
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {},
+                                                          child: Container(
+                                                            height: 30,
+                                                            width: 90,
+                                                            decoration: BoxDecoration(
+                                                                border: Border.all(
+                                                                    color: Colors
+                                                                        .black54)),
+                                                            child: Center(
+                                                                child: Text(
+                                                                    "View Details",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w800,
+                                                                    ))),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5,
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
+                            ],
+                          )
+                        : Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height -
+                                AppBar().preferredSize.height -
+                                56,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/salary.svg",
+                                  height: 100,
+                                  width: 100,
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30.0),
+                                  child: Text(
+                                    "You don't have any payment history",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        color: Colors.black.withOpacity(0.8),
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                  ),
+                ),
+              ))
+          : Center(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 17,
+                    width: 17,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.black,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    "Please Wait ...",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}

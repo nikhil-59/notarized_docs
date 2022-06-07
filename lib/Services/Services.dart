@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'dart:async';
+import 'package:http/src/response.dart' as rsp;
 import 'dart:io';
 // import 'package:amazon_s3_cognito/aws_region.dart';
 import '../library/amazon_s3_congnito.dart';
@@ -15,40 +16,41 @@ import 'dart:convert';
 
 //Api
 
-RequestToApi requestToApiFromJson(String str) => RequestToApi.fromJson(json.decode(str));
+RequestToApi requestToApiFromJson(String str) =>
+    RequestToApi.fromJson(json.decode(str));
 
 String requestToApiToJson(RequestToApi data) => json.encode(data.toJson());
 
 class RequestToApi {
-    RequestToApi({
-        this.firstName,
-        this.lastName,
-        this.username,
-        this.uid,
-        this.email,
-        this.phoneNumber,
-        this.phoneCountryCode,
-        this.mailingAddress,
-        this.mailingZipcode,
-        this.identityProvider,
-        this.platform,
-        this.pushToken,
-    });
+  RequestToApi({
+    this.firstName,
+    this.lastName,
+    this.username,
+    this.uid,
+    this.email,
+    this.phoneNumber,
+    this.phoneCountryCode,
+    this.mailingAddress,
+    this.mailingZipcode,
+    this.identityProvider,
+    this.platform,
+    this.pushToken,
+  });
 
-    String firstName;
-    String lastName;
-    String username;
-    String uid;
-    String email;
-    String phoneNumber;
-    String phoneCountryCode;
-    String mailingAddress;
-    String mailingZipcode;
-    String identityProvider;
-    String platform;
-    String pushToken;
+  String firstName;
+  String lastName;
+  String username;
+  String uid;
+  String email;
+  String phoneNumber;
+  String phoneCountryCode;
+  String mailingAddress;
+  String mailingZipcode;
+  String identityProvider;
+  String platform;
+  String pushToken;
 
-    factory RequestToApi.fromJson(Map<String, dynamic> json) => RequestToApi(
+  factory RequestToApi.fromJson(Map<String, dynamic> json) => RequestToApi(
         firstName: json["firstName"],
         lastName: json["lastName"],
         username: json["username"],
@@ -61,9 +63,9 @@ class RequestToApi {
         identityProvider: json["identityProvider"],
         platform: json["platform "],
         pushToken: json["pushToken"],
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "firstName": firstName,
         "lastName": lastName,
         "username": username,
@@ -76,9 +78,8 @@ class RequestToApi {
         "identityProvider": identityProvider,
         "platform ": platform,
         "pushToken": pushToken,
-    };
+      };
 }
-
 
 //Notary Service class Below
 
@@ -87,13 +88,12 @@ class NotaryServices {
   final Dio dio = Dio();
   final storage = FlutterSecureStorage();
 
-
- // Calling Our Api
-  Future<dynamic> getpost() async {
-    final response = await http.get(Uri.parse('$baseUrl/1'));
-    print(" line 94 :" + response.body);
-    return requestToApiFromJson(response.body);
-  }
+  // Calling Our Api
+  // Future<dynamic> getpost() async {
+  //   final response = await http.get(Uri.parse('$baseUrl/1'));
+  //   print(" line 94 :" + response.body);
+  //   return requestToApiFromJson(response.body);
+  // }
 
   static String getTimezoneOffsetString(DateTime date) {
     var duration = date.timeZoneOffset;
@@ -229,12 +229,14 @@ class NotaryServices {
     }
   }
 
-  getEarnings(String notaryId, int pageNumber) async {
+  Future<Map<String, dynamic>> getLeads(String notaryId, int pageNumber) async {
     String jwt = await storage.read(key: 'jwt');
     dio.options.headers['Authorization'] = jwt;
-    var response = await dio.post(
-      baseUrl + "notary/getEarnings",
-      data: {"notaryId": notaryId, "pageNumber": pageNumber},
+    
+    print("pagenumber   :" + pageNumber.toString());
+    final response = await dio.post(
+      baseUrl + "lead/getLeads",
+      data: {"notaryId": "62421089c913294914a8a35f", "pageNumber": pageNumber},
     );
     return response.data;
   }

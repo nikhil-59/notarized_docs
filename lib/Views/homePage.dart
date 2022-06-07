@@ -29,6 +29,9 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
+var notaryId = "";
+var notaryUserObj;
+
 class _HomePageState extends State<HomePage>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   Dio dio = Dio();
@@ -177,7 +180,10 @@ class _HomePageState extends State<HomePage>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String encodedUserinfo = prefs.getString("userInfo");
     userInfo = await json.decode(encodedUserinfo);
-    setState(() {});
+    setState(() {
+      notaryId = userInfo['_id'];
+      // notaryUserObj =;
+    });
   }
 
   getAppointment() async {
@@ -308,9 +314,16 @@ class _HomePageState extends State<HomePage>
       }
       return 'Evening';
     }
-    String notaryFirstName = userInfo["firstName"]==null? "firstName":userInfo["firstName"]+" ";
-    String notaryLastName = userInfo["lastName"]==null? "lastName":userInfo["lastName"];
-    String fullName =  notaryFirstName+notaryLastName ;
+
+    String notaryFirstName = userInfo["firstName"] == null
+        ? "firstName"
+        : userInfo["firstName"] + " ";
+    String notaryLastName =
+        userInfo["lastName"] == null ? "" : userInfo["lastName"];
+    String fullName = notaryFirstName + notaryLastName;
+
+    print("photo url from 323 homepage : ");
+    // print(userInfo['photoURL']);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -319,7 +332,7 @@ class _HomePageState extends State<HomePage>
         elevation: 10,
         child: SalomonBottomBar(
           currentIndex: currentIndex,
-          selectedItemColor: blueColor,
+          selectedItemColor: Colors.blue,
           unselectedItemColor: Colors.grey,
           onTap: (i) {
             tabController.animateTo(i);
@@ -350,11 +363,11 @@ class _HomePageState extends State<HomePage>
             ),
             SalomonBottomBarItem(
               icon: Icon(
-                Icons.monetization_on,
+                Icons.person,
                 size: 26,
               ),
               title: Text(
-                "Notary Pay",
+                "Leads",
                 style: TextStyle(fontSize: 14.5),
               ),
             ),
@@ -396,43 +409,16 @@ class _HomePageState extends State<HomePage>
                                   children: [
                                     Container(
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(50),
-                                        child: userInfo['photoURL'] != null
-                                            ? Container(
-                                                width: 80,
-                                                height: 80,
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle),
-                                                child: CachedNetworkImage(
-                                                  fit: BoxFit.cover,
-                                                  imageUrl:
-                                                      userInfo['photoURL'],
-                                                ),
-                                              )
-                                            : Container(
-                                                color: blueColor,
-                                                height: 80,
-                                                width: 80,
-                                                child: CircleAvatar(
-                                                  radius: 20,
-                                                  backgroundColor: blueColor,
-                                                  child: Text(
-                                                    userInfo["firstName"][0]
-                                                                .toUpperCase() +
-                                                            " " +
-                                                            userInfo["lastName"]
-                                                                [0] ??
-                                                        "".toUpperCase(),
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        color: Colors.white),
-                                                  ),
-                                                ),
-                                              ),
-                                      ),
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          child: CircleAvatar(
+                                            radius: 50,
+                                            backgroundColor: Colors.redAccent,
+                                            child: Icon(
+                                              Icons.person,
+                                              size: 40,
+                                            ),
+                                          )),
                                     ),
                                     SizedBox(
                                       width: 5,
@@ -450,7 +436,7 @@ class _HomePageState extends State<HomePage>
                                           height: 8,
                                         ),
                                         Text(
-                                        fullName,
+                                          fullName,
                                           style: TextStyle(
                                               fontSize: 16.5,
                                               fontWeight: FontWeight.w700),
@@ -579,8 +565,6 @@ class _HomePageState extends State<HomePage>
                                                                       '_id'],
                                                               orderId:
                                                                   item["id"],
-                                                              imageUrl: userInfo[
-                                                                  'photoURL'],
                                                               refresh:
                                                                   getPending,
                                                               place: item[
@@ -715,8 +699,7 @@ class _HomePageState extends State<HomePage>
                                               padding:
                                                   const EdgeInsets.all(8.0),
                                               child: Cards(
-                                                notaryName:
-                                                    fullName,
+                                                notaryName: fullName,
                                                 notaryId: userInfo['_id'],
                                                 orderId: appointmentList[index]
                                                     ['orderId'],
