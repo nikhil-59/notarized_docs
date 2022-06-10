@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
@@ -36,7 +36,9 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
         hasData = true;
       } else
         pageNumber += 1;
-    } catch (e) {}
+    } catch (e) {
+      print("Error on 40 inProgressOrderscreen.dart $e \n");
+}
     setState(() {});
   }
 
@@ -44,13 +46,17 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
     try {
       var response = await NotaryServices()
           .getInProgressOrders(widget.notaryId, pageNumber);
+      print("47 inProgressOrders");
+      print(response.keys);
       orders['orders'].addAll(response['orders']);
       if (response['pageNumber'] == response['pageCount']) {
         hasData = true;
       } else {
         pageNumber += 1;
       }
-    } catch (e) {}
+    } catch (e) {
+      print("Error line 58 On Getmore Data inprogressOS.dart \n $e\n ");
+    }
     setState(() {});
   }
 
@@ -71,8 +77,8 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
               color: Colors.black,
               onRefresh: () => getInProgressOrders(),
               child: ListView.builder(
-                itemCount:
-                    orders['orders'].length != 0 ? orders['orders'].length : 1,
+                itemCount: 1,
+                    // orders['orders'].length != 0 ? orders['orders'].length : 1,
                 itemBuilder: (BuildContext context, int index) {
                   return orders['orders'].isNotEmpty
                       ? Padding(

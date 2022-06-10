@@ -7,6 +7,10 @@ import 'package:myknott/Services/Services.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'OrderScreen.dart';
 
+
+var _selectedDay = DateTime.now();
+var _focusedDay = DateTime.now();
+
 class CalenderScreen extends StatefulWidget {
   final String notaryId;
   const CalenderScreen({Key key, this.notaryId}) : super(key: key);
@@ -37,6 +41,10 @@ class _CalenderScreenState extends State<CalenderScreen>
     });
     data.clear();
     data = await services.getAppointments(date, widget.notaryId);
+    print("40 ClandrSn");
+    data.forEach((key, value) {
+      print("key : $key , value : $value ");
+    });
     setState(() {
       isloading = false;
     });
@@ -44,8 +52,7 @@ class _CalenderScreenState extends State<CalenderScreen>
 
   @override
   Widget build(BuildContext context) {
-    var _selectedDay = DateTime.now();
-    var _focusedDay = DateTime.now();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -64,37 +71,39 @@ class _CalenderScreenState extends State<CalenderScreen>
             Container(
               child: TableCalendar(
                 calendarStyle: CalendarStyle(
-                  selectedDecoration: BoxDecoration(
-                    color: Colors.blue.shade900
-                  ),
-                  isTodayHighlighted: false,
+                  selectedDecoration:
+                      BoxDecoration(color: Colors.green,shape:BoxShape.circle),
+                  isTodayHighlighted: true,
                 ),
                 headerStyle: HeaderStyle(
                     titleTextStyle:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 16.5),
-                    titleCentered:true,
+                    titleCentered: true,
                     formatButtonVisible: false),
                 // calendarController: calendarController,
                 selectedDayPredicate: (day) {
+                  // print(" day : $day , selectday : $_selectedDay");
                   return isSameDay(_selectedDay, day);
                 },
-                onDaySelected: (day, events) {
+                onDaySelected: (day, focusDay) {
+                  print(" dayy : $day , ff : $focusDay");
                   getAppointment(day);
                   if (!isSameDay(_selectedDay, day)) {
+                    print(" selectedDay $day , events $focusDay");
+
                     setState(() {
                       _selectedDay = day;
-                      _focusedDay = events;
+                      _focusedDay = focusDay;
                     });
                   }
                 },
                 firstDay: DateTime(1991),
-                focusedDay: DateTime.now(),
+                focusedDay: _focusedDay,
                 lastDay: DateTime(2055),
 
                 onPageChanged: (focusedDay) {
                   _focusedDay = focusedDay;
                 },
-               
               ),
             ),
             Expanded(
@@ -102,9 +111,10 @@ class _CalenderScreenState extends State<CalenderScreen>
                   ? ListView.builder(
                       shrinkWrap: true,
                       physics: BouncingScrollPhysics(),
-                      itemCount: data['appointments'].isNotEmpty
-                          ? data['appointments'].length
-                          : 1,
+                      itemCount:data['appointments'].isNotEmpty
+                              ? data['appointments'].length
+                              : 1,
+                          
                       itemBuilder: (BuildContext context, int index) {
                         return data['appointments'].isNotEmpty
                             ? InkWell(
@@ -119,8 +129,8 @@ class _CalenderScreenState extends State<CalenderScreen>
                                       pageBuilder: (_, __, ___) => OrderScreen(
                                         notaryId: widget.notaryId,
                                         isPending: false,
-                                        orderId: data['appointments'][index]
-                                            ['orderId'],
+                                        orderId: data['appointments'][index]!=null?data['appointments'][index]:0
+                                            ,
                                       ),
                                     ),
                                   );
@@ -151,6 +161,7 @@ class _CalenderScreenState extends State<CalenderScreen>
                                                     width: 40,
                                                   )
                                                 : Container(
+                                              color: Colors.amberAccent, // remove if needed
                                                     height: 40,
                                                     width: 40,
                                                   ),

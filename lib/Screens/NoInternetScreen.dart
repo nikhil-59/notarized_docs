@@ -74,6 +74,7 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
               // width: 120,
               // height: 120,
             ),
+            
             SizedBox(
               height: 15,
             ),

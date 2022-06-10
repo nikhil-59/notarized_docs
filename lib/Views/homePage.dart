@@ -31,6 +31,7 @@ class HomePage extends StatefulWidget {
 
 var notaryId = "";
 var notaryUserObj;
+var loginUserInfo;
 
 class _HomePageState extends State<HomePage>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
@@ -182,6 +183,7 @@ class _HomePageState extends State<HomePage>
     userInfo = await json.decode(encodedUserinfo);
     setState(() {
       notaryId = userInfo['_id'];
+      loginUserInfo = userInfo;
       // notaryUserObj =;
     });
   }
@@ -363,7 +365,7 @@ class _HomePageState extends State<HomePage>
             ),
             SalomonBottomBarItem(
               icon: Icon(
-                Icons.person,
+                Icons.contact_phone_rounded,
                 size: 26,
               ),
               title: Text(
@@ -412,16 +414,21 @@ class _HomePageState extends State<HomePage>
                                           borderRadius:
                                               BorderRadius.circular(50),
                                           child: CircleAvatar(
-                                            radius: 50,
+                                            radius: 45,
                                             backgroundColor: Colors.redAccent,
-                                            child: Icon(
-                                              Icons.person,
-                                              size: 40,
+                                            child: CircleAvatar(
+                                              radius: 40,
+                                              backgroundColor: Colors.white,
+                                              child: Icon(
+                                                Icons.person,
+                                                size: 50,
+                                                color:Colors.black
+                                              ),
                                             ),
                                           )),
                                     ),
                                     SizedBox(
-                                      width: 5,
+                                      width: 10,
                                     ),
                                     Column(
                                       crossAxisAlignment:
@@ -429,7 +436,7 @@ class _HomePageState extends State<HomePage>
                                       children: [
                                         SizedBox(height: 10),
                                         Text(
-                                          "Good " + greeting(),
+                                          "Good " + greeting()+" , ",
                                           style: TextStyle(fontSize: 17),
                                         ),
                                         SizedBox(
@@ -468,7 +475,11 @@ class _HomePageState extends State<HomePage>
                                 //       ),
                                 //     ]),
                                 pendingList.isEmpty
-                                    ? Container()
+                                    ? Container(
+                                  height: 15,
+                                  color: Colors.amberAccent,
+                                  child: Text(" No Pending appointment"),
+                                )
                                     : Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -551,6 +562,7 @@ class _HomePageState extends State<HomePage>
                                                               } catch (e) {}
                                                             },
                                                             child: ConfirmCards(
+                                                              imageUrl:"assets/userr.png" , // Change to url
                                                               address: item[
                                                                   "address"],
                                                               name:

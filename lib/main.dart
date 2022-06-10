@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:myknott/Services/Services.dart';
 import 'package:myknott/Services/auth.dart';
-import 'package:myknott/Views/NoInternetScreen.dart';
+import 'package:myknott/Screens/NoInternetScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Config/CustomColors.dart';
 

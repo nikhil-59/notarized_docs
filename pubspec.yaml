@@ -46,6 +46,7 @@ dependencies:
   flutter_svg: ^0.21.0-nullsafety.0
   date_format: ^2.0.4
   carousel_slider: ^4.0.0
+  flutter_linkify:
 
 dev_dependencies:
   flutter_test:
@@ -58,7 +59,11 @@ flutter:
     - assets/userr.png
     - assets/logo.png
     - assets/appointment.png
+    - assets/appointment1.png
     - assets/brown.jpg
+    - assets/Error.png
+    - assets/404.svg
+    - assets/noUserFound.png
 
   fonts:
     - family: Whitney

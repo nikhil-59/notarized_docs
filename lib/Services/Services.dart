@@ -176,10 +176,13 @@ class NotaryServices {
     try {
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
-      var response = await dio.post(baseUrl + "notary/getInProgressOrders",
+      var response = await dio.post(baseUrl + "appointment/getUpcomingAppointments",
           data: {"notaryId": notaryId, "pageNumber": pageNumber});
+      print("181 service.dart ${response.data} ");
       return response.data;
     } catch (e) {
+      print("Erro on 184 service");
+      print(e);
       return {};
     }
   }
@@ -200,7 +203,9 @@ class NotaryServices {
     try {
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
-      var response = await dio.post(baseUrl + "notary/getDashboard", data: {
+      // var response = await dio.post(baseUrl + "dashboard/getDashboard", data: {
+      var response = await dio.post(baseUrl + "appointment/getAppointments", data: {
+
         "notaryId": notaryId,
         "today12am": dateTime.year.toString() +
             "-" +
@@ -211,6 +216,7 @@ class NotaryServices {
       });
       return response.data;
     } catch (e) {
+      print("Error  216 service : $e \n------- ");
       return {};
     }
   }
@@ -225,6 +231,8 @@ class NotaryServices {
       );
       return response.data;
     } catch (e) {
+      print("Error on 229 service.dart ");
+      print(e);
       return {};
     }
   }
@@ -232,7 +240,7 @@ class NotaryServices {
   Future<Map<String, dynamic>> getLeads(String notaryId, int pageNumber) async {
     String jwt = await storage.read(key: 'jwt');
     dio.options.headers['Authorization'] = jwt;
-    
+
     print("pagenumber   :" + pageNumber.toString());
     final response = await dio.post(
       baseUrl + "lead/getLeads",

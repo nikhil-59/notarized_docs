@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:myknott/Config/CustomColors.dart';
+import 'package:myknott/Screens/ErrorScreen.dart';
 import 'package:myknott/Services/Services.dart';
 import 'package:myknott/Views/OrderScreen.dart';
 
@@ -245,32 +245,7 @@ class _AmountScreenState extends State<AmountScreen>
                             height: MediaQuery.of(context).size.height -
                                 AppBar().preferredSize.height -
                                 56,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  "assets/salary.svg",
-                                  height: 100,
-                                  width: 100,
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 30.0),
-                                  child: Text(
-                                    "You don't have any payment history",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 17,
-                                        color: Colors.black.withOpacity(0.8),
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                )
-                              ],
-                            ),
+                            child: ErrorScreens("assets/user.png", "No Leads found", "Create some lead", false),
                           ),
                  ),
                 ),

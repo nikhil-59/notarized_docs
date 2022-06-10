@@ -49,13 +49,17 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
     try {
       var response = await NotaryServices()
           .getCompletedOrders(widget.notaryId, pageNumber);
+      print(" getMoreData Response of CompletedOrderScreen.dart --------\n ");
+      response.forEach((key,value){ print("key : $key , value : $value ");});
       orders['orders'].addAll(response['orders']);
       if (response['pageNumber'] == response['pageCount']) {
         hasData = true;
       } else {
         pageNumber += 1;
       }
-    } catch (e) {}
+    } catch (e) {
+      print("Error on 61 CompleteOS.dart \n $e \n");
+    }
     setState(() {});
   }
 

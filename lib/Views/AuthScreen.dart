@@ -3,11 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:myknott/Config/CustomColors.dart';
+import 'package:myknott/Screens/ErrorScreen.dart';
+import 'package:myknott/Screens/NoInternetScreen.dart';
 import 'package:myknott/Services/Services.dart';
 import 'package:myknott/Services/auth.dart';
-import 'package:myknott/Views/WaitingScreen.dart';
+import 'package:myknott/Screens/WaitingScreen.dart';
 import 'package:myknott/Views/homePage.dart';
-import 'package:myknott/Views/noUserRegister.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -54,7 +55,7 @@ class _AuthScreenState extends State<AuthScreen> {
         child: SafeArea(
           child: Container(
             color: backgroundColor,
-            height: MediaQuery.of(context).size.height - 30,
+            height: MediaQuery.of(context).size.height, // - 30,
             // color: Colors.black,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -592,17 +593,36 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                           );
                         } else if (result["status"] == 3) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => NoUserExist()));
+                          print("596 authscreeen.dqart error : " +
+                              result['error']);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ErrorScreens(
+                                      "assets/noUserFound.png",
+                                      "The User Does not Exist in our Database",
+                                      "Please provide correct Information, Try checking Spelling Mistakes \nClick on back button to go on Login Page",
+                                      false)));
                           //comment
+                        } else if (result["status"] == 4) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NoInternetScreen()));
                         } else if (result["status"] == 0) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: ((context) => NoUserExist())));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ErrorScreens(
+                                      "assets/noUserFound.png",
+                                      "Something went Wrong ....",
+                                      "Some error : ",
+                                      false)));
                         } else {
                           setState(() {
                             isloading = false;
                           });
-                          print("605 status "+result["status"]);
+                          print("605 status " + result["status"]);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               behavior: SnackBarBehavior.floating,

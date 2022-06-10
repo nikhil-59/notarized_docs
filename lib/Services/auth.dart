@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:myknott/Screens/ErrorScreen.dart';
 import 'package:myknott/Services/Services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -51,6 +52,7 @@ class AuthService {
         );
       }
       if (e.toString().contains("identifier")) {
+        print("User Not found , from firebase");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             behavior: SnackBarBehavior.floating,
@@ -63,6 +65,30 @@ class AuthService {
             ),
           ),
         );
+
+        return {"status": 3, "error": "User Not found"};
+        //  "assets/noUserFound.png",
+        // "The User Does not Exist in our Database",
+        //  "Please provide correct Information, Try checking Spelling Mistakes",
+      }
+      if (e.toString().contains("network error")) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.black,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+            content: Text(
+              "No Internet Connection",
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        );
+
+        return {"status": 4, "error": "No Internet "};
+        //  "assets/noUserFound.png",
+        // "The User Does not Exist in our Database",
+        //  "Please provide correct Information, Try checking Spelling Mistakes",
       } else {
         print("something went wring");
       }
@@ -116,6 +142,7 @@ class AuthService {
       } else if (response.data['status'] == 3) {
         return {"status": 3};
       } else if (response.data['status'] == 0) {
+        print(" Error on 119 auth.dart " + response.data.toString());
         return {"status": 0};
       } else {
         return {"status": 0};
@@ -184,7 +211,7 @@ class AuthService {
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
       await NotaryServices().getToken();
-      
+
       notaryUserObj = userCredential.user;
       return await getUserInfo(userCredential.user.uid,
           userCredential.user.email, userCredential.user.providerData.first);

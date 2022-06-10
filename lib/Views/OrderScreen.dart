@@ -73,6 +73,10 @@ class _OrderScreenState extends State<OrderScreen>
       orders.clear();
       docsByNotary.clear();
       orders.addAll(response.data);
+
+      response.data.forEach((key, value) {
+        print("key : $key , value : $value");
+      });
       for (var i in orders['order']['uploadedDocuments']) {
         if (i['uploadedBy'] == widget.notaryId) {
           docsByNotary.add(i);
@@ -80,6 +84,9 @@ class _OrderScreenState extends State<OrderScreen>
       }
       setState(() {});
     } catch (e) {
+      print("Error 87 orderscreen ");
+      print(e);
+      print("----------");
       if (this.mounted) {
         Fluttertoast.showToast(
             msg: "Something went wrong..",
@@ -1115,7 +1122,10 @@ class _OrderScreenState extends State<OrderScreen>
                   width: 15,
                 ),
                 Text(
-                  ": ${orders['order']['orderInvoiceType'].toString().replaceRange(0, 1, orders['order']['orderInvoiceType'][0].toString().toUpperCase())}"==": Inhouse"? ": In-office": ": ${orders['order']['orderInvoiceType'].toString().replaceRange(0, 1, orders['order']['orderInvoiceType'][0].toString().toUpperCase())}",
+                  ": ${orders['order']['orderInvoiceType'].toString().replaceRange(0, 1, orders['order']['orderInvoiceType'][0].toString().toUpperCase())}" ==
+                          ": Inhouse"
+                      ? ": In-office"
+                      : ": ${orders['order']['orderInvoiceType'].toString().replaceRange(0, 1, orders['order']['orderInvoiceType'][0].toString().toUpperCase())}",
                   style: TextStyle(
                     color: Colors.black,
                     // fontWeight: FontWeight.w400,
