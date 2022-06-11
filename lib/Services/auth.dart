@@ -130,9 +130,8 @@ class AuthService {
       EasyLoading.dismiss();
       if (response.data['status'] == 2) {
         if (response.data.isNotEmpty) {
-          print(" -------------Customer \n");
-          print(response.data["customer"]);
-          print("\n----end of customer detail--");
+          print(" -------------Customer \n ${response.data["customer"]} \n----end of customer detail--");
+       
           getsharedprefe(Map<String, dynamic>.from(response.data["customer"]));
         } else {
           getsharedprefe({"data": 12});

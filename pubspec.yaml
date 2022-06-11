@@ -47,6 +47,7 @@ dependencies:
   date_format: ^2.0.4
   carousel_slider: ^4.0.0
   flutter_linkify:
+  flutter_datetime_picker:
 
 dev_dependencies:
   flutter_test:
@@ -57,6 +58,7 @@ flutter:
 
   assets:
     - assets/userr.png
+    - assets/location.png
     - assets/logo.png
     - assets/appointment.png
     - assets/appointment1.png

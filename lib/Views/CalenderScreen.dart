@@ -7,7 +7,6 @@ import 'package:myknott/Services/Services.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'OrderScreen.dart';
 
-
 var _selectedDay = DateTime.now();
 var _focusedDay = DateTime.now();
 
@@ -45,6 +44,9 @@ class _CalenderScreenState extends State<CalenderScreen>
     data.forEach((key, value) {
       print("key : $key , value : $value ");
     });
+    print("all appointments");
+    data['appointments'][0]
+        .forEach((key, value) => print("key : $key, value :$value"));
     setState(() {
       isloading = false;
     });
@@ -52,7 +54,6 @@ class _CalenderScreenState extends State<CalenderScreen>
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -71,8 +72,8 @@ class _CalenderScreenState extends State<CalenderScreen>
             Container(
               child: TableCalendar(
                 calendarStyle: CalendarStyle(
-                  selectedDecoration:
-                      BoxDecoration(color: Colors.green,shape:BoxShape.circle),
+                  selectedDecoration: BoxDecoration(
+                      color: Colors.green, shape: BoxShape.circle),
                   isTodayHighlighted: true,
                 ),
                 headerStyle: HeaderStyle(
@@ -111,11 +112,12 @@ class _CalenderScreenState extends State<CalenderScreen>
                   ? ListView.builder(
                       shrinkWrap: true,
                       physics: BouncingScrollPhysics(),
-                      itemCount:data['appointments'].isNotEmpty
-                              ? data['appointments'].length
-                              : 1,
-                          
+                      itemCount: data['appointments'].isNotEmpty
+                          ? data['appointments'].length
+                          : 1,
                       itemBuilder: (BuildContext context, int index) {
+                        // print(
+                            // " 120 ${data['appointments'][index]['signingInfo']['signerInfo']['firstName']} ,${data['appointments'][index]['signingInfo']['signerInfo']['lastName']} ");
                         return data['appointments'].isNotEmpty
                             ? InkWell(
                                 hoverColor: Colors.transparent,
@@ -129,8 +131,10 @@ class _CalenderScreenState extends State<CalenderScreen>
                                       pageBuilder: (_, __, ___) => OrderScreen(
                                         notaryId: widget.notaryId,
                                         isPending: false,
-                                        orderId: data['appointments'][index]!=null?data['appointments'][index]:0
-                                            ,
+                                        orderId:
+                                            data['appointments'][index] != null
+                                                ? data['appointments'][index]
+                                                : 0,
                                       ),
                                     ),
                                   );
@@ -151,26 +155,33 @@ class _CalenderScreenState extends State<CalenderScreen>
                                           leading: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(50),
-                                            child: data['notary']
-                                                        ['userImageURL'] !=
-                                                    null
-                                                ? CachedNetworkImage(
-                                                    imageUrl: data['notary']
-                                                        ['userImageURL'],
-                                                    height: 40,
-                                                    width: 40,
-                                                  )
-                                                : Container(
-                                              color: Colors.amberAccent, // remove if needed
-                                                    height: 40,
-                                                    width: 40,
-                                                  ),
+                                            child:
+                                                // data['notary']
+                                                //             ['userImageURL'] !=
+                                                //         null
+                                                //     ? CachedNetworkImage(
+                                                //         imageUrl: data['notary']
+                                                //             ['userImageURL'],
+                                                //         height: 40,
+                                                //         width: 40,
+                                                //       )
+                                                Container(
+                                              color: Colors
+                                                  .amberAccent, // remove if needed
+                                              height: 40,
+                                              width: 40,
+                                            ),
                                           ),
                                           title: Text(
-                                            "Refinance of " +
+                                            "Refinance of  " +
                                                 data['appointments'][index]
-                                                        ['appointment']
-                                                    ['signerFullName'],
+                                                            ['signingInfo']
+                                                        ['signerInfo']
+                                                    ['firstName'] +
+                                                " " +
+                                                data['appointments'][index]
+                                                        ['signingInfo']
+                                                    ['signerInfo']['lastName'],
                                             style: TextStyle(
                                                 fontSize: 16.5,
                                                 fontWeight: FontWeight.w700),
@@ -184,7 +195,7 @@ class _CalenderScreenState extends State<CalenderScreen>
                                             children: [
                                               Text(
                                                 data['appointments'][index]
-                                                        ['appointment']
+                                                        ['signingInfo']
                                                     ['propertyAddress'],
                                                 style: TextStyle(
                                                   fontSize: 16.5,
@@ -194,13 +205,13 @@ class _CalenderScreenState extends State<CalenderScreen>
                                                 height: 5,
                                               ),
                                               Text(
-                                                DateFormat('MM/dd/yyyy hh:mm a')
-                                                    .format(DateTime.parse(
-                                                            data['appointments']
-                                                                        [index][
-                                                                    'appointment']
-                                                                ['time'])
-                                                        .toLocal()),
+                                                // DateFormat('MM/dd/yyyy hh:mm a')
+                                                //     .format(DateTime.parse(
+                                                data['appointments'][index]
+                                                            ['appointmentInfo']
+                                                        ['time']
+                                                    .toString(),
+                                                // .toLocal()),
                                                 style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 16,

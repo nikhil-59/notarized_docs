@@ -13,10 +13,10 @@ class ConfirmCards extends StatefulWidget {
   final String name;
   final String price;
   final String address;
-  final String imageUrl;
-  final String place;
+  // final String imageUrl;
+  // final String place;
   final String time;
-  final String closeType;
+  // final String closeType;
   const ConfirmCards({
     Key key,
     this.name,
@@ -25,10 +25,10 @@ class ConfirmCards extends StatefulWidget {
     this.notaryId,
     this.orderId,
     this.refresh,
-    @required this.imageUrl,
-    @required this.place,
+    // @required this.imageUrl,
+    // @required this.place,
     this.time,
-    @required this.closeType,
+    // @required this.closeType,
   }) : super(key: key);
 
   @override
@@ -58,8 +58,8 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      widget.closeType[0].toUpperCase() +
-                          widget.closeType.substring(1) +
+                      // widget.closeType[0].toUpperCase() +
+                      //     widget.closeType.substring(1) +
                           " Closing",
                       style: TextStyle(
                           fontSize: 15.5, fontWeight: FontWeight.bold),
@@ -81,10 +81,11 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                       leading: Image.asset(
                         "assets/location.png",
                         height: 40,
+                        width: 60,
                       ),
                       contentPadding: EdgeInsets.all(0),
-                      title: Text(
-                        widget.place,
+                      title: Text("place ",
+                        // widget.place,
                         style: TextStyle(
                           fontSize: 15,
                           color: Colors.black,
@@ -97,10 +98,10 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                             height: 5,
                           ),
                           Text(
-                            "Appointment Date & Time : " +
-                                DateFormat("MM/dd/yyyy @ h a").format(
-                                  DateTime.parse(widget.time).toLocal(),
-                                ),
+                            "Appointment Date & Time : " +widget.time.toString(),
+                                // DateFormat("MM/dd/yyyy @ h a").format(
+                                //   DateTime.parse(widget.time).toLocal(),
+                                // ),
                             style: TextStyle(
                               fontSize: 15,
                               color: Colors.black,

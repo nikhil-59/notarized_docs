@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'dart:async';
 import 'package:http/src/response.dart' as rsp;
+import 'package:myknott/Views/homePage.dart';
+import 'package:myknott/Views/newAppointment.dart';
 import 'dart:io';
 // import 'package:amazon_s3_cognito/aws_region.dart';
 import '../library/amazon_s3_congnito.dart';
@@ -176,7 +178,8 @@ class NotaryServices {
     try {
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
-      var response = await dio.post(baseUrl + "appointment/getUpcomingAppointments",
+      var response = await dio.post(
+          baseUrl + "appointment/getUpcomingAppointments",
           data: {"notaryId": notaryId, "pageNumber": pageNumber});
       print("181 service.dart ${response.data} ");
       return response.data;
@@ -191,11 +194,94 @@ class NotaryServices {
     try {
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
-      var response = await dio.post(baseUrl + "notary/getCompletedOrders",
+      var response = await dio.post(baseUrl + "appointment/getPastAppointments",
           data: {"notaryId": notaryId, "pageNumber": pageNumber});
+      print(" 196 service getCO : $response\n");
       return response.data;
     } catch (e) {
+      print("Error on 200 service.dart getCO : $e");
       return {};
+    }
+  }
+
+  createNewAppointment(String notaryIdd, String dat, String tim) async {
+    try {
+      String jwt = await storage.read(key: 'jwt');
+      dio.options.headers['Authorization'] = jwt;
+      var response =
+          await dio.post(baseUrl + "appointment/createAppointment", data: {
+        "notaryId": notaryIdd,
+        "endCustomerInfo": {
+          "firstName": "test",
+          "lastName": "abc",
+          "email": "test@gmail.com",
+          "phoneNumber": 9475983454,
+          "countryCode": "3wefre",
+          "defaultTZ": "e423rdf",
+          "company": {
+            "name": "company",
+            "address": "ersdvfdegtrg",
+            "lat": 234235345,
+            "lon": 534456345,
+            "zipcode": 343234,
+            "streetAddress": "street 1",
+            "area": "hisar",
+            "city": "hisar",
+            "state": "haryana",
+            "country": "india",
+            "phoneNumber": 5987348573,
+            "email": "company@gmail.com"
+          }
+        },
+        "isOnlineSigning": false,
+        "appointmentInfo": {
+          "date": "2022-06-11T18:30:00.000Z",
+          "time": 53034,
+          "durationofAppointment": 1,
+          "place": {
+            "completeAddress": "ewffverver",
+            "lat": 234235345,
+            "lon": 534456345,
+            "zipcode": 343234,
+            "area": "hisar",
+            "city": "hisar",
+            "state": "haryana",
+            "streetAddress": "sgfergerg"
+          }
+        },
+        "signingInfo": {
+          "escrowNumber": "23ewfewr24",
+          "signerInfo": {
+            "firsttName": "signer1",
+            "lastName": "abcd",
+            "email": "signer1@gmail.com",
+            "phoneNumber": 1234509876,
+            "countryCode": "3wefre",
+            "defaultTZ": "e423rdf"
+          },
+          "propertyAddress": "kjwehfnerifu",
+          "extraInstructions": "kjfherfiuehrfiue"
+        }
+      });
+      // print(response.forEach((key,value)=>print(" $key , $value")));
+      print(response);
+    } catch (e) {
+      print("Error on 247 : $e\n");
+      return {};
+    }
+  }
+
+  deleteAppointment(String notryId) async {
+    try {
+      String jwt = await storage.read(key: 'jwt');
+      dio.options.headers['Authorization'] = jwt;
+      // var response = await dio.post(baseUrl + "dashboard/getDashboard", data: {
+      var response =
+          await dio.post(baseUrl + "appointment/deleteAppointment", data: {
+        "notaryId": notryId,
+      });
+    } catch (e) {
+      print("284 Error $e");
     }
   }
 
@@ -204,8 +290,8 @@ class NotaryServices {
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
       // var response = await dio.post(baseUrl + "dashboard/getDashboard", data: {
-      var response = await dio.post(baseUrl + "appointment/getAppointments", data: {
-
+      var response =
+          await dio.post(baseUrl + "appointment/getAppointments", data: {
         "notaryId": notaryId,
         "today12am": dateTime.year.toString() +
             "-" +
@@ -226,7 +312,7 @@ class NotaryServices {
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(
-        baseUrl + "notary/getProfile",
+        baseUrl + "customer/getProfile",
         data: {"notaryId": notaryId, "PageNumber": "0"},
       );
       return response.data;

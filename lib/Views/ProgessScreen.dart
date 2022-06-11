@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:myknott/Config/CustomColors.dart';
 import 'package:myknott/Views/CompletedOrderScreen.dart';
 import 'package:myknott/Views/InProgressOrderScreen.dart';
+import 'package:myknott/Views/newAppointment.dart';
 
 class ProgressScreen extends StatefulWidget {
   final String notaryId;
-
-  const ProgressScreen({Key key, this.notaryId}) : super(key: key);
+  var penList;
+  var userI;
+  ProgressScreen({this.penList,this.userI, this.notaryId}) ;
   @override
   _ProgressScreenState createState() => _ProgressScreenState();
 }
@@ -20,7 +22,7 @@ class _ProgressScreenState extends State<ProgressScreen>
   updatTotalInProgress(int order) {
     if (order == 0) {
       setState(() {
-        totalInProgress = "";
+        totalInProgress = "0";
       });
     } else
       setState(() {
@@ -41,7 +43,7 @@ class _ProgressScreenState extends State<ProgressScreen>
 
   @override
   void initState() {
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
 
@@ -52,7 +54,7 @@ class _ProgressScreenState extends State<ProgressScreen>
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          "Orders",
+          "Appointment",
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
         ),
         bottom: PreferredSize(
@@ -71,7 +73,13 @@ class _ProgressScreenState extends State<ProgressScreen>
             tabs: [
               Tab(
                 child: Text(
-                  "In Progress $totalInProgress",
+                  "New ",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  "Upcoming  ${(totalInProgress == null) ? '0' : totalInProgress}",
                   style: TextStyle(fontSize: 16),
                 ),
               ),
@@ -89,6 +97,9 @@ class _ProgressScreenState extends State<ProgressScreen>
         physics: BouncingScrollPhysics(),
         controller: tabController,
         children: [
+          NewAppointmentScreen(
+           widget.penList,widget.userI
+          ),
           InProgressOrderScreen(
             notaryId: widget.notaryId,
             updateTotal: updatTotalInProgress,

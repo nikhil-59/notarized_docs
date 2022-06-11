@@ -1,4 +1,4 @@
-// import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
@@ -59,12 +59,24 @@ class _UserProfileState extends State<UserProfile>
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                             ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.asset(
-                                  "assets/userr.png",
-                                  height: 80,
-                                  width: 80,
-                                )),
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.asset(
+                                "assets/userr.png",
+                                height: 80,
+                                width: 80,
+                              ),
+                              //  CachedNetworkImage(
+                              //   imageUrl: loginUserInfo['photoURL'],
+                              //   width: 80,
+                              //   height: 80,
+                              // )
+
+                              //  Image.network(
+                              //   loginUserInfo['photoURL'],
+                              //   width: 80,
+                              //   height: 80,
+                              // )
+                            ),
                             SizedBox(
                               height: 10,
                             ),

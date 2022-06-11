@@ -18,6 +18,7 @@ import 'package:myknott/Views/UserProfile.dart';
 import 'package:myknott/Views/Widgets/card.dart';
 import 'package:myknott/Views/Widgets/confirmCard.dart';
 import 'package:myknott/Views/OrderScreen.dart';
+import 'package:myknott/Views/newAppointment.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:myknott/Views/Amount.dart';
@@ -65,38 +66,46 @@ class _HomePageState extends State<HomePage>
 
   handleForegroundNotification(RemoteMessage message) async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
-    if (message.data['type'] == 2 || message.data['type'] == "2") {
-      pendingList.clear();
-      String jwt = await storage.read(key: 'jwt');
-      dio.options.headers['Authorization'] = jwt;
-      Map data = {"notaryId": userInfo['_id'], "pageNumber": "0"};
-      var response = await dio
-          .post(NotaryServices().baseUrl + "notary/getInvites/", data: data);
-      for (var item in response.data["orders"]) {
-        pendingList.add(
-          {
-            "id": item["_id"],
-            "payAmnt": item["payAmnt"],
-            "name": item["appointment"]["signerFullName"],
-            "address": item["appointment"]["propertyAddress"],
-            "appointmentPlace": item["appointment"]["place"],
-            "time": item["appointment"]['time'],
-            "logo": item["customer"]["userImageURL"],
-            "closingType": item['orderClosingType'],
-          },
-        );
+    print("meseg 68:${message.data['type']}");
+    try {
+      if (message.data['type'] == 2 || message.data['type'] == "2") {
+        pendingList.clear();
+        String jwt = await storage.read(key: 'jwt');
+        dio.options.headers['Authorization'] = jwt;
+        Map data = {"notaryId": userInfo['_id'], "pageNumber": "0"};
+        var response = await dio.post(
+            NotaryServices().baseUrl + "appointment/getPendingAppointments",
+            data: data);
+        print("Response from 76\n");
+        response.data.forEach((key, v) => print("key : $key , value : $v"));
+        for (var item in response.data["orders"]) {
+          pendingList.add(
+            {
+              "id": item["_id"],
+              "payAmnt": item["payAmnt"],
+              "name": item["appointment"]["signerFullName"],
+              "address": item["appointment"]["propertyAddress"],
+              "appointmentPlace": item["appointment"]["place"],
+              "time": item["appointment"]['time'],
+              "logo": item["customer"]["userImageURL"],
+              "closingType": item['orderClosingType'],
+            },
+          );
+        }
+        updatePending(pendingList.length);
+        setState(() {});
+      } else if (message.data['type'] == 1 || message.data['type'] == "1") {
+        if (message.data['action'] == 'revoked') {
+          await preferences.clear();
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => AuthScreen(),
+            ),
+          );
+        }
       }
-      updatePending(pendingList.length);
-      setState(() {});
-    } else if (message.data['type'] == 1 || message.data['type'] == "1") {
-      if (message.data['action'] == 'revoked') {
-        await preferences.clear();
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => AuthScreen(),
-          ),
-        );
-      }
+    } catch (e) {
+      print("Error on 105 homepage : $e");
     }
   }
 
@@ -195,30 +204,36 @@ class _HomePageState extends State<HomePage>
       dio.options.headers['Authorization'] = jwt;
       var body = {
         "notaryId": userInfo['_id'],
-        "today12am": DateTime.now().year.toString() +
-            "-" +
-            DateTime.now().month.toString() +
-            "-" +
-            DateTime.now().day.toString() +
-            " 00:00:00 GMT${NotaryServices.getTimezoneOffsetString(DateTime.now())}"
+        // "today12am": DateTime.now().year.toString() +
+        //     "-" +
+        //     DateTime.now().month.toString() +
+        //     "-" +
+        //     DateTime.now().day.toString() +
+        //     " 00:00:00 GMT${NotaryServices.getTimezoneOffsetString(DateTime.now())}"
       };
-      var response = await dio
-          .post(NotaryServices().baseUrl + "notary/getDashboard", data: body);
-      for (var i in response.data['appointments']) {
-        appointmentList.add({
-          "id": i['appointment']['_id'],
-          "date": i['appointment']['time'],
-          "address": i['appointment']["propertyAddress"],
-          "name": i['appointment']["signerFullName"],
-          "phone": i['appointment']["signerPhoneNumber"],
-          "orderId": i["orderId"],
-          "logo": i['customer']['userImageURL'],
-          "place": i['appointment']['place']
-        });
-        updateAppointment(appointmentList.length);
-        setState(() {});
-      }
+      var response = await dio.post(
+          NotaryServices().baseUrl + "dashboard/getDashboard",
+          data: body);
+
+      // print("response from 208 :\n");
+      // response.data
+      //     .forEach((key, value) => print("key : $key , value : $value"));
+      // for (var i in response.data['appointments']) {
+      //   appointmentList.add({
+      //     "id": i['appointment']['_id'],
+      //     "date": i['appointment']['time'],
+      //     "address": i['appointment']["propertyAddress"],
+      //     "name": i['appointment']["signerFullName"],
+      //     "phone": i['appointment']["signerPhoneNumber"],
+      //     "orderId": i["orderId"],
+      //     "logo": i['customer']['userImageURL'],
+      //     "place": i['appointment']['place']
+      //   });
+      //   updateAppointment(appointmentList.length);
+      //   setState(() {});
+      // }
     } catch (e) {
+      print("Error on 223 : $e\n");
       Fluttertoast.showToast(
           msg: "Something went wrong..",
           backgroundColor: blueColor,
@@ -238,28 +253,39 @@ class _HomePageState extends State<HomePage>
       dio.options.headers['Authorization'] = jwt;
       pendingList.clear();
       Map data = {"notaryId": userInfo['_id'], "pageNumber": pageNumber};
-      var response = await dio
-          .post(NotaryServices().baseUrl + "notary/getInvites/", data: data);
-      if (response.data['pageNumber'] == response.data['pageCount']) {
-        hasData = true;
-      } else
-        pageNumber += 1;
-      for (var item in response.data["orders"]) {
+      var response = await dio.post(
+          NotaryServices().baseUrl + "appointment/getPendingAppointments",
+          data: data);
+
+      //print response
+      response.data.forEach(
+          (key, v) => print("Response from 257 : key : $key ,value : $v"));
+
+      // if (response.data['pageNumber'] == response.data['pageCount']) {
+      //   hasData = true;
+      // } else
+      // pageNumber += 1;
+      for (var item in response.data["appointments"]) {
+        print("268 item : ");
+        item.forEach((k, v) => print(" k : $k , v : $v"));
         pendingList.add(
           {
             "id": item["_id"],
-            "payAmnt": item["payAmnt"],
-            "name": item["appointment"]["signerFullName"],
-            "address": item["appointment"]["propertyAddress"],
-            "appointmentPlace": item["appointment"]["place"],
-            "time": item["appointment"]['time'],
-            "logo": item["customer"]["userImageURL"],
-            "closingType": item['orderClosingType'],
+            // "payAmnt": item["payAmnt"],
+            "name": item["signingInfo"]["signerInfo"]['fisrtName'] +
+                " " +
+                item["signingInfo"]["signerInfo"]['lastName'],
+            "address": item["signingInfo"]["propertyAddress"],
+            //"appointmentPlace": item["appointment"]["place"], // ask do we want full address including zipcode and lat,lon ?
+            "time": item["appointmentInfo"]['time'],
+            // "logo": item["customer"]["userImageURL"],
+            // "closingType": item['orderClosingType'],
           },
         );
-        updatePending(response.data['inviteCount']);
+        // updatePending(response.data['leadId']);
       }
     } catch (e) {
+      print("error on 282 : $e");
       Fluttertoast.showToast(
           msg: "Something went wrong..",
           backgroundColor: blueColor,
@@ -326,7 +352,7 @@ class _HomePageState extends State<HomePage>
 
     print("photo url from 323 homepage : ");
     // print(userInfo['photoURL']);
-
+    
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: Material(
@@ -359,7 +385,7 @@ class _HomePageState extends State<HomePage>
                 size: 26,
               ),
               title: Text(
-                "Orders",
+                "Appointments",
                 style: TextStyle(fontSize: 14.5),
               ),
             ),
@@ -419,11 +445,9 @@ class _HomePageState extends State<HomePage>
                                             child: CircleAvatar(
                                               radius: 40,
                                               backgroundColor: Colors.white,
-                                              child: Icon(
-                                                Icons.person,
-                                                size: 50,
-                                                color:Colors.black
-                                              ),
+                                              child: Icon(Icons.person,
+                                                  size: 50,
+                                                  color: Colors.black),
                                             ),
                                           )),
                                     ),
@@ -436,7 +460,7 @@ class _HomePageState extends State<HomePage>
                                       children: [
                                         SizedBox(height: 10),
                                         Text(
-                                          "Good " + greeting()+" , ",
+                                          "Good " + greeting() + " , ",
                                           style: TextStyle(fontSize: 17),
                                         ),
                                         SizedBox(
@@ -452,34 +476,12 @@ class _HomePageState extends State<HomePage>
                                     )
                                   ],
                                 ),
-                                // ListView(
-                                //     shrinkWrap: true,
-                                //     scrollDirection: Axis.vertical,
-                                //     physics: BouncingScrollPhysics(),
-                                //     children: [
-                                //       SizedBox(height: 10),
-                                //       Text(
-                                //         "Good " + greeting(),
-                                //         style: TextStyle(fontSize: 17),
-                                //       ),
-                                //       SizedBox(
-                                //         height: 8,
-                                //       ),
-                                //       Text(
-                                //         userInfo['firstName'] +
-                                //             " " +
-                                //             userInfo['lastName'],
-                                //         style: TextStyle(
-                                //             fontSize: 16.5,
-                                //             fontWeight: FontWeight.w700),
-                                //       ),
-                                //     ]),
                                 pendingList.isEmpty
                                     ? Container(
-                                  height: 15,
-                                  color: Colors.amberAccent,
-                                  child: Text(" No Pending appointment"),
-                                )
+                                        height: 15,
+                                        color: Colors.amberAccent,
+                                        child: Text(" No Pending appointment"),
+                                      )
                                     : Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -500,7 +502,7 @@ class _HomePageState extends State<HomePage>
                                               padding: const EdgeInsets.only(
                                                   top: 8.0),
                                               child: Text(
-                                                "Accept the order as soon it comes. Order are assigned on first accepted basis.",
+                                                "Accept the Appointment as soon it comes. Appointment are assigned on first accepted basis.",
                                                 style: TextStyle(
                                                     fontSize: 15.5,
                                                     color: Colors.black
@@ -562,7 +564,8 @@ class _HomePageState extends State<HomePage>
                                                               } catch (e) {}
                                                             },
                                                             child: ConfirmCards(
-                                                              imageUrl:"assets/userr.png" , // Change to url
+                                                              // imageUrl:
+                                                              //     "assets/userr.png", // Change to url
                                                               address: item[
                                                                   "address"],
                                                               name:
@@ -579,12 +582,12 @@ class _HomePageState extends State<HomePage>
                                                                   item["id"],
                                                               refresh:
                                                                   getPending,
-                                                              place: item[
-                                                                  "appointmentPlace"],
-                                                              time:
-                                                                  item['time'],
-                                                              closeType: item[
-                                                                  'closingType'],
+                                                              // place: item[
+                                                              //     "appointmentPlace"],
+                                                              time: item['time']
+                                                                  .toString(),
+                                                              // closeType: item[
+                                                              //     'closingType'],
                                                             ),
                                                           ),
                                                         )
@@ -827,6 +830,8 @@ class _HomePageState extends State<HomePage>
             ),
           ),
           ProgressScreen(
+            penList :pendingList,
+            userI:userInfo,
             notaryId: userInfo.isNotEmpty ? userInfo['_id'] : "",
           ),
           AmountScreen(

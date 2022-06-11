@@ -85,11 +85,11 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
               },
               child: ListView.builder(
                 itemCount:
-                    orders['orders'].length != 0 ? orders['orders'].length : 1,
+                    orders['appointments'].length != 0 ? orders['appointments'].length : 1,
 
                 // physics: BouncingScrollPhysics(),
                 itemBuilder: (BuildContext context, int index) {
-                  return orders['orders'].isNotEmpty
+                  return orders['appointments'].isNotEmpty
                       ? Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Card(
@@ -111,7 +111,7 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                             OrderScreen(
                                           isPending: false,
                                           notaryId: widget.notaryId,
-                                          orderId: orders['orders'][index]
+                                          orderId: orders['appointments'][index]
                                               ['_id'],
                                         ),
                                       ),
@@ -125,7 +125,7 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                         ),
                                         Text(
                                           "#" +
-                                              orders['orders'][index]
+                                              orders['appointments'][index]
                                                           ['appointment']
                                                       ['escrowNumber']
                                                   .toString(),
@@ -139,7 +139,7 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              orders['orders'][index]
+                                              orders['appointments'][index]
                                                       ["appointment"]
                                                   ['signerFullName'],
                                               style: TextStyle(
@@ -148,7 +148,7 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                             ),
                                             Text(
                                               "\$ " +
-                                                  orders['orders'][index]
+                                                  orders['appointments'][index]
                                                           ['amount']
                                                       .toString(),
                                               style: TextStyle(
@@ -177,7 +177,7 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                         ),
                                         SizedBox(height: 5),
                                         Text(
-                                          orders['orders'][index]['appointment']
+                                          orders['appointments'][index]['appointment']
                                               ['propertyAddress'],
                                           style: TextStyle(
                                             fontSize: 15,
@@ -193,7 +193,7 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                           ),
                                           contentPadding: EdgeInsets.all(0),
                                           title: Text(
-                                            orders['orders'][index]
+                                            orders['appointments'][index]
                                                 ['appointment']['place'],
 
                                             // widget.place,
@@ -215,7 +215,7 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                                             "MM/dd/yyyy hh:mm a")
                                                         .format(
                                                       DateTime.parse(
-                                                        orders['orders'][index]
+                                                        orders['appointments'][index]
                                                             ['deliveredAt'],
                                                       ).toLocal(),
                                                     ),
@@ -259,7 +259,7 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 30.0),
                                 child: Text(
-                                  "You don't have any Completed orders",
+                                  "You don't have any Completed appointments",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 17,

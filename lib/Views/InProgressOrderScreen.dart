@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
@@ -38,7 +37,7 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
         pageNumber += 1;
     } catch (e) {
       print("Error on 40 inProgressOrderscreen.dart $e \n");
-}
+    }
     setState(() {});
   }
 
@@ -77,10 +76,11 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
               color: Colors.black,
               onRefresh: () => getInProgressOrders(),
               child: ListView.builder(
-                itemCount: 1,
-                    // orders['orders'].length != 0 ? orders['orders'].length : 1,
+                itemCount: orders['appointmentCount'] != 0
+                    ? orders['appointmentCount']
+                    : 1,
                 itemBuilder: (BuildContext context, int index) {
-                  return orders['orders'].isNotEmpty
+                  return orders['appointments'].isNotEmpty
                       ? Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Card(
@@ -102,7 +102,7 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                                             OrderScreen(
                                           isPending: false,
                                           notaryId: widget.notaryId,
-                                          orderId: orders['orders'][index]
+                                          orderId: orders['appointments'][index]
                                               ['_id'],
                                         ),
                                       ),
@@ -206,7 +206,8 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                                                             "MM/dd/yyyy @ h a")
                                                         .format(
                                                       DateTime.parse(
-                                                        orders['orders'][index]
+                                                        orders['appointments']
+                                                                    [index]
                                                                 ['appointment']
                                                             ['time'],
                                                       ).toLocal(),
@@ -251,7 +252,7 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 30.0),
                                 child: Text(
-                                  "You don't have any In Progress orders",
+                                  "You don't have any  Upcoming Appointments",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 17,
