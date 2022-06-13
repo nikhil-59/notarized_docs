@@ -1,6 +1,7 @@
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myknott/Services/Services.dart';
+import 'package:myknott/Views/InProgressOrderScreen.dart';
 import 'package:myknott/Views/OrderScreen.dart';
 import 'package:myknott/Views/Widgets/confirmCard.dart';
 import 'package:myknott/Views/homePage.dart';
@@ -9,8 +10,10 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class NewAppointmentScreen extends StatefulWidget {
   var myPendingList;
+  // Function updateTotalNewApp;
   var myUserInfo;
-  NewAppointmentScreen(this.myPendingList, this.myUserInfo);
+  NewAppointmentScreen(
+      this.myPendingList, this.myUserInfo);
 
   State<NewAppointmentScreen> createState() => _NewAppointmentScreenState();
 }
@@ -28,6 +31,9 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        "-----------------pendingList---------------------------\n ${widget.myPendingList} \n ----------");
+    // widget.updateTotalNewApp(widget.myPendingList.length);
     return Scaffold(
         body: SafeArea(
             child: SingleChildScrollView(
@@ -59,7 +65,8 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
                           // shrinkWrap: true,
                           itemCount: widget.myPendingList.length,
                           itemBuilder: (context, index) {
-                            // print(myPendingList[index]);
+                            print(
+                                " 64 newApp ${widget.myPendingList[index]['name']} ");
                             return Card(
                               elevation: 2,
                               child: Container(
@@ -105,9 +112,12 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
                                             SizedBox(
                                               height: 2,
                                             ),
-                                            Text(widget.myPendingList[index]
-                                                    ['time']
-                                                .toString()),
+                                            Text(
+                                              getTime(
+                                                  widget.myPendingList[index]
+                                                      ['time']),
+                                            ),
+                                            // .toString()),
                                           ],
                                         ),
                                       ],
@@ -146,7 +156,11 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
                             );
                           }),
                     )
-                  : Text("List is empty")
+                  : Center(
+                      child: Text(
+                      "List is empty",
+                      style: TextStyle(fontSize: 56),
+                    ))
             ]),
           ),
         ),

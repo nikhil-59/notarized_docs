@@ -22,6 +22,7 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
   bool hasData = false;
   String notaryId;
   bool isloading = false;
+
   getCompletedOrders() async {
     setState(() {
       pageNumber = 0;
@@ -33,7 +34,8 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
       var response = await NotaryServices()
           .getCompletedOrders(widget.notaryId, pageNumber);
       orders.addAll(response);
-      widget.updateCompleted(response['orderCount']);
+      print(" 37 resp cos $response");
+      widget.updateCompleted(response['appointments'].length);
       if (response['pageNumber'] == response['pageCount']) {
         hasData = true;
       } else {
@@ -50,7 +52,9 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
       var response = await NotaryServices()
           .getCompletedOrders(widget.notaryId, pageNumber);
       print(" getMoreData Response of CompletedOrderScreen.dart --------\n ");
-      response.forEach((key,value){ print("key : $key , value : $value ");});
+      response.forEach((key, value) {
+        print("key : $key , value : $value ");
+      });
       orders['orders'].addAll(response['orders']);
       if (response['pageNumber'] == response['pageCount']) {
         hasData = true;
@@ -74,6 +78,8 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
   @override
   // ignore: must_call_super
   Widget build(BuildContext context) {
+    print("---------order cos 79");
+    print(orders['appointments']);
     return !isloading
         ? LazyLoadScrollView(
             isLoading: hasData,
@@ -84,11 +90,15 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                 await getCompletedOrders();
               },
               child: ListView.builder(
-                itemCount:
-                    orders['appointments'].length != 0 ? orders['appointments'].length : 1,
+                itemCount: orders['appointments'].length != 0
+                    ? orders['appointments'].length
+                    : 1,
 
                 // physics: BouncingScrollPhysics(),
                 itemBuilder: (BuildContext context, int index) {
+                  // orders['appointments'][index]
+                  print(
+                      " 99 cos : ${orders['appointments'][index]["signingInfo"]['signerInfo']}");
                   return orders['appointments'].isNotEmpty
                       ? Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -103,19 +113,21 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                   ),
                                   ListTile(
                                     tileColor: Colors.white,
-                                    onTap: () => Navigator.of(context).push(
-                                      PageRouteBuilder(
-                                        transitionDuration:
-                                            Duration(seconds: 0),
-                                        pageBuilder: (_, __, ___) =>
-                                            OrderScreen(
-                                          isPending: false,
-                                          notaryId: widget.notaryId,
-                                          orderId: orders['appointments'][index]
-                                              ['_id'],
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        PageRouteBuilder(
+                                          transitionDuration:
+                                              Duration(seconds: 0),
+                                          pageBuilder: (_, __, ___) =>
+                                              OrderScreen(
+                                            isPending: false,
+                                            notaryId: widget.notaryId,
+                                            orderId: orders['appointments']
+                                                [index]['_id'],
+                                          ),
                                         ),
-                                      ),
-                                    ),
+                                      );
+                                    },
                                     title: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -126,7 +138,7 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                         Text(
                                           "#" +
                                               orders['appointments'][index]
-                                                          ['appointment']
+                                                          ['signingInfo']
                                                       ['escrowNumber']
                                                   .toString(),
                                           style: TextStyle(fontSize: 15),
@@ -140,17 +152,23 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                           children: [
                                             Text(
                                               orders['appointments'][index]
-                                                      ["appointment"]
-                                                  ['signerFullName'],
+                                                              ["signingInfo"]
+                                                          ['signerInfo']
+                                                      ['fisrtName'] +
+                                                  " " +
+                                                  orders['appointments'][index]
+                                                              ["signingInfo"]
+                                                          ['signerInfo']
+                                                      ['lastName'],
                                               style: TextStyle(
                                                   fontSize: 16.5,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                             Text(
-                                              "\$ " +
-                                                  orders['appointments'][index]
-                                                          ['amount']
-                                                      .toString(),
+                                              "\$ " + "",
+                                              // orders['appointments'][index]
+                                              //         ['amount']
+                                              //     .toString(),
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold),
@@ -177,7 +195,8 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                         ),
                                         SizedBox(height: 5),
                                         Text(
-                                          orders['appointments'][index]['appointment']
+                                          orders['appointments'][index]
+                                                  ['signingInfo']
                                               ['propertyAddress'],
                                           style: TextStyle(
                                             fontSize: 15,
@@ -194,7 +213,8 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                           contentPadding: EdgeInsets.all(0),
                                           title: Text(
                                             orders['appointments'][index]
-                                                ['appointment']['place'],
+                                                    ['appointmentInfo']['place']
+                                                ['completeAddress'],
 
                                             // widget.place,
                                             style: TextStyle(
@@ -210,13 +230,14 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                                 height: 5,
                                               ),
                                               Text(
-                                                "Document Delivered : " +
+                                                "Document Created : " +
                                                     DateFormat(
                                                             "MM/dd/yyyy hh:mm a")
                                                         .format(
                                                       DateTime.parse(
-                                                        orders['appointments'][index]
-                                                            ['deliveredAt'],
+                                                        orders['appointments']
+                                                                [index]
+                                                            ['createdAt'],
                                                       ).toLocal(),
                                                     ),
                                                 style: TextStyle(

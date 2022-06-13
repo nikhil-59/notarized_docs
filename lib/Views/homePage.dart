@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage>
     String encodedUserinfo = prefs.getString("userInfo");
     userInfo = await json.decode(encodedUserinfo);
     setState(() {
-      notaryId = userInfo['_id'];
+      notaryId = "62421089c913294914a8a35f";
       loginUserInfo = userInfo;
       // notaryUserObj =;
     });
@@ -252,7 +252,7 @@ class _HomePageState extends State<HomePage>
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
       pendingList.clear();
-      Map data = {"notaryId": userInfo['_id'], "pageNumber": pageNumber};
+      Map data = {"notaryId": "62421089c913294914a8a35f", "pageNumber": pageNumber}; // replace id with userInfo[_id]
       var response = await dio.post(
           NotaryServices().baseUrl + "appointment/getPendingAppointments",
           data: data);
@@ -266,7 +266,7 @@ class _HomePageState extends State<HomePage>
       // } else
       // pageNumber += 1;
       for (var item in response.data["appointments"]) {
-        print("268 item : ");
+        print("268 item getpending: ");
         item.forEach((k, v) => print(" k : $k , v : $v"));
         pendingList.add(
           {
@@ -582,8 +582,8 @@ class _HomePageState extends State<HomePage>
                                                                   item["id"],
                                                               refresh:
                                                                   getPending,
-                                                              // place: item[
-                                                              //     "appointmentPlace"],
+                                                              place: item[
+                                                                  "address"],
                                                               time: item['time']
                                                                   .toString(),
                                                               // closeType: item[
@@ -832,13 +832,13 @@ class _HomePageState extends State<HomePage>
           ProgressScreen(
             penList :pendingList,
             userI:userInfo,
-            notaryId: userInfo.isNotEmpty ? userInfo['_id'] : "",
+            notaryId: userInfo.isNotEmpty ? "62421089c913294914a8a35f" : "",  // userinfo[_id]
           ),
           AmountScreen(
-            notaryId: userInfo.isNotEmpty ? userInfo['_id'] : "",
+            notaryId: userInfo.isNotEmpty ?"62421089c913294914a8a35f" :"",//userInfo['_id'] : "",
           ),
           UserProfile(
-            notaryId: userInfo.isNotEmpty ? userInfo['_id'] : "",
+            notaryId: userInfo.isNotEmpty ?"62421089c913294914a8a35f":"",// userInfo['_id'] : "",
           )
         ],
       ),

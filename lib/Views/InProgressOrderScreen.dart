@@ -30,7 +30,7 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
       var response = await NotaryServices()
           .getInProgressOrders(widget.notaryId, pageNumber);
       orders.addAll(response);
-      widget.updateTotal(response['orderCount']);
+      widget.updateTotal(response['appointments'].length);
       if (response['pageNumber'] == response['pageCount']) {
         hasData = true;
       } else
@@ -80,6 +80,7 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                     ? orders['appointmentCount']
                     : 1,
                 itemBuilder: (BuildContext context, int index) {
+                  orders.forEach((k, v) => print("upComing order $k :$v"));
                   return orders['appointments'].isNotEmpty
                       ? Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -116,8 +117,8 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                                         ),
                                         Text(
                                           "#" +
-                                              orders['orders'][index]
-                                                          ['appointment']
+                                              orders['appointments'][index]
+                                                          ['signingInfo']
                                                       ['escrowNumber']
                                                   .toString(),
                                           style: TextStyle(fontSize: 15),
@@ -130,16 +131,22 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              orders['orders'][index]
-                                                      ["appointment"]
-                                                  ['signerFullName'],
+                                              orders['appointments'][index]
+                                                              ["signingInfo"]
+                                                          ['signerInfo']
+                                                      ['fisrtName'] +
+                                                  " " +
+                                                  orders['appointments'][index]
+                                                              ["signingInfo"]
+                                                          ['signerInfo']
+                                                      ['lastName'],
                                               style: TextStyle(
                                                   fontSize: 16.5,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                             Text(
                                               "\$ " +
-                                                  orders['orders'][index]
+                                                  orders['appointments'][index]
                                                           ['payAmnt']
                                                       .toString(),
                                               style: TextStyle(
@@ -168,7 +175,8 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                                         ),
                                         SizedBox(height: 5),
                                         Text(
-                                          orders['orders'][index]['appointment']
+                                          orders['appointments'][index]
+                                                  ['signingInfo']
                                               ['propertyAddress'],
                                           style: TextStyle(
                                             fontSize: 15,
@@ -184,8 +192,9 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                                           ),
                                           contentPadding: EdgeInsets.all(0),
                                           title: Text(
-                                            orders['orders'][index]
-                                                ['appointment']['place'],
+                                            orders['appointments'][index]
+                                                    ['appointmentInfo']['place']
+                                                ['completeAddress'],
 
                                             // widget.place,
                                             style: TextStyle(
@@ -202,16 +211,17 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                                               ),
                                               Text(
                                                 "Appointment Date & Time : " +
-                                                    DateFormat(
-                                                            "MM/dd/yyyy @ h a")
-                                                        .format(
-                                                      DateTime.parse(
-                                                        orders['appointments']
-                                                                    [index]
-                                                                ['appointment']
-                                                            ['time'],
-                                                      ).toLocal(),
-                                                    ),
+                                                    DateFormat("MM/dd/yyyy")
+                                                        .format(DateTime.parse(
+                                                      orders['appointments']
+                                                                  [index][
+                                                              'appointmentInfo']
+                                                          ['date'],
+                                                    ).toLocal()) +
+                                                    getTime(orders['appointments']
+                                                                [index]
+                                                            ['appointmentInfo']
+                                                        ['time']),
                                                 style: TextStyle(
                                                   fontSize: 15,
                                                   color: Colors.black,
@@ -294,4 +304,23 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+getTime(int ss) {
+  String hh, mm;
+  var s = ss.toString();
+  if (s.length % 2 == 0) {
+    hh = s[0] + s[1];
+    mm = s[2] + s[3];
+  } else {
+    hh = '0' + s[0];
+    mm = s[1] + s[2];
+  }
+
+  // hh = (ss / 10000).toStringAsFixed(0);
+  // // hh=
+  // int.parse(hh) / 10 < 1 ? hh = '0' + hh : hh = hh;
+  // mm = (ss / 100).toString();
+
+  return " @ $hh : $mm";
 }

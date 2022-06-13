@@ -5,6 +5,7 @@ import 'package:future_button/future_button.dart';
 import 'package:intl/intl.dart';
 import 'package:myknott/Config/CustomColors.dart';
 import 'package:myknott/Services/Services.dart';
+import 'package:myknott/Views/InProgressOrderScreen.dart';
 
 class ConfirmCards extends StatefulWidget {
   final Function refresh;
@@ -14,7 +15,7 @@ class ConfirmCards extends StatefulWidget {
   final String price;
   final String address;
   // final String imageUrl;
-  // final String place;
+  final String place;
   final String time;
   // final String closeType;
   const ConfirmCards({
@@ -26,7 +27,7 @@ class ConfirmCards extends StatefulWidget {
     this.orderId,
     this.refresh,
     // @required this.imageUrl,
-    // @required this.place,
+    @required this.place,
     this.time,
     // @required this.closeType,
   }) : super(key: key);
@@ -60,7 +61,7 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                     Text(
                       // widget.closeType[0].toUpperCase() +
                       //     widget.closeType.substring(1) +
-                          " Closing",
+                      " Closing",
                       style: TextStyle(
                           fontSize: 15.5, fontWeight: FontWeight.bold),
                     ),
@@ -84,8 +85,8 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                         width: 60,
                       ),
                       contentPadding: EdgeInsets.all(0),
-                      title: Text("place ",
-                        // widget.place,
+                      title: Text(
+                        widget.place,
                         style: TextStyle(
                           fontSize: 15,
                           color: Colors.black,
@@ -98,10 +99,11 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                             height: 5,
                           ),
                           Text(
-                            "Appointment Date & Time : " +widget.time.toString(),
-                                // DateFormat("MM/dd/yyyy @ h a").format(
-                                //   DateTime.parse(widget.time).toLocal(),
-                                // ),
+                            "Appointment Date & Time : " +
+                                getTime(int.parse(widget.time)),
+                            // DateFormat("MM/dd/yyyy @ h a").format(
+                            //   DateTime.parse(widget.time).toLocal(),
+                            // ),
                             style: TextStyle(
                               fontSize: 15,
                               color: Colors.black,

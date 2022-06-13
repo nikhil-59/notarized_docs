@@ -8,7 +8,7 @@ class ProgressScreen extends StatefulWidget {
   final String notaryId;
   var penList;
   var userI;
-  ProgressScreen({this.penList,this.userI, this.notaryId}) ;
+  ProgressScreen({this.penList, this.userI, this.notaryId});
   @override
   _ProgressScreenState createState() => _ProgressScreenState();
 }
@@ -18,9 +18,10 @@ class _ProgressScreenState extends State<ProgressScreen>
   TabController tabController;
   String totalInProgress = "";
   String totalComplete = "";
+  String totalnewAppoi = "";
 
   updatTotalInProgress(int order) {
-    if (order == 0) {
+    if (order == 0 || order == null) {
       setState(() {
         totalInProgress = "0";
       });
@@ -30,8 +31,19 @@ class _ProgressScreenState extends State<ProgressScreen>
       });
   }
 
+  // updateTotalNew(int order) {
+  //   if (order == 0 || order == null) {
+  //     setState(() {
+  //       totalnewAppoi = "";
+  //     });
+  //   } else
+  //     setState(() {
+  //       totalnewAppoi = "($order)";
+  //     });
+  // }
+
   updatTotalComplete(int order) {
-    if (order == 0) {
+    if (order == 0 || order == null) {
       setState(() {
         totalComplete = "";
       });
@@ -44,6 +56,7 @@ class _ProgressScreenState extends State<ProgressScreen>
   @override
   void initState() {
     tabController = TabController(length: 3, vsync: this);
+    totalnewAppoi = widget.penList.length.toString();
     super.initState();
   }
 
@@ -73,19 +86,19 @@ class _ProgressScreenState extends State<ProgressScreen>
             tabs: [
               Tab(
                 child: Text(
-                  "New ",
+                  "New  (${totalnewAppoi == null ? '0' : totalnewAppoi})",
                   style: TextStyle(fontSize: 16),
                 ),
               ),
               Tab(
                 child: Text(
-                  "Upcoming  ${(totalInProgress == null) ? '0' : totalInProgress}",
+                  "Upcoming  ${totalInProgress == null ? '0' : totalInProgress}",
                   style: TextStyle(fontSize: 16),
                 ),
               ),
               Tab(
                 child: Text(
-                  "Completed $totalComplete",
+                  "Completed ${totalComplete == null ? '0' : totalComplete}",
                   style: TextStyle(fontSize: 16),
                 ),
               ),
@@ -97,9 +110,7 @@ class _ProgressScreenState extends State<ProgressScreen>
         physics: BouncingScrollPhysics(),
         controller: tabController,
         children: [
-          NewAppointmentScreen(
-           widget.penList,widget.userI
-          ),
+          NewAppointmentScreen(widget.penList, widget.userI),
           InProgressOrderScreen(
             notaryId: widget.notaryId,
             updateTotal: updatTotalInProgress,

@@ -196,10 +196,10 @@ class NotaryServices {
       dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(baseUrl + "appointment/getPastAppointments",
           data: {"notaryId": notaryId, "pageNumber": pageNumber});
-      print(" 196 service getCO : $response\n");
+      print(" 196 service getCO : ${response.data}\n");
       return response.data;
     } catch (e) {
-      print("Error on 200 service.dart getCO : $e");
+      print("Error on 202 service.dart getCO : $e");
       return {};
     }
   }
@@ -266,7 +266,7 @@ class NotaryServices {
       // print(response.forEach((key,value)=>print(" $key , $value")));
       print(response);
     } catch (e) {
-      print("Error on 247 : $e\n");
+      print("Error on 269 : $e\n");
       return {};
     }
   }
@@ -302,7 +302,7 @@ class NotaryServices {
       });
       return response.data;
     } catch (e) {
-      print("Error  216 service : $e \n------- ");
+      print("Error  305 service : $e \n------- ");
       return {};
     }
   }
@@ -317,7 +317,7 @@ class NotaryServices {
       );
       return response.data;
     } catch (e) {
-      print("Error on 229 service.dart ");
+      print("Error on 320 service.dart ");
       print(e);
       return {};
     }

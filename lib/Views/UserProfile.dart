@@ -31,14 +31,15 @@ class _UserProfileState extends State<UserProfile>
   }
 
   getData() async {
-    userInfo = await NotaryServices().getUserProfileInfo(widget.notaryId);
+    userInfo =
+        await NotaryServices().getUserProfileInfo("62421089c913294914a8a35f");  //notaryId
 
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    print("user info 31 userprofile ");
+    print("user info 41 userprofile ");
     loginUserInfo.forEach((k, v) => print("key :$k, value :$v\n"));
     return Scaffold(
         backgroundColor: Colors.white,
