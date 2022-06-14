@@ -58,6 +58,7 @@ flutter:
 
   assets:
     - assets/userr.png
+    - assets/user.png
     - assets/location.png
     - assets/logo.png
     - assets/appointment.png

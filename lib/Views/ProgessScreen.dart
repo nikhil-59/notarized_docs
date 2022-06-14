@@ -75,14 +75,14 @@ class _ProgressScreenState extends State<ProgressScreen>
           child: TabBar(
             physics: BouncingScrollPhysics(),
             labelColor: Colors.black,
-            unselectedLabelColor: Colors.black.withOpacity(0.8),
+            unselectedLabelColor: Colors.grey,
             controller: tabController,
             indicatorColor: CustomColor().blueColor,
             indicatorWeight: 2.5,
             indicatorSize: TabBarIndicatorSize.tab,
             enableFeedback: true,
-            labelStyle: TextStyle(fontSize: 17),
-            unselectedLabelStyle: TextStyle(fontSize: 17),
+            labelStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+            unselectedLabelStyle: TextStyle(fontSize: 15),
             tabs: [
               Tab(
                 child: Text(
@@ -110,7 +110,7 @@ class _ProgressScreenState extends State<ProgressScreen>
         physics: BouncingScrollPhysics(),
         controller: tabController,
         children: [
-          NewAppointmentScreen(widget.penList, widget.userI),
+          NewAppointmentScreen(widget.notaryId, widget.userI),
           InProgressOrderScreen(
             notaryId: widget.notaryId,
             updateTotal: updatTotalInProgress,

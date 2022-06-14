@@ -360,7 +360,9 @@ class _HomePageState extends State<HomePage>
     // print(userInfo['photoURL']);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade50,
+
       bottomNavigationBar: Material(
         color: Colors.white,
         elevation: 10,
@@ -576,11 +578,7 @@ class _HomePageState extends State<HomePage>
                                                                   "address"],
                                                               name:
                                                                   item["name"],
-                                                              price: item["payAmnt"] ==
-                                                                      null
-                                                                  ? '0'
-                                                                  : item["payAmnt"]
-                                                                      .toString(),
+                                                             
                                                               notaryId:
                                                                   userInfo[
                                                                       '_id'],
@@ -592,7 +590,8 @@ class _HomePageState extends State<HomePage>
                                                                   "address"],
                                                               time: item['time']
                                                                   .toString(),
-                                                              date:item['date'],
+                                                              date:
+                                                                  item['date'],
                                                               closeType: item[
                                                                   'closingType'],
                                                             ),

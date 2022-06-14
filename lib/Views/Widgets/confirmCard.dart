@@ -12,7 +12,7 @@ class ConfirmCards extends StatefulWidget {
   final String notaryId;
   final String orderId;
   final String name;
-  final String price;
+  // final String price;
   final String address;
   final date;
   // final String imageUrl;
@@ -20,9 +20,8 @@ class ConfirmCards extends StatefulWidget {
   final String time;
   final String closeType;
   const ConfirmCards({
-    Key key,
     this.name,
-    this.price,
+    // this.price,
     this.address,
     this.notaryId,
     this.orderId,
@@ -32,7 +31,7 @@ class ConfirmCards extends StatefulWidget {
     @required this.place,
     this.time,
     @required this.closeType,
-  }) : super(key: key);
+  });
 
   @override
   _ConfirmCardsState createState() => _ConfirmCardsState();
@@ -61,16 +60,9 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      widget.closeType[0].toUpperCase() +
-                          widget.closeType.substring(1) +
-                          " Closing",
+                      widget.closeType + " Closing",
                       style: TextStyle(
                           fontSize: 15.5, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      "\$ ${widget.price}",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -99,6 +91,12 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                         children: [
                           SizedBox(
                             height: 5,
+                          ),
+                          Text(
+                            widget.name,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
                           ),
                           Text(
                             "Appointment Date & Time : " +
@@ -139,6 +137,7 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                     ),
                   ),
                   onPressed: () async {
+                    //TO DO : open a Container with textfield , User will enter the reason for Rejecting Appointment
                     await NotaryServices()
                         .declineNotary(widget.notaryId, widget.orderId);
                     await widget.refresh();
@@ -204,6 +203,9 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                 )
               ],
             ),
+            SizedBox(
+              height: 5,
+            )
           ],
         ),
       ),
