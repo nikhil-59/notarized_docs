@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:myknott/Config/CustomColors.dart';
 import 'package:myknott/Services/Services.dart';
+import 'package:myknott/Views/InProgressOrderScreen.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'OrderScreen.dart';
 
@@ -39,14 +40,16 @@ class _CalenderScreenState extends State<CalenderScreen>
       dateTime = date;
     });
     data.clear();
-    data = await services.getAppointments(date, widget.notaryId);
+    data = await services.getAppointments(date, "62421089c913294914a8a35f");
     print("40 ClandrSn");
     data.forEach((key, value) {
       print("key : $key , value : $value ");
     });
     print("all appointments");
-    data['appointments'][0]
-        .forEach((key, value) => print("key : $key, value :$value"));
+    data['appointmentCount'] != 0
+        ? data['appointments'][0]
+            .forEach((key, value) => print("key : $key, value :$value"))
+        : print("appointment are empty");
     setState(() {
       isloading = false;
     });
@@ -117,7 +120,7 @@ class _CalenderScreenState extends State<CalenderScreen>
                           : 1,
                       itemBuilder: (BuildContext context, int index) {
                         // print(
-                            // " 120 ${data['appointments'][index]['signingInfo']['signerInfo']['firstName']} ,${data['appointments'][index]['signingInfo']['signerInfo']['lastName']} ");
+                        // " 120 ${data['appointments'][index]['signingInfo']['signerInfo']['firstName']} ,${data['appointments'][index]['signingInfo']['signerInfo']['lastName']} ");
                         return data['appointments'].isNotEmpty
                             ? InkWell(
                                 hoverColor: Colors.transparent,
@@ -177,7 +180,7 @@ class _CalenderScreenState extends State<CalenderScreen>
                                                 data['appointments'][index]
                                                             ['signingInfo']
                                                         ['signerInfo']
-                                                    ['firstName'] +
+                                                    ['fisrtName'] +
                                                 " " +
                                                 data['appointments'][index]
                                                         ['signingInfo']
@@ -205,13 +208,20 @@ class _CalenderScreenState extends State<CalenderScreen>
                                                 height: 5,
                                               ),
                                               Text(
-                                                // DateFormat('MM/dd/yyyy hh:mm a')
-                                                //     .format(DateTime.parse(
-                                                data['appointments'][index]
+                                                DateFormat('MM/dd/yyyy ')
+                                                        .format(DateTime.parse(
+                                                                data['appointments']
+                                                                            [
+                                                                            index]
+                                                                        [
+                                                                        'appointmentInfo']
+                                                                    ['date'])
+                                                            .toLocal()) +
+                                                    getTime(data['appointments']
+                                                                [index]
                                                             ['appointmentInfo']
-                                                        ['time']
-                                                    .toString(),
-                                                // .toLocal()),
+                                                        ['time']),
+                                                //,
                                                 style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 16,

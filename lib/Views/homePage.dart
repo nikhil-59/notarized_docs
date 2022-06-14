@@ -252,7 +252,10 @@ class _HomePageState extends State<HomePage>
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
       pendingList.clear();
-      Map data = {"notaryId": "62421089c913294914a8a35f", "pageNumber": pageNumber}; // replace id with userInfo[_id]
+      Map data = {
+        "notaryId": "62421089c913294914a8a35f",
+        "pageNumber": pageNumber
+      }; // replace id with userInfo[_id]
       var response = await dio.post(
           NotaryServices().baseUrl + "appointment/getPendingAppointments",
           data: data);
@@ -271,15 +274,18 @@ class _HomePageState extends State<HomePage>
         pendingList.add(
           {
             "id": item["_id"],
+            "companyName": item['endCustomerInfo']['company']['name'],
             // "payAmnt": item["payAmnt"],
             "name": item["signingInfo"]["signerInfo"]['fisrtName'] +
                 " " +
                 item["signingInfo"]["signerInfo"]['lastName'],
             "address": item["signingInfo"]["propertyAddress"],
-            //"appointmentPlace": item["appointment"]["place"], // ask do we want full address including zipcode and lat,lon ?
+            "date": item['appointmentInfo']['date'],
+            "appointmentPlace": item["appointmentInfo"]["place"]
+                ['completeAddress'],
             "time": item["appointmentInfo"]['time'],
             // "logo": item["customer"]["userImageURL"],
-            // "closingType": item['orderClosingType'],
+            "closingType": item['leadId']['type'],
           },
         );
         // updatePending(response.data['leadId']);
@@ -352,7 +358,7 @@ class _HomePageState extends State<HomePage>
 
     print("photo url from 323 homepage : ");
     // print(userInfo['photoURL']);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: Material(
@@ -586,8 +592,9 @@ class _HomePageState extends State<HomePage>
                                                                   "address"],
                                                               time: item['time']
                                                                   .toString(),
-                                                              // closeType: item[
-                                                              //     'closingType'],
+                                                              date:item['date'],
+                                                              closeType: item[
+                                                                  'closingType'],
                                                             ),
                                                           ),
                                                         )
@@ -830,15 +837,21 @@ class _HomePageState extends State<HomePage>
             ),
           ),
           ProgressScreen(
-            penList :pendingList,
-            userI:userInfo,
-            notaryId: userInfo.isNotEmpty ? "62421089c913294914a8a35f" : "",  // userinfo[_id]
+            penList: pendingList,
+            userI: userInfo,
+            notaryId: userInfo.isNotEmpty
+                ? "62421089c913294914a8a35f"
+                : "", // userinfo[_id]
           ),
           AmountScreen(
-            notaryId: userInfo.isNotEmpty ?"62421089c913294914a8a35f" :"",//userInfo['_id'] : "",
+            notaryId: userInfo.isNotEmpty
+                ? "62421089c913294914a8a35f"
+                : "", //userInfo['_id'] : "",
           ),
           UserProfile(
-            notaryId: userInfo.isNotEmpty ?"62421089c913294914a8a35f":"",// userInfo['_id'] : "",
+            notaryId: userInfo.isNotEmpty
+                ? "62421089c913294914a8a35f"
+                : "", // userInfo['_id'] : "",
           )
         ],
       ),

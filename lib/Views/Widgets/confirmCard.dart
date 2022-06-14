@@ -14,10 +14,11 @@ class ConfirmCards extends StatefulWidget {
   final String name;
   final String price;
   final String address;
+  final date;
   // final String imageUrl;
   final String place;
   final String time;
-  // final String closeType;
+  final String closeType;
   const ConfirmCards({
     Key key,
     this.name,
@@ -26,10 +27,11 @@ class ConfirmCards extends StatefulWidget {
     this.notaryId,
     this.orderId,
     this.refresh,
+    this.date,
     // @required this.imageUrl,
     @required this.place,
     this.time,
-    // @required this.closeType,
+    @required this.closeType,
   }) : super(key: key);
 
   @override
@@ -59,9 +61,9 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      // widget.closeType[0].toUpperCase() +
-                      //     widget.closeType.substring(1) +
-                      " Closing",
+                      widget.closeType[0].toUpperCase() +
+                          widget.closeType.substring(1) +
+                          " Closing",
                       style: TextStyle(
                           fontSize: 15.5, fontWeight: FontWeight.bold),
                     ),
@@ -100,10 +102,10 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                           ),
                           Text(
                             "Appointment Date & Time : " +
+                                DateFormat("MM/dd/yyyy ").format(
+                                  DateTime.parse(widget.date).toLocal(),
+                                ) +
                                 getTime(int.parse(widget.time)),
-                            // DateFormat("MM/dd/yyyy @ h a").format(
-                            //   DateTime.parse(widget.time).toLocal(),
-                            // ),
                             style: TextStyle(
                               fontSize: 15,
                               color: Colors.black,

@@ -97,8 +97,8 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                 // physics: BouncingScrollPhysics(),
                 itemBuilder: (BuildContext context, int index) {
                   // orders['appointments'][index]
-                  print(
-                      " 99 cos : ${orders['appointments'][index]["signingInfo"]['signerInfo']}");
+                  // print(
+                  //     " 99 cos : ${orders['appointments'][index]["signingInfo"]['signerInfo']}");
                   return orders['appointments'].isNotEmpty
                       ? Padding(
                           padding: const EdgeInsets.all(8.0),

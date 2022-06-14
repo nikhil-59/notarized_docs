@@ -80,7 +80,7 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
                     ? orders['appointmentCount']
                     : 1,
                 itemBuilder: (BuildContext context, int index) {
-                  orders.forEach((k, v) => print("upComing order $k :$v"));
+                  // orders.forEach((k, v) => print("upComing order $k :$v"));
                   return orders['appointments'].isNotEmpty
                       ? Padding(
                           padding: const EdgeInsets.all(8.0),

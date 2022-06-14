@@ -1,5 +1,6 @@
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:myknott/Services/Services.dart';
 import 'package:myknott/Views/InProgressOrderScreen.dart';
 import 'package:myknott/Views/OrderScreen.dart';
@@ -12,14 +13,14 @@ class NewAppointmentScreen extends StatefulWidget {
   var myPendingList;
   // Function updateTotalNewApp;
   var myUserInfo;
-  NewAppointmentScreen(
-      this.myPendingList, this.myUserInfo);
+  NewAppointmentScreen(this.myPendingList, this.myUserInfo);
 
   State<NewAppointmentScreen> createState() => _NewAppointmentScreenState();
 }
 
 class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
   Future<void> getData() async {
+    // await HomePage().createState().getPending();
     setState(() {});
   }
 
@@ -71,7 +72,7 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
                               elevation: 2,
                               child: Container(
                                 // color: Colors.amberAccent,
-                                height: 120,
+                                height: 125,
                                 // width: 16,
                                 child: Column(
                                   mainAxisAlignment:
@@ -93,8 +94,14 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
                                           width: 15,
                                         ),
                                         Column(
-                                          // mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
+                                            SizedBox(
+                                              height: 1,
+                                            ),
                                             Text(
                                               widget.myPendingList[index]
                                                   ['name'],
@@ -106,15 +113,25 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
                                               height: 2,
                                             ),
                                             Text(
-                                              " by ----",
+                                              widget.myPendingList[index]
+                                                  ['companyName'],
                                               style: TextStyle(fontSize: 18),
                                             ),
                                             SizedBox(
-                                              height: 2,
+                                              height: 3,
                                             ),
                                             Text(
-                                              getTime(
-                                                  widget.myPendingList[index]
+                                              "Appointment \nDate & Time : " +
+                                                  DateFormat("MM/dd/yyyy ")
+                                                      .format(
+                                                    DateTime.parse(widget
+                                                            .myPendingList[
+                                                                index]['date']
+                                                            .toString())
+                                                        .toLocal(),
+                                                  ) +
+                                                  getTime(widget
+                                                          .myPendingList[index]
                                                       ['time']),
                                             ),
                                             // .toString()),

@@ -181,10 +181,10 @@ class NotaryServices {
       var response = await dio.post(
           baseUrl + "appointment/getUpcomingAppointments",
           data: {"notaryId": notaryId, "pageNumber": pageNumber});
-      print("181 service.dart ${response.data} ");
+      print("184 service.dart ${response.data} ");
       return response.data;
     } catch (e) {
-      print("Erro on 184 service");
+      print("Erro on 187 service");
       print(e);
       return {};
     }
@@ -195,7 +195,10 @@ class NotaryServices {
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
       var response = await dio.post(baseUrl + "appointment/getPastAppointments",
-          data: {"notaryId": notaryId, "pageNumber": pageNumber});
+          data: {
+            "notaryId": "62421089c913294914a8a35f",
+            // "pageNumber": pageNumber
+          });
       print(" 196 service getCO : ${response.data}\n");
       return response.data;
     } catch (e) {
