@@ -108,23 +108,32 @@ class NotaryServices {
   acceptNotary(String notaryId, String orderId) async {
     try {
       String jwt = await storage.read(key: 'jwt');
-      Map body = {"orderId": orderId, "notaryId": notaryId};
+      Map body = {"orderId": "629f2d8c4769030016c4e178"};
       dio.options.headers['Authorization'] = jwt;
-      await dio.post(baseUrl + "notary/acceptOrder", data: body);
+      var resp =
+          await dio.post(baseUrl + "appointment/acceptAppointment", data: body);
+      print("resp 114 service : $resp");
       return true;
     } catch (e) {
+      print("Error on 116 : $e");
       return false;
     }
   }
 
-  declineNotary(String notaryId, String orderId) async {
+  declineNotary(String apptID, String declineReason) async {
     try {
       String jwt = await storage.read(key: 'jwt');
-      Map body = {"orderIdToDecline": orderId, "notaryId": notaryId};
+      Map body = {
+        "apptID": "629f2d8c4769030016c4e178",
+        "reason": declineReason
+      };
       dio.options.headers['Authorization'] = jwt;
-      await dio.post(baseUrl + "notary/declineOrder", data: body);
+      var response =
+          await dio.post(baseUrl + "appointment/rejectAppointment", data: body);
+      print("response 129 decline : ${response.data}");
       return true;
     } catch (e) {
+      print("Error on 128 service $e");
       return false;
     }
   }
@@ -194,11 +203,11 @@ class NotaryServices {
     try {
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
-      var response = await dio.post(baseUrl + "appointment/getPastAppointments",
-          data: {
-            "notaryId": "62421089c913294914a8a35f",
-            // "pageNumber": pageNumber
-          });
+      var response =
+          await dio.post(baseUrl + "appointment/getPastAppointments", data: {
+        "notaryId": notaryId,
+        // "pageNumber": pageNumber
+      });
       print(" 196 service getCO : ${response.data}\n");
       return response.data;
     } catch (e) {
@@ -215,7 +224,7 @@ class NotaryServices {
           await dio.post(baseUrl + "appointment/createAppointment", data: {
         "notaryId": notaryIdd,
         "endCustomerInfo": {
-          "firstName": "test",
+          "firstName": "test0",
           "lastName": "abc",
           "email": "test@gmail.com",
           "phoneNumber": 9475983454,
@@ -238,7 +247,7 @@ class NotaryServices {
         },
         "isOnlineSigning": false,
         "appointmentInfo": {
-          "date": "2022-06-11T18:30:00.000Z",
+          "date": "2022-06-16T18:30:00.000Z",
           "time": 53034,
           "durationofAppointment": 1,
           "place": {
@@ -255,8 +264,8 @@ class NotaryServices {
         "signingInfo": {
           "escrowNumber": "23ewfewr24",
           "signerInfo": {
-            "firsttName": "signer1",
-            "lastName": "abcd",
+            "firsttName": "signer",
+            "lastName": "abcde",
             "email": "signer1@gmail.com",
             "phoneNumber": 1234509876,
             "countryCode": "3wefre",
@@ -333,7 +342,7 @@ class NotaryServices {
     print("pagenumber   :" + pageNumber.toString());
     final response = await dio.post(
       baseUrl + "lead/getLeads",
-      data: {"notaryId": "62421089c913294914a8a35f", "pageNumber": pageNumber},
+      data: {"notaryId": notaryId, "pageNumber": pageNumber},
     );
     return response.data;
   }

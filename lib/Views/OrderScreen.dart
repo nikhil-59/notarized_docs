@@ -89,7 +89,7 @@ class _OrderScreenState extends State<OrderScreen>
       print("----------");
       if (this.mounted) {
         Fluttertoast.showToast(
-            msg: "Something went wrong..",
+            msg: "Something 87 went wrong..",
             backgroundColor: blueColor,
             fontSize: 16,
             textColor: Colors.white,
@@ -1433,8 +1433,9 @@ class _OrderScreenState extends State<OrderScreen>
                   gravity: ToastGravity.SNACKBAR);
             }
           } catch (e) {
+            print("Error on 1436 OrderS : $e");
             Fluttertoast.showToast(
-                msg: "Something went wrong.",
+                msg: "Something 1436 went wrong.",
                 backgroundColor: blueColor,
                 fontSize: 16,
                 textColor: Colors.white,

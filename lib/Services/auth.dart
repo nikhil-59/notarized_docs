@@ -22,15 +22,17 @@ class AuthService {
   Future<Map> signWithEmail(
       String email, String password, BuildContext context) async {
     try {
+      
       UserCredential userCredential =
           await firebaseAuth.signInWithEmailAndPassword(
         email: email.trim(),
         password: password.trim(),
       );
-      await userCredential.user.updateDisplayName("AsusDell");
-      print(userCredential.user.displayName);
+      // await userCredential.user.updateDisplayName("AsusDell");
+      // print(userCredential.user.displayName);
       // userCredential has an error message "auth/user-record-not-found"
       await NotaryServices().getToken();
+      
       return await getUserInfo(userCredential.user.uid,
           userCredential.user.email, userCredential.user.providerData.first);
     } catch (e) {
@@ -90,7 +92,7 @@ class AuthService {
         // "The User Does not Exist in our Database",
         //  "Please provide correct Information, Try checking Spelling Mistakes",
       } else {
-        print("something went wring");
+        print("something went wring $e");
       }
       return {"status": 0, "isloggedSuccessful": false};
     }
@@ -100,21 +102,19 @@ class AuthService {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String jwt = await storage.read(key: "jwt");
     dio.options.headers['Authorization'] = jwt;
-    print(" auth.dart getuserinfo : uid " +
-        uid.toString() +
-        " email" +
-        email.toString());
+    print(
+        " auth.dart getuserinfo , uid : $uid , email : $email , user : $user");
 
     try {
-      print(NotaryServices().baseUrl + 'customer/login/');
+      print(NotaryServices().baseUrl + 'customer/login');
       final response = await dio.post(
-        NotaryServices().baseUrl + 'customer/login/',
+        NotaryServices().baseUrl + 'customer/login',
         data: {
           "uid": uid,
           "email": email,
           "firstName": "test",
           "lastName": "customer",
-          "username": "test",
+          "username": "testCustomer",
           "phoneNumber": "1234561234",
           "phoneCountryCode": "+91",
           "mailingAddress": "street12, oxford Colony",
@@ -130,8 +130,9 @@ class AuthService {
       EasyLoading.dismiss();
       if (response.data['status'] == 2) {
         if (response.data.isNotEmpty) {
-          print(" -------------Customer \n ${response.data["customer"]} \n----end of customer detail--");
-       
+          print(
+              " -------------Customer \n ${response.data["customer"]} \n----end of customer detail--");
+
           getsharedprefe(Map<String, dynamic>.from(response.data["customer"]));
         } else {
           getsharedprefe({"data": 12});

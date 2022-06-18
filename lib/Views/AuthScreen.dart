@@ -541,20 +541,22 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                         ),
                       );
-                    } else if (passwordController.text.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          behavior: SnackBarBehavior.floating,
-                          backgroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(7)),
-                          content: Text(
-                            "Enter Password",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      );
-                    } else if (!RegExp(
+                    }
+                    // else if (passwordController.text.isEmpty) {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     SnackBar(
+                    //       behavior: SnackBarBehavior.floating,
+                    //       backgroundColor: Colors.black,
+                    //       shape: RoundedRectangleBorder(
+                    //           borderRadius: BorderRadius.circular(7)),
+                    //       content: Text(
+                    //         "Enter Password",
+                    //         style: TextStyle(fontSize: 16),
+                    //       ),
+                    //     ),
+                    //   );
+                    // }
+                    else if (!RegExp(
                             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                         .hasMatch(emailController.text.trim())) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -643,7 +645,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         setState(() {
                           isloading = false;
                         });
-                        print(" 625 Errrro ---:" +
+                        print(" 646 Errrro ---:" +
                             e.toString() +
                             "----${emailController.text}--${passwordController.text}----");
                       }

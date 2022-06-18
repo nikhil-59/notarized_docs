@@ -40,7 +40,7 @@ class _CalenderScreenState extends State<CalenderScreen>
       dateTime = date;
     });
     data.clear();
-    data = await services.getAppointments(date, "62421089c913294914a8a35f");
+    data = await services.getAppointments(date, widget.notaryId);
     print("40 ClandrSn");
     data.forEach((key, value) {
       print("key : $key , value : $value ");

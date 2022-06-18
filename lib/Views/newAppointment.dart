@@ -39,7 +39,7 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
       dio.options.headers['Authorization'] = jwt;
       myPendingList.clear();
       Map data = {
-        "notaryId": "62421089c913294914a8a35f",
+        "notaryId": notaryId,
         "pageNumber": pageNumber
       }; // replace id with userInfo[_id]
       var response = await dio.post(
@@ -47,8 +47,8 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
           data: data);
 
       //print response
-      response.data.forEach(
-          (key, v) => print("Response from 49 NApp: key : $key ,value : $v"));
+      // response.data.forEach(
+      //     (key, v) => print("Response from 49 NApp: key : $key ,value : $v"));
 
       // if (response.data['pageNumber'] == response.data['pageCount']) {
       //   hasData = true;
@@ -56,7 +56,7 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
       // pageNumber += 1;
       for (var item in response.data["appointments"]) {
         print("56 item getpending: ");
-        item.forEach((k, v) => print(" k : $k , v : $v"));
+        // item.forEach((k, v) => print(" k : $k , v : $v"));
         myPendingList.add(
           {
             "id": item["_id"],
@@ -80,7 +80,7 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
     } catch (e) {
       print("error on 78 NApp : $e");
       Fluttertoast.showToast(
-          msg: "Something went wrong..",
+          msg: "Something 78 went wrong..",
           backgroundColor: Colors.blue,
           fontSize: 16,
           textColor: Colors.white,
@@ -144,7 +144,7 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
                               name: myPendingList[index]['name'],
                               address: myPendingList[index]['propertyAddress'],
                               orderId: myPendingList[index]['id'],
-                              notaryId: "62421089c913294914a8a35f",
+                              notaryId: notaryId,
                               refresh: getPending,
                               date: myPendingList[index]['date'],
                               place: myPendingList[index]['appointmentPlace'],

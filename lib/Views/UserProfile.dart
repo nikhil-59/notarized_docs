@@ -31,8 +31,7 @@ class _UserProfileState extends State<UserProfile>
   }
 
   getData() async {
-    userInfo =
-        await NotaryServices().getUserProfileInfo("62421089c913294914a8a35f");  //notaryId
+    userInfo = await NotaryServices().getUserProfileInfo(notaryId); //notaryId
 
     setState(() {});
   }

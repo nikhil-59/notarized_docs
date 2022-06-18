@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage>
     String encodedUserinfo = prefs.getString("userInfo");
     userInfo = await json.decode(encodedUserinfo);
     setState(() {
-      notaryId = "62421089c913294914a8a35f";
+      notaryId = notaryId;
       loginUserInfo = userInfo;
       // notaryUserObj =;
     });
@@ -202,6 +202,7 @@ class _HomePageState extends State<HomePage>
       appointmentList.clear();
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
+      print(" user ID 205 : ${userInfo['_id']}");
       var body = {
         "notaryId": userInfo['_id'],
         // "today12am": DateTime.now().year.toString() +
@@ -215,27 +216,27 @@ class _HomePageState extends State<HomePage>
           NotaryServices().baseUrl + "dashboard/getDashboard",
           data: body);
 
-      // print("response from 208 :\n");
-      // response.data
-      //     .forEach((key, value) => print("key : $key , value : $value"));
-      // for (var i in response.data['appointments']) {
-      //   appointmentList.add({
-      //     "id": i['appointment']['_id'],
-      //     "date": i['appointment']['time'],
-      //     "address": i['appointment']["propertyAddress"],
-      //     "name": i['appointment']["signerFullName"],
-      //     "phone": i['appointment']["signerPhoneNumber"],
-      //     "orderId": i["orderId"],
-      //     "logo": i['customer']['userImageURL'],
-      //     "place": i['appointment']['place']
-      //   });
-      //   updateAppointment(appointmentList.length);
-      //   setState(() {});
-      // }
+      print("response from 219 :\n");
+      response.data
+          .forEach((key, value) => print("key : $key , value : $value"));
+      for (var i in response.data['appointments']) {
+        appointmentList.add({
+          "id": i['appointment']['_id'],
+          "date": i['appointment']['time'],
+          "address": i['appointment']["propertyAddress"],
+          "name": i['appointment']["signerFullName"],
+          "phone": i['appointment']["signerPhoneNumber"],
+          "orderId": i["orderId"],
+          "logo": i['customer']['userImageURL'],
+          "place": i['appointment']['place']
+        });
+        updateAppointment(appointmentList.length);
+        setState(() {});
+      }
     } catch (e) {
-      print("Error on 223 : $e\n");
+      print("Error on 237 : $e\n");
       Fluttertoast.showToast(
-          msg: "Something went wrong..",
+          msg: "Something 237 went wrong..",
           backgroundColor: blueColor,
           fontSize: 16,
           textColor: Colors.white,
@@ -253,7 +254,7 @@ class _HomePageState extends State<HomePage>
       dio.options.headers['Authorization'] = jwt;
       pendingList.clear();
       Map data = {
-        "notaryId": "62421089c913294914a8a35f",
+        "notaryId": notaryId,
         "pageNumber": pageNumber
       }; // replace id with userInfo[_id]
       var response = await dio.post(
@@ -261,16 +262,16 @@ class _HomePageState extends State<HomePage>
           data: data);
 
       //print response
-      response.data.forEach(
-          (key, v) => print("Response from 257 : key : $key ,value : $v"));
+      // response.data.forEach(
+      // (key, v) => print("Response from 257 : key : $key ,value : $v"));
 
       // if (response.data['pageNumber'] == response.data['pageCount']) {
       //   hasData = true;
       // } else
       // pageNumber += 1;
       for (var item in response.data["appointments"]) {
-        print("268 item getpending: ");
-        item.forEach((k, v) => print(" k : $k , v : $v"));
+        // print("268 item getpending: ");
+        // item.forEach((k, v) => print(" k : $k , v : $v"));
         pendingList.add(
           {
             "id": item["_id"],
@@ -293,7 +294,7 @@ class _HomePageState extends State<HomePage>
     } catch (e) {
       print("error on 282 : $e");
       Fluttertoast.showToast(
-          msg: "Something went wrong..",
+          msg: "Something 282 went wrong..",
           backgroundColor: blueColor,
           fontSize: 16,
           textColor: Colors.white,
@@ -356,7 +357,7 @@ class _HomePageState extends State<HomePage>
         userInfo["lastName"] == null ? "" : userInfo["lastName"];
     String fullName = notaryFirstName + notaryLastName;
 
-    print("photo url from 323 homepage : ");
+    // print("photo url from 323 homepage : ");
     // print(userInfo['photoURL']);
 
     return Scaffold(
@@ -578,7 +579,7 @@ class _HomePageState extends State<HomePage>
                                                                   "address"],
                                                               name:
                                                                   item["name"],
-                                                             
+
                                                               notaryId:
                                                                   userInfo[
                                                                       '_id'],
@@ -838,19 +839,13 @@ class _HomePageState extends State<HomePage>
           ProgressScreen(
             penList: pendingList,
             userI: userInfo,
-            notaryId: userInfo.isNotEmpty
-                ? "62421089c913294914a8a35f"
-                : "", // userinfo[_id]
+            notaryId: userInfo.isNotEmpty ? userInfo['_id'] : "",
           ),
           AmountScreen(
-            notaryId: userInfo.isNotEmpty
-                ? "62421089c913294914a8a35f"
-                : "", //userInfo['_id'] : "",
+            notaryId: userInfo.isNotEmpty ? userInfo['_id'] : "",
           ),
           UserProfile(
-            notaryId: userInfo.isNotEmpty
-                ? "62421089c913294914a8a35f"
-                : "", // userInfo['_id'] : "",
+            notaryId: userInfo.isNotEmpty ? userInfo['_id'] : "",
           )
         ],
       ),

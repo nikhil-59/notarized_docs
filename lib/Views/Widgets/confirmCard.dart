@@ -39,6 +39,8 @@ class ConfirmCards extends StatefulWidget {
 
 class _ConfirmCardsState extends State<ConfirmCards> {
   final Color blueColor = CustomColor().blueColor;
+
+  TextEditingController textController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -137,10 +139,99 @@ class _ConfirmCardsState extends State<ConfirmCards> {
                     ),
                   ),
                   onPressed: () async {
+                    textController.text = "";
                     //TO DO : open a Container with textfield , User will enter the reason for Rejecting Appointment
-                    await NotaryServices()
-                        .declineNotary(widget.notaryId, widget.orderId);
-                    await widget.refresh();
+                    showModalBottomSheet(
+                        backgroundColor: Colors.transparent,
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(15),
+                                  topRight: Radius.circular(15)),
+                              color: Colors.white,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  "Reason for Declining ",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                TextField(
+                                  controller: textController,
+                                  decoration: InputDecoration(
+                                      filled: true,
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide())),
+                                ),
+                                SizedBox(
+                                  height: 50,
+                                ),
+                                Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      var declined = await NotaryServices()
+                                          .declineNotary(widget.orderId,
+                                              textController.text);
+                                      await widget.refresh();
+
+                                      if (declined) {
+                                        Navigator.pop(context);
+                                        Fluttertoast.showToast(
+                                            msg: "Appointment Rejected",
+                                            backgroundColor: Colors.black54,
+                                            fontSize: 16,
+                                            textColor: Colors.white,
+                                            gravity: ToastGravity.BOTTOM);
+                                      } else {
+                                        Navigator.pop(context);
+                                        Fluttertoast.showToast(
+                                            msg: "Appointment not Rejected",
+                                            backgroundColor: Colors.black54,
+                                            fontSize: 16,
+                                            textColor: Colors.white,
+                                            gravity: ToastGravity.BOTTOM);
+                                      }
+                                    },
+                                    splashColor: Colors.deepOrange,
+                                    child: Center(
+                                      child: Container(
+                                        height: 40,
+                                        width: 150,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15)),
+                                            color: Colors.lightBlueAccent),
+                                        child: Center(
+                                          child: Text(
+                                            "Submit",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 18),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        });
                   },
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100),

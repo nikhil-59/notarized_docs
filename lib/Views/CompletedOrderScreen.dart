@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:myknott/Services/Services.dart';
+import 'package:myknott/Views/InProgressOrderScreen.dart';
 import 'package:myknott/Views/OrderScreen.dart';
 
 class CompletedOrderScreen extends StatefulWidget {
@@ -164,15 +165,13 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                                   fontSize: 16.5,
                                                   fontWeight: FontWeight.bold),
                                             ),
-                                            Text(
-                                              "\$ " + "",
-                                              // orders['appointments'][index]
-                                              //         ['amount']
-                                              //     .toString(),
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                                            IconButton(
+                                                onPressed: () {},
+                                                icon: Icon(
+                                                  Icons.call,
+                                                  size: 25,
+                                                  color: Colors.blueAccent,
+                                                ))
                                           ],
                                         ),
                                       ],
@@ -230,16 +229,20 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen>
                                                 height: 5,
                                               ),
                                               Text(
-                                                "Document Created : " +
-                                                    DateFormat(
-                                                            "MM/dd/yyyy hh:mm a")
+                                                "Appointment Date & Time : " +
+                                                    DateFormat("MM/dd/yyyy ")
                                                         .format(
                                                       DateTime.parse(
                                                         orders['appointments']
-                                                                [index]
-                                                            ['createdAt'],
+                                                                    [index][
+                                                                'appointmentInfo']
+                                                            ['date'],
                                                       ).toLocal(),
-                                                    ),
+                                                    ) +
+                                                    getTime(orders['appointments']
+                                                                [index]
+                                                            ['appointmentInfo']
+                                                        ['time']),
                                                 style: TextStyle(
                                                   fontSize: 15,
                                                   color: Colors.black,
