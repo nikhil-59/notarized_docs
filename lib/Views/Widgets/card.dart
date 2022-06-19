@@ -10,7 +10,7 @@ class Cards extends StatelessWidget {
   final String phone;
   final String notaryId;
   final String orderId;
-  final String imageUrl;
+  // final String imageUrl;
   final String place;
   final String notaryName;
   const Cards(
@@ -21,7 +21,7 @@ class Cards extends StatelessWidget {
       this.notaryId,
       this.orderId,
         this.notaryName,
-      @required this.imageUrl,
+      // @required this.imageUrl,
       this.phone})
       : super(key: key);
   @override

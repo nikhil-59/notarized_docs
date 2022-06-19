@@ -190,7 +190,7 @@ class NotaryServices {
       var response = await dio.post(
           baseUrl + "appointment/getUpcomingAppointments",
           data: {"notaryId": notaryId, "pageNumber": pageNumber});
-      print("184 service.dart ${response.data} ");
+      print("193 service.dart ${response.data} ");
       return response.data;
     } catch (e) {
       print("Erro on 187 service");

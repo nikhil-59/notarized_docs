@@ -59,6 +59,8 @@ flutter:
   assets:
     - assets/userr.png
     - assets/user.png
+    - assets/chat.png
+    - assets/caller.png
     - assets/location.png
     - assets/logo.png
     - assets/appointment.png

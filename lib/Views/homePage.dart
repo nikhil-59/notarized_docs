@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage>
     String encodedUserinfo = prefs.getString("userInfo");
     userInfo = await json.decode(encodedUserinfo);
     setState(() {
-      notaryId = notaryId;
+      notaryId = userInfo['_id'];
       loginUserInfo = userInfo;
       // notaryUserObj =;
     });
@@ -219,16 +219,17 @@ class _HomePageState extends State<HomePage>
       print("response from 219 :\n");
       response.data
           .forEach((key, value) => print("key : $key , value : $value"));
-      for (var i in response.data['appointments']) {
+      for (var i in response.data['pendingAppointments']) {
+        i.forEach((k, v) => print(" 223 : k : $k , v : $v"));
         appointmentList.add({
-          "id": i['appointment']['_id'],
-          "date": i['appointment']['time'],
-          "address": i['appointment']["propertyAddress"],
-          "name": i['appointment']["signerFullName"],
-          "phone": i['appointment']["signerPhoneNumber"],
-          "orderId": i["orderId"],
-          "logo": i['customer']['userImageURL'],
-          "place": i['appointment']['place']
+          "id": i['_id'],
+          "date": i['appointmentInfo']['date'],
+          "address": i['signingInfo']["propertyAddress"],
+          "name": i['signingInfo']["signerInfo"]['fisrtName'],
+          "phone": i['signingInfo']["signerInfo"]['phoneNumber'],
+          "orderId": i["_id"],
+          // "logo": i['customer']['userImageURL'],
+          "place": i['appointmentInfo']['place']['completeAddress']
         });
         updateAppointment(appointmentList.length);
         setState(() {});
@@ -254,7 +255,7 @@ class _HomePageState extends State<HomePage>
       dio.options.headers['Authorization'] = jwt;
       pendingList.clear();
       Map data = {
-        "notaryId": notaryId,
+        "notaryId": userInfo['_id'],
         "pageNumber": pageNumber
       }; // replace id with userInfo[_id]
       var response = await dio.post(
@@ -750,9 +751,9 @@ class _HomePageState extends State<HomePage>
                                                       'am'
                                                     ]),
                                                 phone: appointmentList[index]
-                                                    ['phone'],
-                                                imageUrl: appointmentList[index]
-                                                    ["logo"],
+                                                    ['phone'].toString(),
+                                                // imageUrl: appointmentList[index]
+                                                //     ["logo"],
                                               ),
                                             );
                                           },

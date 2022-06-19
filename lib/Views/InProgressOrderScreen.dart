@@ -46,7 +46,7 @@ class _InProgressOrderScreenState extends State<InProgressOrderScreen>
       var response = await NotaryServices()
           .getInProgressOrders(widget.notaryId, pageNumber);
       print("47 inProgressOrders");
-      print(response.keys);
+      print(response['appointmentCount']);
       orders['orders'].addAll(response['orders']);
       if (response['pageNumber'] == response['pageCount']) {
         hasData = true;

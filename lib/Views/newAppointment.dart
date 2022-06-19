@@ -35,12 +35,13 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
       hasData = false;
     });
     try {
+      print(" getpending notaryId : $notaryId");
       String jwt = await storage.read(key: 'jwt');
       dio.options.headers['Authorization'] = jwt;
       myPendingList.clear();
       Map data = {
         "notaryId": notaryId,
-        "pageNumber": pageNumber
+        "pageNumber": 1
       }; // replace id with userInfo[_id]
       var response = await dio.post(
           NotaryServices().baseUrl + "appointment/getPendingAppointments",
@@ -50,10 +51,10 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
       // response.data.forEach(
       //     (key, v) => print("Response from 49 NApp: key : $key ,value : $v"));
 
-      // if (response.data['pageNumber'] == response.data['pageCount']) {
-      //   hasData = true;
-      // } else
-      // pageNumber += 1;
+      if (response.data['pageNumber'] == response.data['pageCount']) {
+        hasData = true;
+      } else
+        pageNumber += 1;
       for (var item in response.data["appointments"]) {
         print("56 item getpending: ");
         // item.forEach((k, v) => print(" k : $k , v : $v"));
@@ -78,9 +79,9 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
         // updatePending(response.data['leadId']);
       }
     } catch (e) {
-      print("error on 78 NApp : $e");
+      print("error on 81 NApp : $e");
       Fluttertoast.showToast(
-          msg: "Something 78 went wrong..",
+          msg: "Something 81 went wrong..",
           backgroundColor: Colors.blue,
           fontSize: 16,
           textColor: Colors.white,
