@@ -8,6 +8,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:myknott/Services/Services.dart';
 import 'package:myknott/Services/auth.dart';
 import 'package:myknott/Screens/NoInternetScreen.dart';
+import 'package:myknott/Views/task_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Config/CustomColors.dart';
 
@@ -82,7 +83,7 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.white,
           primarySwatch: CustomColor().appBarColor,
           fontFamily: "Whitney"),
-      home: isInternet ? AuthService().handleAuth() : NoInternetScreen(),
+      home: isInternet ? TaskPage() : NoInternetScreen(),
       builder: EasyLoading.init(),
     );
   }
